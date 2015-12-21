@@ -8,35 +8,40 @@
 #include <fstream>
 
 
+//! \class Image_cuda_compatible
+//! \brief: Stores an image and it's info. Does not use QT related elements.
+//!
+//! Not using QT related elements makes it able to be used in CUDA.
 
 class Image_cuda_compatible
 {
 public:
-    Image_cuda_compatible();
-    Image_cuda_compatible (unsigned short* array);
-    ~Image_cuda_compatible ();
-    void readfromarray(unsigned short* array);
+    Image_cuda_compatible(); //!< Default constructor.
+    Image_cuda_compatible (unsigned short* array);  //!<Constructor that copies image from a this.size long array
+    ~Image_cuda_compatible (); //!<Destructor.
+    void readfromarray(unsigned short* array); //!< Copies image from an array.
 
-    //Copy constructor.
-    Image_cuda_compatible(const Image_cuda_compatible& image);
 
-    friend float kernel_call_calculate_image_mean(const Image_cuda_compatible& im);
+    Image_cuda_compatible(const Image_cuda_compatible& image); //!< Copy constructor.
+
+    friend float kernel_call_calculate_image_mean(const Image_cuda_compatible& im); //!<Calculates the mean value of the image on the GPU.
 
 
 protected:
-    float calculate_meanvalue();
-    static const int width = 1536;
-    static const int height = 864;
-    static const long size = width * height;
-    unsigned short* im;
-    unsigned short average = 0 ;
-    float mean = 0;
-    std::string filename ="";
-    std::string directory = "";
-    std::string id = "";
-    short voltage = 0;
-    short  amperage = 0;
-    short exptime = 0;
+    float calculate_meanvalue();  //!<Calculates the mean value of the image on the CPU.
+    static const int width = 1536;  //!<Width of the image. Constant among all images.
+    static const int height = 864; //!< Height of the image. Constant among all images.
+    static const long size = width * height; //!< Size of the image. Constant among all images.
+    unsigned short* im; //!< Array to store image values. unsigned short sould be 16 bit.
+    unsigned short average = 0 ; //!< Mean value of the image.
+    float mean = 0;  //!< Mean value of the image.
+    std::string filename ="";  //!< File name that the image was read from.
+    std::string directory = "";  //!< Directory name that the image was read from.
+    std::string id = "";  //!< ID of the image.
+    //Technical info:
+    short voltage = 0;  //!< Voltage of the X-ray tube
+    short  amperage = 0;  //!< Amperage of the X-ray tube
+    short exptime = 0;  //!< Exposure time.
 };
 
 #endif // IMAGE_CUDA_COMPATIBLE_H
