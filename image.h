@@ -8,7 +8,6 @@
 #include <QFileInfo>
 #include <sstream>
 #include <QTextEdit>
-//#include "cuda_kernel_calls.h"
 
 
 //! \class Image

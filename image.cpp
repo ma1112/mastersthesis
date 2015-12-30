@@ -160,7 +160,7 @@ void Image::writedetailstoscreen(QTextEdit* textEdit)
     textEdit->append("Amperage: " + QString::number(amperage) );
     textEdit->append("Exposition time: " + QString::number(exptime) );
     textEdit->append("Mean:"+ QString::number(mean));
-    textEdit->append(("Mean with cuda:" + QString::number(kernel_call_calculate_image_mean(*this))));
+
 
 
 

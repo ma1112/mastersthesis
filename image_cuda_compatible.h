@@ -24,7 +24,7 @@ public:
 
     Image_cuda_compatible(const Image_cuda_compatible& image); //!< Copy constructor.
 
-    friend float kernel_call_calculate_image_mean(const Image_cuda_compatible& im); //!<Calculates the mean value of the image on the GPU.
+    void  kernel_call_calculate_image_mean(); //!<Calculates the mean value of the image on the GPU.
 
 
 protected:
@@ -42,6 +42,10 @@ protected:
     short voltage = 0;  //!< Voltage of the X-ray tube
     short  amperage = 0;  //!< Amperage of the X-ray tube
     short exptime = 0;  //!< Exposure time.
+
+    unsigned short* gpu_im = NULL; //!< Poiter to the image on the GPU
+    void copy_to_GPU();
+    void remove_from_GPU();
 };
 
 #endif // IMAGE_CUDA_COMPATIBLE_H

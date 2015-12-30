@@ -15,15 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     image.cpp \
-    imageset.cpp \
     image_cuda_compatible.cpp
 
 HEADERS  += mainwindow.h \
-    cuda_image_kernel_calls.h
+    imageset_cuda_compatible.h
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
-HEADERS  +=     imageset.h
+HEADERS  +=    
 
 HEADERS  += 
 
