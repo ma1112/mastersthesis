@@ -54,7 +54,7 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& Image_
 
 
 
-float  Image_cuda_compatible::calculate_meanvalue()
+void  Image_cuda_compatible::calculate_meanvalue_on_CPU()
 
 {
     double  meanvalue = 0.0; // double for higher precision when summing awful lot of numbers.
@@ -64,8 +64,7 @@ float  Image_cuda_compatible::calculate_meanvalue()
     }
     meanvalue = meanvalue / (double) size;
 
-    return (float) meanvalue;
-
+mean = (float) meanvalue;
 }
 
 

@@ -24,11 +24,10 @@ public:
 
     Image_cuda_compatible(const Image_cuda_compatible& image); //!< Copy constructor.
 
-    void  kernel_call_calculate_image_mean(); //!<Calculates the mean value of the image on the GPU.
 
 
 protected:
-    float calculate_meanvalue();  //!<Calculates the mean value of the image on the CPU.
+    void  calculate_meanvalue_on_CPU();  //!<Calculates the mean value of the image on the CPU.
     static const int width = 1536;  //!<Width of the image. Constant among all images.
     static const int height = 864; //!< Height of the image. Constant among all images.
     static const long size = width * height; //!< Size of the image. Constant among all images.
@@ -43,9 +42,12 @@ protected:
     short  amperage = 0;  //!< Amperage of the X-ray tube
     short exptime = 0;  //!< Exposure time.
 
+    //GPU stuff:
+
     unsigned short* gpu_im = NULL; //!< Poiter to the image on the GPU
     void copy_to_GPU();
     void remove_from_GPU();
+    void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
 };
 
 #endif // IMAGE_CUDA_COMPATIBLE_H

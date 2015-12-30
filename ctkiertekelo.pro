@@ -22,9 +22,7 @@ HEADERS  += mainwindow.h \
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
-HEADERS  +=    
 
-HEADERS  += 
 
 FORMS    += mainwindow.ui
 
