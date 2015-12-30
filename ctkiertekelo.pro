@@ -18,13 +18,14 @@ SOURCES += main.cpp\
     imageset.cpp \
     image_cuda_compatible.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    cuda_image_kernel_calls.h
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
 HEADERS  +=     imageset.h
 
-HEADERS  +=  cuda_kernel_calls.h
+HEADERS  += 
 
 FORMS    += mainwindow.ui
 
@@ -41,11 +42,13 @@ OBJECTS_DIR = debug/obj           # directory where .obj files will be saved
 CUDA_OBJECTS_DIR = debug/obj      # directory where .obj  of cuda file will be saved
 # This makes the .cu files appear in your project
 
-OTHER_FILES += cuda_code.cu      # this is my cu file need to compile
+OTHER_FILES +=      # cuda_code.cu # this is my cu file need to compile
 
 # CUDA settings <-- may change depending on your system
 
-CUDA_SOURCES += cuda_code.cu     # let NVCC know which file you want to compile CUDA NVCC
+CUDA_SOURCES += cuda_image_kernel_calls.cu     # let NVCC know which file you want to compile CUDA NVCC
+
+
 
 CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
 SYSTEM_NAME = Win32         # Depending on your system either 'Win32', 'x64', or 'Win64'
@@ -108,5 +111,5 @@ INCLUDEPATH += $$PWD/lib
 DEPENDPATH += $$PWD/lib
 
 DISTFILES += \
-    cuda_code.cu \
-    cuda_reduce_on_image.cuh
+    cuda_reduce_kernels.cuh \
+    cuda_image_kernel_calls.cu

@@ -1,9 +1,6 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "cuda_kernel_calls.h"
-#include "book.h" // from "Cuda by Example"
-//#include <stdio.h>
-//#include <iostream>
+
 
 
 //sums a long array to a Blockdim size array. Extern shared is used! Need second step to sum the last array.
@@ -17,7 +14,7 @@
 //(I had to learn it the hard way...)
 
 
-
+//! Adds 64 or less elements on GPU, using only 1 warp.
 template <unsigned int blockSize>
 __device__ void warpReduce(volatile double *sdata, unsigned int tid) {
 if (blockSize >= 64) sdata[tid] += sdata[tid + 32];
@@ -32,7 +29,10 @@ if (blockSize >= 2) sdata[tid] += sdata[tid + 1];
 
 
 
-
+//! First step of a reduce procedure on GPU.
+//!
+//! Adds the elements of the n long unsigned short array *g_idta
+//! and stores partial sums in the blockSize long double *g_odata array.
 template <int blockSize>
 __global__ void kernel_reduce_sum_first_step(unsigned short *g_idata, double *g_odata, unsigned int n)
 {
@@ -57,7 +57,9 @@ if (tid == 0){ g_odata[blockIdx.x] = sdata[0]; }
 
 
 
-//second step on reducing.
+//! Second step of a reduce procedure on GPU.
+//!
+//! Adds the elements of d_in and stores the sum in the d_out double.
 template <unsigned int blockSize>
 __global__ void kernel_reduce_sum_second_step(double * d_in, double* d_out )
 {
@@ -77,35 +79,3 @@ __global__ void kernel_reduce_sum_second_step(double * d_in, double* d_out )
 
 
 }
-
-float kernel_call_calculate_image_mean(const Image_cuda_compatible& im)
-{
-    long imagesize = im.size;
-    unsigned short* d_image;
-    cudaMalloc( (void**)&d_image,imagesize*sizeof(unsigned short));
-  double* d_data;
-  cudaMalloc( (void**)&d_data, sizeof(double) * 1024);
-  double* d_sum;
-  HANDLE_ERROR (cudaMalloc( (void**)&d_sum, sizeof(double)));
-
-  cudaMemcpy(d_image,im.im,im.size * sizeof(unsigned short),cudaMemcpyHostToDevice);
-  kernel_reduce_sum_first_step<1024><<<64, 1024,  1024*sizeof(double)>>>(d_image,d_data, imagesize);
-  kernel_reduce_sum_second_step<64><<<1,64, 64*sizeof(double)>>>(d_data, d_sum);
-  double *h_sum;
-h_sum = (double*) malloc(sizeof(double));
-HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
-float mean = (float) ( (*h_sum )/ imagesize);
-
-
-
-free(h_sum);
-  cudaFree(d_image);
-  cudaFree(d_data);
-  cudaFree(d_sum);
-
-return  mean;
-}
-
-
-
-
