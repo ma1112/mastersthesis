@@ -3,7 +3,7 @@
 
 
 Image_cuda_compatible::Image_cuda_compatible() {
-    im = new unsigned short [width * height]();
+    im = new float [width * height]();
     mean = 0;
 }
 
@@ -12,9 +12,9 @@ Image_cuda_compatible::Image_cuda_compatible() {
 
 
 
-Image_cuda_compatible::Image_cuda_compatible (unsigned short* array)
+Image_cuda_compatible::Image_cuda_compatible (float* array)
 {
-    im = new unsigned short [size];
+    im = new float [size];
     readfromarray(array);
 }
 
@@ -23,7 +23,7 @@ Image_cuda_compatible::~Image_cuda_compatible() { delete[] im; }
 
 
 
-void Image_cuda_compatible::readfromarray(unsigned short* array)
+void Image_cuda_compatible::readfromarray(float* array)
 {
     double meandouble = 0;
     for(int i = 0 ; i < size ; i++)
@@ -40,7 +40,7 @@ void Image_cuda_compatible::readfromarray(unsigned short* array)
 //copy constructor
 Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& Image_cuda_compatible)
 {
-    im = new unsigned short [size]();
+    im = new float [size]();
     for(int i = 0; i < size ; i++)
         {
         im[i] = Image_cuda_compatible.im[i];

@@ -17,8 +17,8 @@ void Image_cuda_compatible::copy_to_GPU()
 {
     if(gpu_im == NULL)
         {
-        cudaMalloc( (void**)&gpu_im,size*sizeof(unsigned short));
-        cudaMemcpy(gpu_im,im,size * sizeof(unsigned short),cudaMemcpyHostToDevice);
+        cudaMalloc( (void**)&gpu_im,size*sizeof(float));
+        cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice);
     }
 
 }

@@ -21,7 +21,7 @@ class Image : public Image_cuda_compatible
 public:
 
     Image(); //!<Default constructor
-    Image( unsigned short* array) ; //!<Constructor that copies image from a this.size long array
+    Image( float* array) ; //!<Constructor that copies image from a this.size long array
     Image( std::string filename); //!< Constructor that reads the image from the file.
     Image(QString filename); //!< Constructor that reads the image from the file. QString version.
 

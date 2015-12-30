@@ -31,10 +31,10 @@ if (blockSize >= 2) sdata[tid] += sdata[tid + 1];
 
 //! First step of a reduce procedure on GPU.
 //!
-//! Adds the elements of the n long unsigned short array *g_idta
+//! Adds the elements of the n long float array *g_idta
 //! and stores partial sums in the blockSize long double *g_odata array.
 template <int blockSize>
-__global__ void kernel_reduce_sum_first_step(unsigned short *g_idata, double *g_odata, unsigned int n)
+__global__ void kernel_reduce_sum_first_step(float *g_idata, double *g_odata, unsigned int n)
 {
 extern __shared__ double sdata[];
  unsigned int tid = threadIdx.x;

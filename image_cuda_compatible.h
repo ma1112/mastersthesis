@@ -17,9 +17,9 @@ class Image_cuda_compatible
 {
 public:
     Image_cuda_compatible(); //!< Default constructor.
-    Image_cuda_compatible (unsigned short* array);  //!<Constructor that copies image from a this.size long array
+    Image_cuda_compatible (float* array);  //!<Constructor that copies image from a this.size long array
     ~Image_cuda_compatible (); //!<Destructor.
-    void readfromarray(unsigned short* array); //!< Copies image from an array.
+    void readfromarray(float* array); //!< Copies image from an array.
 
 
     Image_cuda_compatible(const Image_cuda_compatible& image); //!< Copy constructor.
@@ -31,8 +31,8 @@ protected:
     static const int width = 1536;  //!<Width of the image. Constant among all images.
     static const int height = 864; //!< Height of the image. Constant among all images.
     static const long size = width * height; //!< Size of the image. Constant among all images.
-    unsigned short* im; //!< Array to store image values. unsigned short sould be 16 bit.
-    unsigned short average = 0 ; //!< Mean value of the image.
+    float* im; //!< Array to store image values. float sould be 16 bit.
+    float average = 0 ; //!< Mean value of the image.
     float mean = 0;  //!< Mean value of the image.
     std::string filename ="";  //!< File name that the image was read from.
     std::string directory = "";  //!< Directory name that the image was read from.
@@ -44,7 +44,7 @@ protected:
 
     //GPU stuff:
 
-    unsigned short* gpu_im = NULL; //!< Poiter to the image on the GPU
+    float* gpu_im = NULL; //!< Poiter to the image on the GPU
     void copy_to_GPU();
     void remove_from_GPU();
     void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.

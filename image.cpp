@@ -3,7 +3,7 @@
 
 
 Image::Image() : Image_cuda_compatible() {}
-Image::Image( unsigned short* array) : Image_cuda_compatible(array){}
+Image::Image( float* array) : Image_cuda_compatible(array){}
 //Image::~Image() :~Image_cuda_compatible (){}
 
 
@@ -12,7 +12,7 @@ Image::Image( unsigned short* array) : Image_cuda_compatible(array){}
 Image::Image(std::string filename)
 {
     //TODO: Error handling.
-    im = new unsigned short[size];
+    im = new float[size];
     readfromfile(filename);
 
 
@@ -23,7 +23,7 @@ Image::Image(std::string filename)
 Image::Image(QString filename)
 {
     //TODO: Error handling.
-    im = new unsigned short[size];
+    im = new float[size];
     readfromfile(filename);
 
 }
@@ -48,8 +48,10 @@ void  Image::readfromfile( std::string filename )
 
     for(int i=0;i<size;i++)
     {
+        unsigned short value;
       file.read( (char*)bytes, 2 );  // read 2 bytes from the file
-      im[i] = bytes[0] | (bytes[1] << 8);  // construct the 16-bit value from those bytes
+      value = bytes[0] | (bytes[1] << 8);  // construct the 16-bit value from those bytes
+       im[i] = value;
       meandouble += im[i];
      }
     mean = float(meandouble / (double) size);
@@ -87,7 +89,7 @@ void Image::drawimage (QLabel* label)
          for(int i=0;i<size;i++)
          {
 
-             temp = im[i]>>8;
+             temp = abs( ((short)im[i])>>8);
              im_8_bit[i] = temp;
 
          }

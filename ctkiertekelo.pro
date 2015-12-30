@@ -17,8 +17,7 @@ SOURCES += main.cpp\
     image.cpp \
     image_cuda_compatible.cpp
 
-HEADERS  += mainwindow.h \
-    imageset_cuda_compatible.h
+HEADERS  += mainwindow.h
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
