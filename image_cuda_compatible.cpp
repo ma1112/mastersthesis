@@ -38,12 +38,15 @@ void Image_cuda_compatible::readfromarray(float* array)
 
 
 //copy constructor
-Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& Image_cuda_compatible)
+Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
+    :filename(other.filename), directory(other.directory), id(other.id),
+      voltage(other.voltage), amperage(other.amperage), exptime(other.exptime),
+      im(new float[size]())
 {
-    im = new float [size]();
+
     for(int i = 0; i < size ; i++)
         {
-        im[i] = Image_cuda_compatible.im[i];
+        im[i] = other.im[i];
     }
 
 }
@@ -68,3 +71,40 @@ mean = (float) meanvalue;
 }
 
 
+float Image_cuda_compatible::getvoltage()
+{
+    return voltage;
+}
+
+float Image_cuda_compatible::getamperage()
+{
+    return amperage;
+}
+
+float Image_cuda_compatible::getexptime()
+{
+    return exptime;
+}
+
+float Image_cuda_compatible::getmean()
+{
+    return mean;
+}
+
+void Image_cuda_compatible::setvoltage(float f)
+{
+    voltage = f;
+    return;
+}
+
+void Image_cuda_compatible::setamperage(float f)
+{
+    amperage = f;
+    return;
+}
+
+void Image_cuda_compatible::setexptime(float f)
+{
+    exptime = f;
+    return;
+}

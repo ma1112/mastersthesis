@@ -22,7 +22,18 @@ public:
     void readfromarray(float* array); //!< Copies image from an array.
 
 
-    Image_cuda_compatible(const Image_cuda_compatible& image); //!< Copy constructor.
+    Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
+
+
+    //Getter setters:
+
+    void setvoltage(float f);
+    void setamperage(float f);
+    void setexptime(float f);
+    float getvoltage();
+    float getamperage();
+    float getexptime();
+    float getmean();
 
 
 
@@ -32,15 +43,14 @@ protected:
     static const int height = 864; //!< Height of the image. Constant among all images.
     static const long size = width * height; //!< Size of the image. Constant among all images.
     float* im; //!< Array to store image values. float sould be 16 bit.
-    float average = 0 ; //!< Mean value of the image.
     float mean = 0;  //!< Mean value of the image.
     std::string filename ="";  //!< File name that the image was read from.
     std::string directory = "";  //!< Directory name that the image was read from.
     std::string id = "";  //!< ID of the image.
     //Technical info:
-    short voltage = 0;  //!< Voltage of the X-ray tube
-    short  amperage = 0;  //!< Amperage of the X-ray tube
-    short exptime = 0;  //!< Exposure time.
+    float voltage = 0;  //!< Voltage of the X-ray tube
+    float  amperage = 0;  //!< Amperage of the X-ray tube
+    float exptime = 0;  //!< Exposure time.
 
     //GPU stuff:
 
@@ -48,6 +58,8 @@ protected:
     void copy_to_GPU();
     void remove_from_GPU();
     void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
+
+
 };
 
 #endif // IMAGE_CUDA_COMPATIBLE_H
