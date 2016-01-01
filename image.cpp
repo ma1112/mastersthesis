@@ -4,26 +4,46 @@
 
 Image::Image() : Image_cuda_compatible() {}
 Image::Image( float* array) : Image_cuda_compatible(array){}
-//Image::~Image() :~Image_cuda_compatible (){}
 
 
-
-
-Image::Image(std::string filename)
+Image::~Image()
 {
-    //TODO: Error handling.
-    im = new float[size];
-    readfromfile(filename);
-
+  //  delete[] im;
 
 }
 
 
+//copy constructor
+ Image::Image (Image const& image)
+ {
+     std::cout << "Calling copy constructor for Image az &" <<this<<std::endl;
+     *this = image;
 
-Image::Image(QString filename)
+ }
+
+ Image& Image::operator+=(const Image& other)
+  {
+     Image_cuda_compatible::operator+=(other);
+     return *this;
+ }
+
+
+
+
+
+Image::Image(std::string filename) : Image()
 {
     //TODO: Error handling.
-    im = new float[size];
+   // im = new float[size];
+    readfromfile(filename);
+}
+
+
+
+Image::Image(QString filename) : Image()
+{
+    //TODO: Error handling.
+   // im = new float[size];
     readfromfile(filename);
 
 }
@@ -51,7 +71,7 @@ void  Image::readfromfile( std::string filename )
         unsigned short value;
       file.read( (char*)bytes, 2 );  // read 2 bytes from the file
       value = bytes[0] | (bytes[1] << 8);  // construct the 16-bit value from those bytes
-       im[i] = value;
+       im[i] = value ;
       meandouble += im[i];
      }
     mean = float(meandouble / (double) size);
@@ -66,6 +86,7 @@ void  Image::readfromfile( std::string filename )
     }
 
     directory = info.path().toStdString();
+    this->filename = filename;
     readinfo();
 
 return;
@@ -115,10 +136,11 @@ void Image::drawimage (QLabel* label)
 
 void Image::readinfo()
 {
+    std::cout  << "Reading info for file " << filename << "\n";
     std::ifstream file;
     std::string infofilename = directory;
     infofilename.append("\\info.txt");
-    std::cout << "infofilename = " << infofilename;
+    std::cout << "Info file found at " << infofilename << "\n";
     file.open(infofilename);
     std::string line;
 
@@ -126,12 +148,10 @@ void Image::readinfo()
 
     while (std::getline( file, line) ) //Read a line
        {
-        std::cout << std::endl<< line <<std::endl;
           std::stringstream ss(line);
           std::string temp;
 
           ss >> temp; // get Image_cuda_compatible id of the current row
-          std::cout << temp;
           if(! temp.compare(id)) // temp == id
           {
               ss>> temp;
@@ -139,6 +159,7 @@ void Image::readinfo()
               ss>> amperage;
               ss >> exptime;
               file.close();
+              std::cout<<" Voltage: " <<voltage<<"\n Amperage: " << amperage << "\nExptime: "<< exptime<<std::endl << std::endl;
               return;
 
           }

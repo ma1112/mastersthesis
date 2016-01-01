@@ -18,11 +18,20 @@ class Image_cuda_compatible
 public:
     Image_cuda_compatible(); //!< Default constructor.
     Image_cuda_compatible (float* array);  //!<Constructor that copies image from a this.size long array
-    ~Image_cuda_compatible (); //!<Destructor.
+   virtual ~Image_cuda_compatible (); //!<Destructor.
     void readfromarray(float* array); //!< Copies image from an array.
+    Image_cuda_compatible& operator=( const Image_cuda_compatible& other); //!< Assigment operator
+     Image_cuda_compatible& operator+=(const Image_cuda_compatible &other);
+     void clear(); //!<Cleans the image.
+
+
+
 
 
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
+
+
+    void  calculate_meanvalue_on_CPU();  //!<Calculates the mean value of the image on the CPU.
 
 
     //Getter setters:
@@ -34,11 +43,14 @@ public:
     float getamperage();
     float getexptime();
     float getmean();
+    std::string getid();
+    float minintensity(); //!<Experimental feature
+    float maxintensity();//!<Experimental feature
+
 
 
 
 protected:
-    void  calculate_meanvalue_on_CPU();  //!<Calculates the mean value of the image on the CPU.
     static const int width = 1536;  //!<Width of the image. Constant among all images.
     static const int height = 864; //!< Height of the image. Constant among all images.
     static const long size = width * height; //!< Size of the image. Constant among all images.
@@ -48,9 +60,9 @@ protected:
     std::string directory = "";  //!< Directory name that the image was read from.
     std::string id = "";  //!< ID of the image.
     //Technical info:
-    float voltage = 0;  //!< Voltage of the X-ray tube
-    float  amperage = 0;  //!< Amperage of the X-ray tube
-    float exptime = 0;  //!< Exposure time.
+    float voltage ;  //!< Voltage of the X-ray tube
+    float  amperage ;  //!< Amperage of the X-ray tube
+    float exptime ;  //!< Exposure time.
 
     //GPU stuff:
 

@@ -24,10 +24,13 @@ public:
     Image( float* array) ; //!<Constructor that copies image from a this.size long array
     Image( std::string filename); //!< Constructor that reads the image from the file.
     Image(QString filename); //!< Constructor that reads the image from the file. QString version.
+    Image (Image const& image); //!<Copy constructor
+    Image& operator+=(const Image& other);
 
 
 
-    //~Image();
+
+    ~Image();
 
     void readfromfile(std::string filename ); //!< Reads image data from file.
 
