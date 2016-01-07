@@ -16,7 +16,7 @@ Image::~Image()
 //copy constructor
  Image::Image (Image const& image)
  {
-     std::cout << "Calling copy constructor for Image az &" <<this<<std::endl;
+    // std::cout << "Calling copy constructor for Image az &" <<this<<std::endl;
      *this = image;
 
  }
@@ -31,7 +31,7 @@ Image::~Image()
 
 
 
-Image::Image(std::string filename) : Image()
+Image::Image(std::string filename) : Image_cuda_compatible()
 {
     //TODO: Error handling.
    // im = new float[size];
@@ -40,7 +40,7 @@ Image::Image(std::string filename) : Image()
 
 
 
-Image::Image(QString filename) : Image()
+Image::Image(QString filename) : Image_cuda_compatible()
 {
     //TODO: Error handling.
    // im = new float[size];
@@ -53,7 +53,7 @@ Image::Image(QString filename) : Image()
 void  Image::readfromfile( std::string filename )
 {
 
-    std::ifstream file(filename, std::ios_base::binary);
+    std::ifstream file(filename.c_str(), std::ios_base::binary);
     if (!file.is_open())
     {
         return;
@@ -136,12 +136,12 @@ void Image::drawimage (QLabel* label)
 
 void Image::readinfo()
 {
-    std::cout  << "Reading info for file " << filename << "\n";
+   // std::cout  << "Reading info for file " << filename << "\n";
     std::ifstream file;
     std::string infofilename = directory;
     infofilename.append("\\info.txt");
-    std::cout << "Info file found at " << infofilename << "\n";
-    file.open(infofilename);
+   // std::cout << "Info file found at " << infofilename << "\n";
+    file.open(infofilename.c_str());
     std::string line;
 
 
@@ -159,7 +159,7 @@ void Image::readinfo()
               ss>> amperage;
               ss >> exptime;
               file.close();
-              std::cout<<" Voltage: " <<voltage<<"\n Amperage: " << amperage << "\nExptime: "<< exptime<<std::endl << std::endl;
+            //s  std::cout<<" Voltage: " <<voltage<<"\n Amperage: " << amperage << "\nExptime: "<< exptime<<std::endl << std::endl;
               return;
 
           }

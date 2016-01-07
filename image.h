@@ -37,7 +37,7 @@ public:
     void readfromfile(QString filename); //!< Reads image data from file. QString version.
     void drawimage (QLabel* label); //!< Draws the image to the QLabel.
     void writedetailstoscreen(QTextEdit* textEdit); //!< Writes technical information to the QTextEdit.
-    void Image::readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
+    void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
 };
 
 

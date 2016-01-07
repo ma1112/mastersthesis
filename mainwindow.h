@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "image.h"
 #include <QLabel>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +25,12 @@ public:
 private slots:
     void on_button_choosefile_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     Image image;
+    std::vector<Image> images_temp, images;
 
 };
 

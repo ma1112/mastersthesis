@@ -15,9 +15,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     image.cpp \
-    image_cuda_compatible.cpp
+    image_cuda_compatible.cpp \
+    gaincorr.cpp
 
 HEADERS  += mainwindow.h
+HEADERS +=   gaincorr.h
+
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h

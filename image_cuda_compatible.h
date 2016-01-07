@@ -24,7 +24,9 @@ public:
      Image_cuda_compatible& operator+=(const Image_cuda_compatible &other);
      void clear(); //!<Cleans the image.
 
-
+     void copy_to_GPU();
+     void remove_from_GPU();
+     void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
 
 
 
@@ -54,22 +56,23 @@ protected:
     static const int width = 1536;  //!<Width of the image. Constant among all images.
     static const int height = 864; //!< Height of the image. Constant among all images.
     static const long size = width * height; //!< Size of the image. Constant among all images.
+    void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
     float* im; //!< Array to store image values. float sould be 16 bit.
-    float mean = 0;  //!< Mean value of the image.
-    std::string filename ="";  //!< File name that the image was read from.
-    std::string directory = "";  //!< Directory name that the image was read from.
-    std::string id = "";  //!< ID of the image.
+    float mean ;  //!< Mean value of the image.
+    float deviation; //!< Standard deviation of the pixel values.
+    std::string filename ;  //!< File name that the image was read from.
+    std::string directory ;  //!< Directory name that the image was read from.
+    std::string id ;  //!< ID of the image.
     //Technical info:
     float voltage ;  //!< Voltage of the X-ray tube
     float  amperage ;  //!< Amperage of the X-ray tube
     float exptime ;  //!< Exposure time.
 
+
     //GPU stuff:
 
-    float* gpu_im = NULL; //!< Poiter to the image on the GPU
-    void copy_to_GPU();
-    void remove_from_GPU();
-    void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
+    float* gpu_im; //!< Poiter to the image on the GPU
+
 
 
 };

@@ -2,9 +2,8 @@
 
 
 
-Image_cuda_compatible::Image_cuda_compatible() : voltage(0),amperage(0),exptime(0),mean(0) {
-    im = new float [width * height]();
-
+Image_cuda_compatible::Image_cuda_compatible()  {
+initialize();
 }
 
 
@@ -13,9 +12,9 @@ Image_cuda_compatible::Image_cuda_compatible() : voltage(0),amperage(0),exptime(
 
 
 
-Image_cuda_compatible::Image_cuda_compatible (float* array) : Image_cuda_compatible()
+Image_cuda_compatible::Image_cuda_compatible (float* array)
 {
-
+    initialize();
     readfromarray(array);
 }
 
@@ -40,7 +39,7 @@ void Image_cuda_compatible::readfromarray(float* array)
 
 //copy constructor
 Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
-{    std::cout<<"Callling copy constr. of image_cuda_compatible az &"<< this<<std::endl;
+{
 
       *this = other;
 }
@@ -48,7 +47,7 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
 
 Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compatible& other)
  {
-    std::cout<<"Callling operator= of image_cuda_compatible"<<std::endl;
+    //std::cout<<"Callling operator= of image_cuda_compatible"<<std::endl;
 
 
     if(this != &other)
@@ -88,15 +87,28 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
     return *this;
 }
 
+void Image_cuda_compatible::initialize()
+{
+    im = new float[size];
+    filename ="";
+    directory = "";
+    id = "";
+    gpu_im = NULL;
+    voltage = 0;
+    amperage = 0;
+    exptime = 0;
+    mean = 0;
+    return;
+}
+
+
 
 
 //! Sets every variable to default and removes the image from the GPU.
 void Image_cuda_compatible::clear()
 {
-    for(int i=0;i<size;i++)
-    {
-        im[i] = 0;
-    }
+    delete[] im;
+    im = new float[size]();
     remove_from_GPU();
     filename="";
     directory="";
