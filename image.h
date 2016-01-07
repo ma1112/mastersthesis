@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QString>
 #include <QFileInfo>
-#include <sstream>
 #include <QTextEdit>
 
 
@@ -25,19 +24,16 @@ public:
     Image( std::string filename); //!< Constructor that reads the image from the file.
     Image(QString filename); //!< Constructor that reads the image from the file. QString version.
     Image (Image const& image); //!<Copy constructor
-    Image& operator+=(const Image& other);
 
 
 
 
     ~Image();
 
-    void readfromfile(std::string filename ); //!< Reads image data from file.
 
-    void readfromfile(QString filename); //!< Reads image data from file. QString version.
+    void Qreadfromfile(QString filename); //!< Reads image data from file. QString version.
     void drawimage (QLabel* label); //!< Draws the image to the QLabel.
     void writedetailstoscreen(QTextEdit* textEdit); //!< Writes technical information to the QTextEdit.
-    void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
 };
 
 

@@ -46,7 +46,7 @@ OTHER_FILES +=      # cuda_code.cu # this is my cu file need to compile
 # CUDA settings <-- may change depending on your system
 
 CUDA_SOURCES += cuda_image_kernel_calls.cu     # let NVCC know which file you want to compile CUDA NVCC
-
+CUDA_SOURCES += cuda_gaincorr_kernel_calls.cu
 
 
 CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
@@ -111,4 +111,5 @@ DEPENDPATH += $$PWD/lib
 
 DISTFILES += \
     cuda_reduce_kernels.cuh \
-    cuda_image_kernel_calls.cu
+    cuda_image_kernel_calls.cu \
+    cuda_gaincorr_kernel_calls.cu

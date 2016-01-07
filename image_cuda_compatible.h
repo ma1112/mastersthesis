@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
+
 
 
 //! \class Image_cuda_compatible
@@ -22,6 +24,8 @@ public:
     void readfromarray(float* array); //!< Copies image from an array.
     Image_cuda_compatible& operator=( const Image_cuda_compatible& other); //!< Assigment operator
      Image_cuda_compatible& operator+=(const Image_cuda_compatible &other);
+     Image_cuda_compatible& operator/=(int n);
+
      void clear(); //!<Cleans the image.
 
      void copy_to_GPU();
@@ -29,6 +33,8 @@ public:
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
 
 
+     void readfromfile(std::string filename ); //!< Reads image data from file.
+     void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
 
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
 

@@ -1,8 +1,10 @@
 #include "image_cuda_compatible.h"
 
-
-
+#include <QTime>
+#include <QFileInfo>
+#include<QString>
 Image_cuda_compatible::Image_cuda_compatible()  {
+    im = NULL;
 initialize();
 }
 
@@ -47,7 +49,7 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
 
 Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compatible& other)
  {
-    //std::cout<<"Callling operator= of image_cuda_compatible"<<std::endl;
+    std::cout<<"Callling operator= of image_cuda_compatible"<<std::endl;
 
 
     if(this != &other)
@@ -60,16 +62,19 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
          filename = other.filename;
          directory = other.directory;
+
           id = other.id;
-          delete [] im;
+          std::cout << "Itt erfesaf dsf vagyok.  im = " << im <<std::endl;
+
+          delete[] im;
 
 
      im = new float[size];
 
-     for(int i = 0; i < size ; i++)
-         {
-         im[i] = other.im[i];
-         }
+
+     memcpy(im, other.im, size * sizeof (float));
+
+
      }
     return *this;
 
@@ -78,17 +83,39 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
  Image_cuda_compatible&  Image_cuda_compatible::operator+=(const Image_cuda_compatible &other)
  {
+
     for(int i = 0; i< size; i++)
         {
         im[i] += other.im[i];
 
     }
     mean+=other.mean;
+    voltage +=other.voltage;
+    amperage +=other.amperage;
+    exptime +=other.exptime;
+
     return *this;
 }
 
+ Image_cuda_compatible&  Image_cuda_compatible::operator/=(int n)
+ {
+    for(int i = 0; i< size; i++)
+    {
+        im[i] /= n;
+    }
+    voltage /=n;
+    amperage /=n;
+    exptime /=n;
+    mean /=n;
+    return *this;
+}
+
+
+
+
 void Image_cuda_compatible::initialize()
 {
+    std::cout << "initialize() " << std::endl;
     im = new float[size];
     filename ="";
     directory = "";
@@ -117,6 +144,95 @@ void Image_cuda_compatible::clear()
     amperage=0;
     exptime = 0;
 }
+
+
+
+
+void  Image_cuda_compatible::readfromfile( std::string filename )
+{
+
+    std::ifstream file(filename.c_str(), std::ios_base::binary);
+    if (!file.is_open())
+    {
+        return;
+       //TODO: Error Handling.
+    }
+    double meandouble = 0;
+    unsigned char bytes[2];
+
+
+
+
+
+    for(int i=0;i<size;i++)
+    {
+        unsigned short value;
+      file.read( (char*)bytes, 2 );  // read 2 bytes from the file
+      value = bytes[0] | (bytes[1] << 8);  // construct the 16-bit value from those bytes
+       im[i] = value ;
+      meandouble += im[i];
+     }
+    mean = float(meandouble / (double) size);
+    file.close();
+
+
+    QString qfilename = QString::fromStdString(filename);
+    QFileInfo info = QFileInfo(qfilename);
+    id = info.baseName().toStdString();
+    while(id.at(0) == '0')
+    {
+        id.erase(id.begin());
+    }
+
+    directory = info.path().toStdString();
+    this->filename = filename;
+    readinfo();
+
+return;
+}
+
+
+
+
+void Image_cuda_compatible::readinfo()
+{
+   // std::cout  << "Reading info for file " << filename << "\n";
+    std::ifstream file;
+    std::string infofilename = directory;
+    infofilename.append("/info.txt");
+    //std::cout << "Info file found at " << infofilename << "\n";
+    file.open(infofilename.c_str());
+    std::string line;
+
+
+
+    while (std::getline( file, line) ) //Read a line
+       {
+          std::stringstream ss(line);
+          std::string temp;
+
+          ss >> temp; // get Image_cuda_compatible id of the current row
+          if(! temp.compare(id)) // temp == id
+          {
+              ss>> temp;
+              ss>> voltage;
+              ss>> amperage;
+              ss >> exptime;
+              file.close();
+            //s  std::cout<<" Voltage: " <<voltage<<"\n Amperage: " << amperage << "\nExptime: "<< exptime<<std::endl << std::endl;
+              return;
+
+          }
+
+       }
+    //TODO: Error happened.
+    return;
+
+
+}
+
+
+
 
 //Working feature but it may not be used in the future.
 void  Image_cuda_compatible::calculate_meanvalue_on_CPU()

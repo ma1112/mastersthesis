@@ -10,6 +10,7 @@ void Image_cuda_compatible::remove_from_GPU()
     if(gpu_im != NULL)
         {
         cudaFree(gpu_im);
+        gpu_im = NULL;
     }
 }
 
@@ -18,8 +19,8 @@ void Image_cuda_compatible::copy_to_GPU()
     if(gpu_im == NULL)
         {
         cudaMalloc( (void**)&gpu_im,size*sizeof(float));
-        cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice);
     }
+    cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice);
 
 }
 

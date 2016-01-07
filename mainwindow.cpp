@@ -25,7 +25,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_button_choosefile_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
-    image.readfromfile(filename);
+    image.readfromfile(filename.toStdString());
     image.drawimage(ui->label);
     image.writedetailstoscreen(ui->textEdit);
     QTime timer;
@@ -37,13 +37,15 @@ void MainWindow::on_button_choosefile_clicked()
 
     image.calculate_meanvalue_on_CPU();
     std::cout<<"Mean on CPU: " << timer.restart()  <<"value = " << image.getmean()<<std::endl;
-
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     Gaincorr gc;
+    std::cout << "Launching gc.read()" <<std::endl;
     gc.read();
+    std::cout <<"Exited from read()" <<std::endl;
+    gc.calculate();
 
     /*
     double meanVoltage = 0;

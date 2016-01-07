@@ -1,14 +1,11 @@
 #ifndef GAINCORR_H
 #define GAINCORR_H
-#include "image.h"
-#include<QFileDialog>
-#include <QString>
-#include <QStringList>
-#include <QDir>
+#include "image_cuda_compatible.h"
 #include <vector>
+#include <map>
 
 //! \class Gaincorr
-//! \brief: Calculates, contains and reads Gein correction data
+//! \brief: Calculates, contains and reads Gain correction data
 //!
 //! <<insert long description here >>
 
@@ -18,15 +15,17 @@ class Gaincorr
 public:
     Gaincorr();
     int read();
+    void calculate();
 
 
 
 private:
-    Image slope;
-    Image intercept;
-    Image image; // for temporary holding reasons
-    std::vector<Image> images_temp;
-    std::vector<Image> images;
+    Image_cuda_compatible slope;
+    Image_cuda_compatible intercept;
+    Image_cuda_compatible image; // for temporary holding reasons
+    std::vector<Image_cuda_compatible> images_temp;
+    std::vector<Image_cuda_compatible> images;
+    std::map<int, std::vector<Image_cuda_compatible> > imagemap;
 };
 
 #endif // GAINCORR_H
