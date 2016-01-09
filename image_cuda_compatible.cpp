@@ -42,8 +42,16 @@ void Image_cuda_compatible::readfromarray(float* array)
 //copy constructor
 Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
 {
-
-      *this = other;
+    im = new float[size];
+    voltage = other.voltage;
+    amperage= other.amperage;
+    exptime = other.exptime;
+     mean=other.mean;
+     filename = other.filename;
+     directory = other.directory;
+     id = other.id;
+     memcpy(im, other.im, size * sizeof (float));
+     return;
 }
 
 
@@ -54,7 +62,6 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
     if(this != &other)
     {
-
      voltage = other.voltage;
      amperage= other.amperage;
      exptime = other.exptime;
@@ -64,14 +71,6 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
          directory = other.directory;
 
           id = other.id;
-          std::cout << "Itt erfesaf dsf vagyok.  im = " << im <<std::endl;
-
-          delete[] im;
-
-
-     im = new float[size];
-
-
      memcpy(im, other.im, size * sizeof (float));
 
 
@@ -134,7 +133,10 @@ void Image_cuda_compatible::initialize()
 //! Sets every variable to default and removes the image from the GPU.
 void Image_cuda_compatible::clear()
 {
+    if(im != NULL)
+    {
     delete[] im;
+    }
     im = new float[size]();
     remove_from_GPU();
     filename="";
@@ -230,6 +232,55 @@ void Image_cuda_compatible::readinfo()
 
 
 }
+
+
+
+void Image_cuda_compatible::writetofile(std::string filename)
+{
+    unsigned short sh_im[size];
+    for(int i=0;i<size;i++)
+    {
+        sh_im[i] = (unsigned short) (im[i]);
+    }
+
+    FILE * file;
+
+    if(NULL == (file = fopen(filename.c_str(), "wb")))
+    {
+            std::cout << "Failed to open file " << filename << "for writing."<< std::endl;
+            return;
+    }
+    fwrite(sh_im, sizeof(unsigned short), size, file );
+
+}
+
+
+void Image_cuda_compatible::writetofloatfile(std::string filename)
+{
+
+
+    FILE * file;
+
+    if(NULL == (file = fopen(filename.c_str(), "wb")))
+    {
+            std::cout << "Failed to open file " << filename << "for writing."<< std::endl;
+            return;
+    }
+    fwrite(im, sizeof(float), size, file );
+
+}
+
+
+void Image_cuda_compatible::readfromfloatfile(std::string filename)
+{
+    FILE *file = NULL;
+    if(NULL == (file = fopen(filename.c_str(), "rb")))
+        {
+            std::cout << "Failed to open file" << filename <<" for reading" << std::endl;
+        }
+    fread(im, sizeof(float), size, file);
+}
+
 
 
 

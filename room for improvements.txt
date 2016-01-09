@@ -1,0 +1,4 @@
+-gaincorr does a lot of unnecessary copies. 
+It could be easier if the gaincorr class would add images irectly to the gc_im_container. 
+(on GPU?)
+

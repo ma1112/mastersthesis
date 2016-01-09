@@ -24,6 +24,14 @@ void Image_cuda_compatible::copy_to_GPU()
 
 }
 
+void Image_cuda_compatible::copy_to_GPU(float* destination)
+{
+    cudaMemcpy(destination,im,size * sizeof(float),cudaMemcpyHostToDevice);
+}
+
+
+
+
 //! Copies image to the GPU and calculates the mean intensity on the GPU.
 void Image_cuda_compatible::calculate_meanvalue_on_GPU()
 {
@@ -49,6 +57,12 @@ free(h_sum);
   cudaFree(d_sum);
 
 }
+
+void Image_cuda_compatible::copy_from_GPU(float* d_image)
+{
+    cudaMemcpy(im,d_image, size*sizeof(float), cudaMemcpyDeviceToHost);
+}
+
 
 
 

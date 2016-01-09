@@ -16,9 +16,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     image.cpp \
     image_cuda_compatible.cpp \
-    gaincorr.cpp
+    gaincorr.cpp \
+    gc_im_container.cpp
 
 HEADERS  += mainwindow.h
+HEADERS +=  gc_im_container.h
+
 HEADERS +=   gaincorr.h
 
  HEADERS  +=   book.h
@@ -47,6 +50,7 @@ OTHER_FILES +=      # cuda_code.cu # this is my cu file need to compile
 
 CUDA_SOURCES += cuda_image_kernel_calls.cu     # let NVCC know which file you want to compile CUDA NVCC
 CUDA_SOURCES += cuda_gaincorr_kernel_calls.cu
+CUDA_SOURCES += cuda_gc_im_conitainer_functions.cu
 
 
 CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
@@ -112,4 +116,5 @@ DEPENDPATH += $$PWD/lib
 DISTFILES += \
     cuda_reduce_kernels.cuh \
     cuda_image_kernel_calls.cu \
-    cuda_gaincorr_kernel_calls.cu
+    cuda_gaincorr_kernel_calls.cu \
+    cuda_gc_im_conitainer_functions.cu

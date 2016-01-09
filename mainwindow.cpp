@@ -3,6 +3,7 @@
 #include<QFileDialog>
 #include <QString>
 #include <QStringList>
+#include <QChar>
 #include <QDir>
 #include "gaincorr.h"
 #include <QTime> // debug reasons.
@@ -25,6 +26,11 @@ MainWindow::~MainWindow()
 void MainWindow::on_button_choosefile_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
+    if(filename.endsWith(QChar('f')))
+    {
+        image.readfromfloatfile(filename.toStdString());
+    }
+    else
     image.readfromfile(filename.toStdString());
     image.drawimage(ui->label);
     image.writedetailstoscreen(ui->textEdit);
@@ -37,6 +43,7 @@ void MainWindow::on_button_choosefile_clicked()
 
     image.calculate_meanvalue_on_CPU();
     std::cout<<"Mean on CPU: " << timer.restart()  <<"value = " << image.getmean()<<std::endl;
+    image.writetofloatfile("valami.binf");
 }
 
 void MainWindow::on_pushButton_clicked()

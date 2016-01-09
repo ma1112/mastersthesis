@@ -50,6 +50,7 @@ int Gaincorr::read()
        double meanExptime = 0;
        double meanIntensity =0;
 
+
        for(int j=0;j<filelist.length();j++)       //Opening every file in the given subdirectory
            //Note: subdirectory is indexed by i, file is indexed by j.
 
@@ -66,11 +67,18 @@ int Gaincorr::read()
 
                images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
 
-               meanVoltage += ( (images_temp.back().getvoltage()) / (double) filelist.length());
-               meanAmperage += ((images_temp.back().getamperage()) / (double) filelist.length());
-               meanExptime += ((images_temp.back().getexptime()) /  (double) filelist.length());
-               meanIntensity += ((images_temp.back().getmean()) /  (double) filelist.length());
+               meanVoltage += ( (images_temp.back().getvoltage()) );
+               meanAmperage += ((images_temp.back().getamperage()));
+               meanExptime += ((images_temp.back().getexptime()));
+               meanIntensity += ((images_temp.back().getmean()) );
                }
+       }
+       if(images_temp.size() > 0)
+       {
+           meanVoltage/=images_temp.size();
+           meanAmperage/=images_temp.size();
+           meanExptime/=images_temp.size();
+           meanIntensity/=images_temp.size();
        }
 
 
@@ -80,7 +88,9 @@ int Gaincorr::read()
        image.clear(); // I'll sum the good images to this variable.
 
 
+
        int count = 0; //counts good images in a subfolder.
+
 
 
        //Deleting images that differs more than 10 percent from the mean. Recalculating mean values.
@@ -125,12 +135,18 @@ int Gaincorr::read()
 
 
 
-           //Dividing image parameters and pixel values by count
-         image/=count;
+           if(count >0)
+           {
+           }
 
            //Image processing finished in the current subdir. If there was some good image in that folder, add the averaged image to the averaged images' vector.
            if( images_temp.size() > 1)
                {
+               //Dividing image parameters and pixel values by count
+               //Redundant. count ==images_temp.size()
+
+               image/=count;
+
                //Rounding voltage to multiply of 5
                int voltage = round(image.getvoltage());
                int remainder  = voltage %5;
@@ -140,15 +156,19 @@ int Gaincorr::read()
                {
                    voltage = voltage + 5 - remainder;
                }
-                   imagemap[voltage].reserve(50);
-                   imagemap[voltage].push_back(image);
-               //images.push_back(image);
+               std::cout <<"reserving memory for " << subdirs.size() << "with " << voltage <<" kv.  Needed RAM: " << image.size*sizeof(float)*subdirs.size() / 1024/1024 << " Mb." <<std::endl;
+                   imagemap[voltage].reserveIfEmpty(subdirs.size());
+
+
+                   imagemap[voltage].add(image);
+
+
                std::cout <<"Images loaded from directory " << subdirectory.absolutePath().toStdString()
                         <<"With mean: " << image.getmean()
                        << "voltage: "  <<image.getvoltage()
                        <<" amperage: " << image.getamperage()
                       <<"exptime: " << image.getexptime()<<std::endl;
-               std::cout<<std::endl << "Images with voltage " <<voltage << ": " << imagemap[voltage].size() << std::endl;
+               std::cout<<std::endl << "Images with voltage " <<voltage << ": " << imagemap[voltage].getimageno() << std::endl;
                }
            else
               {

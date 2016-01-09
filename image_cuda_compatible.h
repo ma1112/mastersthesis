@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+//#include "gc_im_container.h"
+class gc_im_container;
+class gaincorr;
 
 
 
@@ -17,6 +20,9 @@
 
 class Image_cuda_compatible
 {
+friend class gc_im_container;
+friend class gaincorr;
+
 public:
     Image_cuda_compatible(); //!< Default constructor.
     Image_cuda_compatible (float* array);  //!<Constructor that copies image from a this.size long array
@@ -29,12 +35,22 @@ public:
      void clear(); //!<Cleans the image.
 
      void copy_to_GPU();
+     void copy_to_GPU(float* destination);
+     void copy_from_GPU(float* d_image);
      void remove_from_GPU();
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
 
+     static const int width = 1536;  //!<Width of the image. Constant among all images.
+     static const int height = 864; //!< Height of the image. Constant among all images.
+     static const long size = 1327104; //!< Size of the image. Constant among all images.
+
 
      void readfromfile(std::string filename ); //!< Reads image data from file.
+     void readfromfloatfile(std::string filename);
      void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
+
+     void writetofile(std::string filename);
+     void writetofloatfile(std::string filename);
 
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
 
@@ -59,9 +75,7 @@ public:
 
 
 protected:
-    static const int width = 1536;  //!<Width of the image. Constant among all images.
-    static const int height = 864; //!< Height of the image. Constant among all images.
-    static const long size = width * height; //!< Size of the image. Constant among all images.
+
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
     float* im; //!< Array to store image values. float sould be 16 bit.
     float mean ;  //!< Mean value of the image.
