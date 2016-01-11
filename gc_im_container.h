@@ -8,7 +8,7 @@ class gc_im_container
 public:
     gc_im_container();
     ~gc_im_container();
-   void  add(Image_cuda_compatible im);
+   void  add(Image_cuda_compatible &im);
    void  inicialize(int n);
    void removefromhost();
    void removefromgpu();

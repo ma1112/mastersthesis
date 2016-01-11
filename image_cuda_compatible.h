@@ -34,7 +34,7 @@ public:
 
      void clear(); //!<Cleans the image.
 
-     void copy_to_GPU();
+     float* copy_to_GPU();
      void copy_to_GPU(float* destination);
      void copy_from_GPU(float* d_image);
      void remove_from_GPU();
@@ -46,7 +46,7 @@ public:
 
 
      void readfromfile(std::string filename ); //!< Reads image data from file.
-     void readfromfloatfile(std::string filename);
+     void readfromfloatfile(std::string fname);
      void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
 
      void writetofile(std::string filename);
@@ -70,6 +70,7 @@ public:
     std::string getid();
     float minintensity(); //!<Experimental feature
     float maxintensity();//!<Experimental feature
+    std::string getfilename();
 
 
 

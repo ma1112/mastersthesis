@@ -5,6 +5,7 @@
 #include "image.h"
 #include <QLabel>
 #include <vector>
+#include "gaincorr.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,10 +28,16 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
 private:
     Ui::MainWindow *ui;
     Image image;
     std::vector<Image> images_temp, images;
+    Gaincorr gc;
+
 
 };
 

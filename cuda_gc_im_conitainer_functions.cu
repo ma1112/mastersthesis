@@ -66,13 +66,14 @@ void gc_im_container::copy_to_GPU(float*& d_im, float*& d_set)
 
         if(images > 0)
         {
-            cudaMalloc( (void**) &d_im, sizeof(float) *1327104 * images );
-            cudaMalloc( (void**) &d_set, sizeof(float)  * images );
+            cudaMalloc( (void**) &d_im, sizeof(float) *1327104 * size );
+            cudaMalloc( (void**) &d_set, sizeof(float)  * size );
+
             d_images = d_im;
             d_settings = d_settings;
         }
-        cudaMemcpy(d_images, h_images, sizeof(float) *1327104 * images , cudaMemcpyHostToDevice );
-        cudaMemcpy(d_settings, h_settings, sizeof(float) * images , cudaMemcpyHostToDevice );
+        cudaMemcpy(d_images, h_images, sizeof(float) *1327104 * size , cudaMemcpyHostToDevice );
+        cudaMemcpy(d_settings, h_settings, sizeof(float) * size , cudaMemcpyHostToDevice );
     }
 
 }

@@ -51,13 +51,13 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
      directory = other.directory;
      id = other.id;
      memcpy(im, other.im, size * sizeof (float));
+     gpu_im = NULL;
      return;
 }
 
 
 Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compatible& other)
  {
-    std::cout<<"Callling operator= of image_cuda_compatible"<<std::endl;
 
 
     if(this != &other)
@@ -72,6 +72,8 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
           id = other.id;
      memcpy(im, other.im, size * sizeof (float));
+     gpu_im = NULL;
+
 
 
      }
@@ -114,7 +116,6 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
 void Image_cuda_compatible::initialize()
 {
-    std::cout << "initialize() " << std::endl;
     im = new float[size];
     filename ="";
     directory = "";
@@ -237,7 +238,7 @@ void Image_cuda_compatible::readinfo()
 
 void Image_cuda_compatible::writetofile(std::string filename)
 {
-    unsigned short sh_im[size];
+    unsigned short* sh_im = new unsigned short[size];
     for(int i=0;i<size;i++)
     {
         sh_im[i] = (unsigned short) (im[i]);
@@ -251,6 +252,7 @@ void Image_cuda_compatible::writetofile(std::string filename)
             return;
     }
     fwrite(sh_im, sizeof(unsigned short), size, file );
+    delete[] sh_im;
 
 }
 
@@ -267,18 +269,33 @@ void Image_cuda_compatible::writetofloatfile(std::string filename)
             return;
     }
     fwrite(im, sizeof(float), size, file );
+    fclose(file);
 
 }
 
 
-void Image_cuda_compatible::readfromfloatfile(std::string filename)
+void Image_cuda_compatible::readfromfloatfile(std::string fname)
 {
     FILE *file = NULL;
-    if(NULL == (file = fopen(filename.c_str(), "rb")))
+    if(NULL == (file = fopen(fname.c_str(), "rb")))
         {
-            std::cout << "Failed to open file" << filename <<" for reading" << std::endl;
+            std::cout << "Failed to open file" << fname <<" for reading" << std::endl;
         }
     fread(im, sizeof(float), size, file);
+    fclose(file);
+
+    QString qfilename = QString::fromStdString(fname);
+    QFileInfo info = QFileInfo(qfilename);
+    id = info.baseName().toStdString();
+    while(id.at(0) == '0')
+    {
+        id.erase(id.begin());
+    }
+
+    directory = info.path().toStdString();
+    filename = fname;
+    readinfo();
+
 }
 
 
@@ -363,3 +380,10 @@ for(int i=1;i<size;i++)
 }
 return intensity;
 }
+
+
+std::string Image_cuda_compatible::getfilename()
+{
+    return filename;
+}
+

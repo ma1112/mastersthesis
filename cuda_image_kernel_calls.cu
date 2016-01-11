@@ -9,24 +9,33 @@ void Image_cuda_compatible::remove_from_GPU()
 {
     if(gpu_im != NULL)
         {
-        cudaFree(gpu_im);
+        std::cout <<"Cudafree  image " << filename << "at " << gpu_im<<std::endl;
+       HANDLE_ERROR ( cudaFree(gpu_im));
+       std::cout << "Setting gpu_im NULL at image " <<filename <<std::endl;
         gpu_im = NULL;
     }
 }
 
-void Image_cuda_compatible::copy_to_GPU()
+float* Image_cuda_compatible::copy_to_GPU()
 {
     if(gpu_im == NULL)
         {
-        cudaMalloc( (void**)&gpu_im,size*sizeof(float));
+       HANDLE_ERROR( cudaMalloc( (void**)&gpu_im,size*sizeof(float)));
+       std::cout<<"cudaMalloc() at image " << filename <<"at " << gpu_im <<std::endl;
+
     }
-    cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice);
+    std::cout<<"cudaMemcpy() at image " << filename << "at gpu_im " << gpu_im <<std::endl;
+
+    HANDLE_ERROR (cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice));
+
+    return gpu_im;
 
 }
 
 void Image_cuda_compatible::copy_to_GPU(float* destination)
 {
-    cudaMemcpy(destination,im,size * sizeof(float),cudaMemcpyHostToDevice);
+    std::cout <<"Copying image " <<filename <<"to GPU." <<std::endl;
+   HANDLE_ERROR ( cudaMemcpy(destination,im,size * sizeof(float),cudaMemcpyHostToDevice));
 }
 
 
@@ -39,7 +48,7 @@ void Image_cuda_compatible::calculate_meanvalue_on_GPU()
 
 
   double* d_data;
-  cudaMalloc( (void**)&d_data, sizeof(double) * 1024);
+  HANDLE_ERROR (cudaMalloc( (void**)&d_data, sizeof(double) * 1024));
   double* d_sum;
   HANDLE_ERROR (cudaMalloc( (void**)&d_sum, sizeof(double)));
 
@@ -60,7 +69,7 @@ free(h_sum);
 
 void Image_cuda_compatible::copy_from_GPU(float* d_image)
 {
-    cudaMemcpy(im,d_image, size*sizeof(float), cudaMemcpyDeviceToHost);
+   HANDLE_ERROR ( cudaMemcpy(im,d_image, size*sizeof(float), cudaMemcpyDeviceToHost));
 }
 
 

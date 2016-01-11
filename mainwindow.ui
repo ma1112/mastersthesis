@@ -63,7 +63,33 @@
      </rect>
     </property>
     <property name="text">
-     <string>Open directory</string>
+     <string>Calculate Gaincorr Data</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>160</y>
+      <width>251</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Read gaincorr factors from file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>240</y>
+      <width>271</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Gain corrigate and owewrite image</string>
     </property>
    </widget>
   </widget>

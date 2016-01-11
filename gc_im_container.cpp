@@ -10,8 +10,10 @@ h_settings = NULL;
 d_settings = NULL;
 }
 
-void  gc_im_container::add(Image_cuda_compatible im)
+
+void gc_im_container::add(Image_cuda_compatible &im)
 {
+    std::cout <<"Adding image " <<std::endl;
     if(size <=0)
     {
         std::cout<<"ERROR: gc_im_container is not inicialized. " <<std::endl;
@@ -32,6 +34,8 @@ void  gc_im_container::add(Image_cuda_compatible im)
     }
     h_settings[images]= im.amperage*im.exptime;
     images++;
+    std::cout <<"image added " <<std::endl;
+
     return;
 }
 
