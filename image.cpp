@@ -62,14 +62,16 @@ void  Image::Qreadfromfile( QString filename )
 //Draws image to QLabel. Image must be read.
 void Image::drawimage (QLabel* label)
 {
+    float min = minintensity();
+    float max = maxintensity();
     //16 bit to 8 bit
          unsigned char *im_8_bit = new unsigned char[size];
-         unsigned char temp;
+         float temp;
          for(int i=0;i<size;i++)
          {
 
-             temp = abs( ((short)im[i])>>8);
-             im_8_bit[i] = temp;
+             temp = 256 * ( im[i] - min) / max ;
+             im_8_bit[i] = (unsigned char) ( round(temp));
 
          }
 

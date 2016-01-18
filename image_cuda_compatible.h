@@ -29,16 +29,23 @@ public:
    virtual ~Image_cuda_compatible (); //!<Destructor.
     void readfromarray(float* array); //!< Copies image from an array.
     Image_cuda_compatible& operator=( const Image_cuda_compatible& other); //!< Assigment operator
-     Image_cuda_compatible& operator+=(const Image_cuda_compatible &other);
-     Image_cuda_compatible& operator/=(int n);
+     Image_cuda_compatible& operator+=( Image_cuda_compatible &other);
+     Image_cuda_compatible& operator-= (Image_cuda_compatible &other);
+     Image_cuda_compatible& operator*=(float n);
+     Image_cuda_compatible& operator/=(float n);
 
      void clear(); //!<Cleans the image.
 
      float* copy_to_GPU();
      void copy_to_GPU(float* destination);
-     void copy_from_GPU(float* d_image);
+     void copy_GPU_array(float* d_image);
+     void copy_from_GPU();
      void remove_from_GPU();
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
+
+     float* reserve_on_CPU();
+     void remove_from_CPU();
+
 
      static const int width = 1536;  //!<Width of the image. Constant among all images.
      static const int height = 864; //!< Height of the image. Constant among all images.
@@ -76,6 +83,9 @@ public:
 
 
 protected:
+    void divide_on_GPU(float divisor);
+    void multiply_on_GPU(float multiplier);
+
 
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
     float* im; //!< Array to store image values. float sould be 16 bit.
@@ -93,6 +103,10 @@ protected:
     //GPU stuff:
 
     float* gpu_im; //!< Poiter to the image on the GPU
+    float* copy_GPU_image(float* other);
+    float* reserve_on_GPU();
+    void add_on_GPU(Image_cuda_compatible &other);
+    void subtract_on_GPU(Image_cuda_compatible &other);
 
 
 

@@ -9,24 +9,20 @@ public:
     gc_im_container();
     ~gc_im_container();
    void  add(Image_cuda_compatible &im);
+
    void  inicialize(int n);
-   void removefromhost();
-   void removefromgpu();
-   void copy_to_GPU(float *&d_im, float *&d_set);
-   void reserveIfEmpty( int n);
-   int getsize();
+    void clear();
    int getimageno();
    float calculateXmean();
    float calculateX2mean();
+   void calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept);
 
 
 
 private:
-    float* h_images;
     float* d_images;
     int images;
     int size;
-    float* h_settings;
     float* d_settings;
 };
 

@@ -41,8 +41,7 @@ void MainWindow::on_button_choosefile_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    gc.readimages();
-    gc.calculate();
+    gc.readAndCalculateGain();
 
 
 
@@ -51,7 +50,10 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    gc.readfactors();
+    //gc.readgianfactors();
+    gc.readgainfactors();
+
+
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -69,7 +71,7 @@ void MainWindow::on_pushButton_3_clicked()
 
 
     std::cout <<"corrigating... " <<std::endl;
-    gc.corrigateimage(image);
+    gc.gaincorrigateimage(image);
     std::cout <<"calculating... " <<std::endl;
 
     image.calculate_meanvalue_on_GPU();
@@ -77,5 +79,33 @@ void MainWindow::on_pushButton_3_clicked()
 
 
     image.writetofloatfile(image.getfilename());
+    std::cout <<"Image written to " << image.getfilename() <<std::endl;
     std::cout <<"kesz." << std::endl;
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    gc.readAndCalculateOffset();
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    gc.readoffsetfactors();
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    image.clear();
+    QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
+    if(filename.endsWith(QChar('f')))
+    {
+        image.readfromfloatfile(filename.toStdString());
+    }
+    else
+    image.readfromfile(filename.toStdString());
+    gc.offsetcorrigateimage(image);
+    image.drawimage(ui->label);
+    image.calculate_meanvalue_on_GPU();
+    image.writedetailstoscreen(ui->textEdit);
+    image.writetofloatfile(filename.toStdString() +"f");
 }

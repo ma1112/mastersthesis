@@ -4,7 +4,6 @@
 #include <QFileInfo>
 #include<QString>
 Image_cuda_compatible::Image_cuda_compatible()  {
-    im = NULL;
 initialize();
 }
 
@@ -12,7 +11,7 @@ initialize();
 
 
 
-
+//! Creates image object by reading it's pixel values from an array.
 
 Image_cuda_compatible::Image_cuda_compatible (float* array)
 {
@@ -21,12 +20,15 @@ Image_cuda_compatible::Image_cuda_compatible (float* array)
 }
 
 
-Image_cuda_compatible::~Image_cuda_compatible() { delete[] im; remove_from_GPU(); }
+Image_cuda_compatible::~Image_cuda_compatible() { remove_from_CPU(); remove_from_GPU(); }
 
 
-
+//! Reads pixel values from a float array.
 void Image_cuda_compatible::readfromarray(float* array)
+
 {
+    reserve_on_CPU();
+
     double meandouble = 0;
     for(int i = 0 ; i < size ; i++)
         {
@@ -38,11 +40,10 @@ void Image_cuda_compatible::readfromarray(float* array)
 
 }
 
+//! Copy Constructor.
 
-//copy constructor
 Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
 {
-    im = new float[size];
     voltage = other.voltage;
     amperage= other.amperage;
     exptime = other.exptime;
@@ -50,8 +51,24 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
      filename = other.filename;
      directory = other.directory;
      id = other.id;
-     memcpy(im, other.im, size * sizeof (float));
+     if(other.im != NULL)
+     {
+        im = new float[size];
+       // std::cout << "Reserved memory on CPU @" <<im << "for image " << id <<std::endl;
+
+        memcpy(im, other.im, size * sizeof (float));
+     }
+     else
+     {
+         im = NULL;
+     }
      gpu_im = NULL;
+
+     if(other.gpu_im != NULL)
+     {
+         copy_GPU_image(other.gpu_im);
+     }
+
      return;
 }
 
@@ -71,52 +88,109 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
          directory = other.directory;
 
           id = other.id;
-     memcpy(im, other.im, size * sizeof (float));
-     gpu_im = NULL;
 
+          if(other.im != NULL)
+          {
+             im = new float[size];
+             //std::cout << "Reserved memory on CPU @" <<im << "for image " << id <<std::endl;
 
-
+             memcpy(im, other.im, size * sizeof (float));
+          }
+          else
+          {
+              im = NULL;
+          }
+          if(other.gpu_im != NULL)
+          {
+              copy_GPU_image(other.gpu_im);
+          }
+          else
+          {
+             gpu_im = NULL;
+          }
      }
     return *this;
 
 
  }
 
- Image_cuda_compatible&  Image_cuda_compatible::operator+=(const Image_cuda_compatible &other)
+//! Operator for addition.
+
+//! Adds another image's attributes to this. Also adds pixel values on the GPU.
+ Image_cuda_compatible&  Image_cuda_compatible::operator+=(Image_cuda_compatible &other)
  {
 
-    for(int i = 0; i< size; i++)
-        {
-        im[i] += other.im[i];
+    other.copy_to_GPU();
 
-    }
+    copy_to_GPU();
+
     mean+=other.mean;
     voltage +=other.voltage;
     amperage +=other.amperage;
     exptime +=other.exptime;
+    add_on_GPU(other);
 
     return *this;
 }
 
- Image_cuda_compatible&  Image_cuda_compatible::operator/=(int n)
+
+ //! Subtracts another image's attributes to this. Also adds pixel values on the GPU.
+  Image_cuda_compatible&  Image_cuda_compatible::operator-=(Image_cuda_compatible &other)
+  {
+
+     other.copy_to_GPU();
+
+     copy_to_GPU();
+
+     mean-=other.mean;
+     voltage -=other.voltage;
+     amperage -=other.amperage;
+     exptime -=other.exptime;
+     subtract_on_GPU(other);
+
+     return *this;
+ }
+
+
+
+
+
+ //! Divides the image with the divisor, on the GPU.
+ Image_cuda_compatible&  Image_cuda_compatible::operator/=(float n)
  {
-    for(int i = 0; i< size; i++)
-    {
-        im[i] /= n;
-    }
-    voltage /=n;
-    amperage /=n;
-    exptime /=n;
-    mean /=n;
+     if(n > 0 || n < 0)
+        {
+        divide_on_GPU(n);
+        voltage /=n;
+        amperage /=n;
+        exptime /=n;
+        mean /=n;
+        }
+     else
+        {
+         std::cout << "WARNING! Trying to divide by 0. (Nothing happened.)"
+                   <<std::endl;
+        }
+     return *this;
+
+ }
+
+ Image_cuda_compatible&  Image_cuda_compatible::operator*=(float n)
+ {
+    multiply_on_GPU(n);
+    voltage *=n;
+    amperage *=n;
+    exptime *=n;
+    mean *=n;
     return *this;
 }
 
 
 
-
+//! Initializes the image. Set's everything to 0. Memory is not assigned. Use only in ctor!
 void Image_cuda_compatible::initialize()
 {
-    im = new float[size];
+    im = NULL;
     filename ="";
     directory = "";
     id = "";
@@ -131,14 +205,10 @@ void Image_cuda_compatible::initialize()
 
 
 
-//! Sets every variable to default and removes the image from the GPU.
+//! Sets every variable to default and removes the image from the GPU & the CPU
 void Image_cuda_compatible::clear()
 {
-    if(im != NULL)
-    {
-    delete[] im;
-    }
-    im = new float[size]();
+    remove_from_CPU();
     remove_from_GPU();
     filename="";
     directory="";
@@ -150,17 +220,21 @@ void Image_cuda_compatible::clear()
 
 
 
+//! Reads an image from a binary file, containing pixel values as unsigned integers. Also reads info file data.
 
+//! Image is put to the CPU memory.
 void  Image_cuda_compatible::readfromfile( std::string filename )
 {
+    reserve_on_CPU();
+    remove_from_GPU();
 
     std::ifstream file(filename.c_str(), std::ios_base::binary);
     if (!file.is_open())
     {
+        std::cout<<"Could not open image file at " << filename<<std::endl;
         return;
-       //TODO: Error Handling.
+
     }
-    double meandouble = 0;
     unsigned char bytes[2];
 
 
@@ -173,9 +247,7 @@ void  Image_cuda_compatible::readfromfile( std::string filename )
       file.read( (char*)bytes, 2 );  // read 2 bytes from the file
       value = bytes[0] | (bytes[1] << 8);  // construct the 16-bit value from those bytes
        im[i] = value ;
-      meandouble += im[i];
      }
-    mean = float(meandouble / (double) size);
     file.close();
 
 
@@ -191,12 +263,13 @@ void  Image_cuda_compatible::readfromfile( std::string filename )
     this->filename = filename;
     readinfo();
 
+
 return;
 }
 
 
 
-
+//! Reads data from the info file for the specified image.
 void Image_cuda_compatible::readinfo()
 {
    // std::cout  << "Reading info for file " << filename << "\n";
@@ -227,21 +300,25 @@ void Image_cuda_compatible::readinfo()
 
           }
 
+
        }
-    //TODO: Error happened.
+    std::cout << "There were no info for image with ID"
+              << id << "in info file" << infofilename
+              <<std::endl;
     return;
 
 
 }
 
-
+//! Writes image values to a binary file, with unsigned int values.
 
 void Image_cuda_compatible::writetofile(std::string filename)
 {
+    copy_from_GPU();
     unsigned short* sh_im = new unsigned short[size];
     for(int i=0;i<size;i++)
     {
-        sh_im[i] = (unsigned short) (im[i]);
+        sh_im[i] = (unsigned short) ( round(im[i]));
     }
 
     FILE * file;
@@ -257,10 +334,14 @@ void Image_cuda_compatible::writetofile(std::string filename)
 }
 
 
+
+//! Writes image values to a binary file, with FLOAT values.
+
 void Image_cuda_compatible::writetofloatfile(std::string filename)
 {
 
 
+    copy_from_GPU();
     FILE * file;
 
     if(NULL == (file = fopen(filename.c_str(), "wb")))
@@ -274,8 +355,14 @@ void Image_cuda_compatible::writetofloatfile(std::string filename)
 }
 
 
+//! Reads an image from a binary file, containing pixel values as floats. Also reads info file data.
+
+//! Image is put to the CPU memory.
+
 void Image_cuda_compatible::readfromfloatfile(std::string fname)
 {
+    reserve_on_CPU();
+    remove_from_GPU();
     FILE *file = NULL;
     if(NULL == (file = fopen(fname.c_str(), "rb")))
         {
@@ -303,9 +390,11 @@ void Image_cuda_compatible::readfromfloatfile(std::string fname)
 
 
 //Working feature but it may not be used in the future.
+//! Calculates image mean on the CPU. May not be used in the future.
 void  Image_cuda_compatible::calculate_meanvalue_on_CPU()
 
 {
+    copy_from_GPU();
     double  meanvalue = 0.0; // double for higher precision when summing awful lot of numbers.
     for(int i=0; i<size;i++)
     {
@@ -316,6 +405,7 @@ void  Image_cuda_compatible::calculate_meanvalue_on_CPU()
 mean = (float) meanvalue;
 }
 
+//Getter-setters:
 
 float Image_cuda_compatible::getvoltage()
 {
@@ -361,8 +451,10 @@ void Image_cuda_compatible::setexptime(float f)
     return;
 }
 
+//!Calculates the minimum intensity on the image on the CPU and returns it's value.
 float Image_cuda_compatible::minintensity()
 {
+    copy_from_GPU();
 float intensity =im[0];
 for(int i=1;i<size;i++)
 {
@@ -370,9 +462,12 @@ for(int i=1;i<size;i++)
 }
 return intensity;
 }
+//!Calculates the maximum intensity on the image on the CPU and returns it's value.
 
 float Image_cuda_compatible::maxintensity()
 {
+    copy_from_GPU();
+
 float intensity =im[0];
 for(int i=1;i<size;i++)
 {
@@ -386,4 +481,30 @@ std::string Image_cuda_compatible::getfilename()
 {
     return filename;
 }
+
+
+
+//! Assigns memory for the image on the CPU. Sets pixel values to 0.
+float* Image_cuda_compatible::reserve_on_CPU()
+{
+    if(im == NULL)
+    {
+        im = new float[size]();
+       // std::cout << "Reserved memory on CPU @" <<im << "for image " << id <<std::endl;
+    }
+    return im;
+}
+
+//! If there is memory assigned for the image on the CPU, it frees the memory.
+void Image_cuda_compatible::remove_from_CPU()
+{
+    if(im != NULL)
+    {
+        delete[] im;
+        im = NULL;
+    }
+}
+
+
+
 

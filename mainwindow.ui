@@ -56,8 +56,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>80</y>
+      <x>590</x>
+      <y>250</y>
       <width>251</width>
       <height>61</height>
      </rect>
@@ -69,8 +69,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>160</y>
+      <x>590</x>
+      <y>310</y>
       <width>251</width>
       <height>61</height>
      </rect>
@@ -82,14 +82,53 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>240</y>
+      <x>580</x>
+      <y>370</y>
       <width>271</width>
-      <height>131</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
      <string>Gain corrigate and owewrite image</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>80</y>
+      <width>241</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Calculate offset correction data</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>120</y>
+      <width>231</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>read offset data from file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>160</y>
+      <width>281</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Offset corrigate and overwrite image</string>
     </property>
    </widget>
   </widget>

@@ -7,6 +7,11 @@
 #include <math.h>       /* round*/
 #include <set>
 #include <QStringRef>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <fstream>      // std::ofstream
+
 
 
 
@@ -14,7 +19,304 @@ Gaincorr::Gaincorr()
 {
     gcfolder = "";
 
+
 }
+
+
+
+
+void Gaincorr::readAndCalculateOffset()
+{
+    // ------------------------------------------------------------
+    //
+    //               Looking for valid subfolders
+    //
+    //--------------------------------------------------------------
+
+     QStringList goodFolderList;
+
+
+
+    //Asking for input and output  directories.
+       QString dir = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, which contains folders of images to calculate offset correction data"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+
+       QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to save offset correction factors (slope and intercept)"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+       gcfolder = Qgcfolder.toStdString();
+
+    QDir directory(dir);
+    QString path = directory.absolutePath();
+    directory.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    QStringList subdirs  = directory.entryList();
+    for(int i=0; i<subdirs.size(); i++)
+    {
+
+        std::ifstream myfile;
+        myfile.open(path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt" );
+        if (! (myfile.is_open()))
+        {
+            std::cout<< "Warning: There is no info.txt file in folder "
+                     << path.toStdString() + "/" +subdirs.at(i).toStdString()
+                     << ", or info file is not readable. Folder is ignored."
+                     <<std::endl;
+
+            continue; // jump to the next subfolder.
+        }
+        std::string line;
+        //reading header
+        do
+        {
+            getline (myfile,line);
+
+
+        } while(line.find("*****************" ) == std::string::npos && !(myfile.eof()) );
+
+
+
+        if(myfile.eof())
+        {
+            std::cout << "WARNING There is no info in the info file in folder "
+                      << path.toStdString() + "/" +subdirs.at(i).toStdString()
+                      <<"." << std::endl;
+            continue;
+        }
+
+
+        //reading infos
+        int count = 0;
+
+        while(getline (myfile,line) && line.length() > 2)
+        {
+
+            std::stringstream ss(line);
+            std::string temp;
+            int thisVoltage =0;
+            int thisAmperage =0;
+            int thisExptime=0;
+
+            ss >> temp; // id
+            ss >> temp; // rotation
+            ss >> thisVoltage;
+            ss >> thisAmperage;
+            ss >> thisExptime;
+
+
+
+                if((thisVoltage ==0 || thisAmperage ==0 ) && thisExptime >0 )
+                {
+                    count++;
+                }
+
+        } //every line is read.
+
+        myfile.close();
+
+
+            if(count > 2)
+            {
+                goodFolderList << subdirs.at(i);
+            }
+
+
+    } //every subdir is processed.
+
+
+
+        if (goodFolderList.size() < 3)
+        {
+            goodFolderList.clear();
+            std::cout << "ERROR Too few directories for offset correction. " <<std::endl;
+            return;
+        }
+
+    //List is ready.
+
+        //-------------------------------------------------------
+        //
+        //                Loading files
+        //
+        //-------------------------------------------------------
+        gc_im_container  im_container;
+
+
+        im_container.inicialize(goodFolderList.size());
+
+        for(int i=0; i< goodFolderList.size();i++)
+        {
+            std::cout << "Loading files from " << goodFolderList.at(i).toStdString() << std::endl;
+
+
+            //Looking for .bin files
+           QStringList nameFilter("*.bin"); //name filter.
+           QDir subdirectory(directory.absoluteFilePath(goodFolderList.at(i))); //Qdir for storing actual subdirectory.
+
+           QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
+           images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
+           images_temp.clear();
+
+           if(filelist.size() == 0)
+           {
+               std::cout<<"Warning: No .bin file in subfolder" << directory.absoluteFilePath(goodFolderList.at(i)).toStdString() <<std::endl;
+               continue;
+           }
+           double meanIntensity =0.0f;
+           double meanExptime = 0.0f;
+
+
+
+           //Opening every file in the given subdirectory
+
+
+           for(int j=0;j<filelist.length();j++)
+           //Note: subdirectory is indexed by i, files are indexed by j.
+           {
+               //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
+               image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+               image.copy_to_GPU();
+               image.calculate_meanvalue_on_GPU();
+
+
+     //Note: images with 0 voltage or amperage (or other parameters) are ignored. X-ray tube was probably off...
+               if      (
+                       ((!(image.getvoltage() > 0) && !(image.getvoltage() <0))
+                       || (!(image.getamperage() > 0) && !(image.getamperage() <0 ) ) )
+                       && image.getexptime() > 1 &&  image.getmean() > 1
+                       )
+                   {
+
+                   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
+
+                   meanExptime += ((images_temp.back().getexptime()));
+                   meanIntensity += ((images_temp.back().getmean()) );
+                   }
+           } //end of for( every image in current subfolder)
+
+           //if there is any non-blank images, calculate mean values!
+           if(images_temp.size() > 0)
+           {
+               meanExptime/=images_temp.size();
+               meanIntensity/=images_temp.size();
+           }
+           else
+           {
+               std::cout << "There is not enough good images at  folder " << goodFolderList.at(i).toStdString() << std::endl;
+               continue;
+           }
+
+           image.clear(); // I'll sum the good images to this variable.
+           int count = 0; //counts good images in a subfolder.
+
+           //Ignoring images that differs more than 10 percent from the mean. Recalculating mean values.
+               for(int k=0; k <  images_temp.size(); k++)
+               {
+                   //Checking for every image if they parameters are near the mean of the parameters.
+                   //(10% difference is allowed.)
+                   //DEBUG: Is that OK?
+                   if     (
+                        abs(images_temp.at(k).getmean() - meanIntensity) > meanIntensity * 0.1f ||
+                        abs(images_temp.at(k).getexptime() - meanExptime) > meanExptime * 0.1f
+                           )
+                   { //if the image is corrupted, ignore it. Also put som info to the console.
+                       std::cout << "Bad image: " << subdirectory.absolutePath().toStdString()
+                                 <<"id:" << images_temp.at(k).getid() <<std::endl;
+                       std::cout << "meanIntenstiy = " << meanIntensity << "getmean =" <<images_temp.at(k).getmean()
+                                 << " getvoltage =" <<images_temp.at(k).getvoltage()
+                                 << "getamperage = " << images_temp.at(k).getamperage()
+                               <<"meanExptime = " << meanExptime << "getexptime = " << images_temp.at(k).getexptime()
+                             <<std::endl<<std::endl;
+
+                   }
+                   else // image is good.
+                       {
+
+                       count +=1;
+
+                        image+=images_temp.at(k); //Summing images at the image variable.
+
+                       }
+               }
+
+
+
+               //Image processing finished in the current subdir. If there was some good image in that folder, add the averaged image to the averaged images' vector.
+               if( count > 1)
+                   {
+                   //Dividing image parameters and pixel values by count
+                   //(count is the total number of good images in the subdirectory.)
+
+                   image/=count;
+                   image.setamperage(1.0f);
+
+
+
+
+
+
+
+
+                       im_container.add(image);
+
+
+
+
+
+
+                   std::cout <<"Images loaded from directory " << subdirectory.absolutePath().toStdString()
+                            <<"With mean: " << image.getmean()
+                           << "voltage: "  <<image.getvoltage()
+                           <<" amperage: " << image.getamperage()
+                          <<"exptime: " << image.getexptime()<<std::endl;
+                   }
+               else //(if count <=1)
+                  {
+                   std::cout <<"Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
+                   std::cout << "meanIntensity = "<< meanIntensity <<std::endl;
+               }
+               } // end of loading files.
+
+
+               //----------------------------------------------------------------------------
+               //
+               //                      CALCULATING
+               //
+               //----------------------------------------------------------------------------
+
+               Image_cuda_compatible slope;
+               Image_cuda_compatible intercept;
+
+               im_container.calculate(slope,intercept);
+
+
+
+               std::string slopefile = gcfolder + "/" + "offsetslope"  + ".binf";
+               std::string interceptfile = gcfolder + "/" + "offsetintercept"  + ".binf";
+               slope.writetofloatfile(slopefile);
+               slope.clear();
+               intercept.writetofloatfile(interceptfile);
+               intercept.clear();
+
+              slopes[0] =slope;
+              intercepts[0] = intercept;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
 
 //! Reads images to calculate gain correction data.
 
@@ -23,212 +325,543 @@ Gaincorr::Gaincorr()
 //! Images are only loaded from the subfolders of the user given directory.
 //! Images are stored in the gc_im_container class.
 
-int Gaincorr::readimages()
+
+
+
+
+
+void Gaincorr::readAndCalculateGain()
 {
-
- //Asking for input and output  directories.
-    QString dir = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, which contains folders of images to calculate gain correction data"),
-                                                    "C:\\",
-                                                     QFileDialog::DontResolveSymlinks);
-
-    QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to save gain correction factors (slope and intercept)"),
-                                                    "C:\\",
-                                                     QFileDialog::DontResolveSymlinks);
-    gcfolder = Qgcfolder.toStdString();
-
-
- //looking for subdirs:
-
-    QDir directory(dir);
-    directory.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    QStringList subdirs  = directory.entryList();
-
-
-    images.reserve(subdirs.size()); // vector for the final, averaged images.
-
-    if(subdirs.size() == 0)
+    if(slopes.find(0) == slopes.end() || intercepts.find(0)==intercepts.end())
     {
-        std::cout << "ERROR : No subfolders in folder" << dir.toStdString() << "Gain correction halted." <<std::endl;
-        return 0;
+        std::cout <<"ERROR: No offset calibration data."
+                 <<" Load or calculate offset calibration data first."
+                <<std::endl;
+        return;
     }
 
- // opening every subdir for reading images...
 
-    for(int i=0;i<subdirs.size();i++)
+    // ------------------------------------------------------------
+    //
+    //               Looking for valid subfolders
+    //
+    //--------------------------------------------------------------
+
+    std::map<int, QStringList> goodFolderMap;
+
+
+
+    //Asking for input and output  directories.
+       QString dir = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, which contains folders of images to calculate gain correction data"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+
+       QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to save gain correction factors (slope and intercept)"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+       gcfolder = Qgcfolder.toStdString();
+
+    QDir directory(dir);
+    QString path = directory.absolutePath();
+    directory.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    QStringList subdirs  = directory.entryList();
+    for(int i=0; i<subdirs.size(); i++)
     {
 
-        //Looking for .bin files
-       QStringList nameFilter("*.bin"); //name filter.
-       QDir subdirectory(directory.absoluteFilePath(subdirs.at(i))); //Qdir for storing actual subdirectory.
+        std::ifstream myfile;
+        myfile.open(path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt" );
+        if (! (myfile.is_open()))
+        {
+            std::cout<< "Warning: There is no info.txt file in folder "
+                     << path.toStdString() + "/" +subdirs.at(i).toStdString()
+                     << ", or info file is not readable."
+                     <<std::endl;
 
-       QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
-       images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
-       images_temp.clear();
-
-
-       //Variables to calculate mean values of voltage, amperage, exptime, intensity of images in a subdirectory.
-       double meanVoltage =0;
-       double meanAmperage =0;
-       double meanExptime = 0;
-       double meanIntensity =0;
-
-       if(filelist.length() == 0)
-       {
-           std::cout<<"Warning: No .bin file in subfolder" << directory.absoluteFilePath(subdirs.at(i)).toStdString() <<std::endl;
-       }
-
-       else
-       {
-//Opening every file in the given subdirectory
+            continue; // jump to the next subfolder.
+        }
+        std::string line;
+        //reading header
+        do
+        {
+            getline (myfile,line);
 
 
-       for(int j=0;j<filelist.length();j++)
-           //Note: subdirectory is indexed by i, files are indexed by j.
-       {
-          // calculating mean values of the images.
-           //image is a temporary Image, that reads from files.
-           //DEBUG: Could be improved....
+        } while(line.find("*****************" ) == std::string::npos && !(myfile.eof()) );
 
 
-           image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
 
- //Note: images with 0 voltage or amperage (or other parameters) are ignored. X-ray tube was probably off...
-           if(image.getvoltage() > 1 && image.getexptime() > 1 && image.getmean() > 1 && image.getvoltage() > 1)
+        if(myfile.eof())
+        {
+            std::cout << "WARNING There is no info in the info file in folder "
+                      << path.toStdString() + "/" +subdirs.at(i).toStdString()
+                      <<"." << std::endl;
+            continue;
+        }
+
+
+        //reading infos
+        std::vector <int> voltagesInThisFolder;
+        int count = 0;
+
+        while(getline (myfile,line) && line.length() > 2)
+        {
+
+            std::stringstream ss(line);
+            std::string temp;
+            int thisVoltage =0;
+            int thisAmperage =0;
+            int thisExptime=0;
+
+            ss >> temp; // id
+            ss >> temp; // rotation
+            ss >> thisVoltage;
+            ss >> thisAmperage;
+            ss >> thisExptime;
+
+
+                //at gain orrection we would like to avoid pictures with 0 voltage or amperage or exptime
+
+                if(thisVoltage >0 && thisAmperage >0  && thisExptime >0 )
+                {
+                    voltagesInThisFolder.push_back(thisVoltage);
+                    count++;
+                }
+
+
+        } //every line is read.
+
+        myfile.close();
+
+
+
+
+            if(count > 2)
+            {
+                float meanVoltageInThisFolder = 0;
+                //Calculate mean voltage
+                for(std::vector<int>::iterator iter = voltagesInThisFolder.begin();
+                        iter != voltagesInThisFolder.end();
+                        iter++)
+                {
+                    meanVoltageInThisFolder += *iter;
+                }
+                meanVoltageInThisFolder /= voltagesInThisFolder.size();
+
+                //Remove outliers.
+
+                for(std::vector<int>::iterator iter = voltagesInThisFolder.begin();
+                        iter != voltagesInThisFolder.end();)
+                {
+                    if( abs(*iter -meanVoltageInThisFolder ) > meanVoltageInThisFolder*0.1f)
+                    {
+                        iter=voltagesInThisFolder.erase(iter);
+                    }
+                    else
+                    {
+                        ++iter;
+                    }
+                }
+
+                //Recalculate mean voltage;
+                meanVoltageInThisFolder =0.0f;
+                if( voltagesInThisFolder.size() > 2)
+                {
+
+                    for(std::vector<int>::iterator iter = voltagesInThisFolder.begin();
+                            iter != voltagesInThisFolder.end();
+                            iter++)
+                    {
+                        meanVoltageInThisFolder += *iter;
+                    }
+                    meanVoltageInThisFolder /= voltagesInThisFolder.size();
+
+
+                    //Rounding meanVoltageInThisFolder to multiply of 5
+
+                    int meanVoltageInteger = round(meanVoltageInThisFolder);
+                    int remainder  = meanVoltageInteger %5;
+
+                    if(remainder != 0)
+
+                    {
+                        meanVoltageInteger = meanVoltageInteger + 5 - remainder;
+                    }
+                    goodFolderMap.insert(std::pair<int, QStringList> (meanVoltageInteger, QStringList()));
+                    goodFolderMap[meanVoltageInteger].append(path + "/" + subdirs.at(i));
+                }
+                else
+                {
+                    std::cout << "Not enoguh good images in folder " << subdirs.at(i).toStdString()
+                              <<"(High deviation in values.)" << std::endl;
+                }
+            } // end of if (count >2)
+            else
+            {
+                std::cout << "Not enoguh good images in folder " << subdirs.at(i).toStdString()
+                          <<"(Too few images in the folder.)" << std::endl;
+            }
+    } //every subdir is processed.
+
+
+        for(std::map<int, QStringList>::iterator iter = goodFolderMap.begin();
+                iter != goodFolderMap.end();)
+        {
+            if(iter->second.size() < 8)
+            {
+                std::cout <<"Not enough subfolders with voltage" << iter->first<<std::endl;
+                goodFolderMap.erase(iter++);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+
+
+    //Map is ready.
+
+    //-------------------------------------------------------
+    //
+    //                Loading files
+    //
+    //-------------------------------------------------------
+
+
+
+
+ for( std::map<int,QStringList>::iterator iter = goodFolderMap.begin();
+      iter != goodFolderMap.end();
+      ++iter)
+ {
+     if(iter->second.size()  < 5)
+     {
+         std::cout << "Too few subfolders with good images at voltage " << iter->first << std::endl;
+         continue;
+     }
+     gc_im_container  im_container;
+
+     im_container.inicialize(iter->second.size());
+
+
+     for(int i = 0; i< iter->second.size(); i++)
+     {
+         std::cout << "Loading files from " << iter->second.at(i).toStdString() << std::endl;
+
+
+         //Looking for .bin files
+        QStringList nameFilter("*.bin"); //name filter.
+        QDir subdirectory(directory.absoluteFilePath(iter->second.at(i))); //Qdir for storing actual subdirectory.
+
+        QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
+        images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
+        images_temp.clear();
+
+        if(filelist.size() == 0)
+        {
+            std::cout<<"Warning: No .bin file in subfolder" << directory.absoluteFilePath(iter->second.at(i)).toStdString() <<std::endl;
+            continue;
+        }
+        double meanIntensity =0.0f;
+        double meanExptime = 0.0f;
+        double meanAmperage = 0.0f;
+
+
+
+        //Opening every file in the given subdirectory
+
+
+        for(int j=0;j<filelist.length();j++)
+        //Note: subdirectory is indexed by i, files are indexed by j.
+        {
+            //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
+            image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+            image.copy_to_GPU();
+            image.calculate_meanvalue_on_GPU();
+
+
+  //Note: images with 0 voltage or amperage (or other parameters) are ignored. X-ray tube was probably off...
+            if( abs(image.getvoltage() - iter->first) < iter->first * 0.1f && image.getexptime() > 1 && image.getmean() > 1 && image.getamperage() > 1)
+                {
+
+                images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
+
+                meanAmperage += ((images_temp.back().getamperage()));
+                meanExptime += ((images_temp.back().getexptime()));
+                meanIntensity += ((images_temp.back().getmean()) );
+                }
+        } //end of for( every image in current subfolder)
+
+        //if there is any non-blank images, calculate mean values!
+        if(images_temp.size() > 0)
+        {
+            meanAmperage/=images_temp.size();
+            meanExptime/=images_temp.size();
+            meanIntensity/=images_temp.size();
+        }
+        else
+        {
+            std::cout << "There is not enough good images at  folder " << iter->second.at(i).toStdString() << std::endl;
+            continue;
+        }
+
+        image.clear(); // I'll sum the good images to this variable.
+        int count = 0; //counts good images in a subfolder.
+
+        //Ignoring images that differs more than 10 percent from the mean. Recalculating mean values.
+            for(int k=0; k <  images_temp.size(); k++)
+            {
+                //Checking for every image if they parameters are near the mean of the parameters.
+                //(10% difference is allowed.)
+                //DEBUG: Is that OK?
+                if     (
+                     abs(images_temp.at(k).getmean() - meanIntensity) > meanIntensity * 0.1f ||
+                     abs(images_temp.at(k).getamperage() - meanAmperage) > meanAmperage * 0.1f ||
+                     abs(images_temp.at(k).getexptime() - meanExptime) > meanExptime * 0.1f
+                        )
+                { //if the image is corrupted, ignore it. Also put som info to the console.
+                    std::cout << "Bad image: " << subdirectory.absolutePath().toStdString()
+                              <<"id:" << images_temp.at(k).getid() <<std::endl;
+                    std::cout << "meanIntenstiy = " << meanIntensity << "getmean =" <<images_temp.at(k).getmean()
+                              <<"Voltage = " << iter->first << " getvoltage =" <<images_temp.at(k).getvoltage()
+                             <<"meanAmperage = " << meanAmperage << "getamperage = " << images_temp.at(k).getamperage()
+                            <<"meanExptime = " << meanExptime << "getexptime = " << images_temp.at(k).getexptime()
+                          <<std::endl<<std::endl;
+
+                }
+                else // image is good.
+                    {
+
+                    count +=1;
+
+                     image+=images_temp.at(k); //Summing images at the image variable.
+
+                    }
+            }
+
+
+
+            //Image processing finished in the current subdir. If there was some good image in that folder, add the averaged image to the averaged images' vector.
+            if( count > 1)
+                {
+                //Dividing image parameters and pixel values by count
+                //(count is the total number of good images in the subdirectory.)
+
+                image/=count;
+
+
+                //Searching for saturation exposition.
+                if(image.maxintensity() > 16382)  // saturation at 16383
+
+                {
+                    int satvalue = (int) round((image.getexptime() * image.getamperage()));
+                    saturation.insert(std::pair<int,int> (iter->first, satvalue ));
+                    if( (int) ((saturation.find(iter->first))->second) > satvalue)
+                    {
+                        saturation[iter->first] = satvalue;
+                    }
+                }
+
+
+
+                offsetcorrigateimage(image);
+
+
+
+
+                    im_container.add(image);
+                    //DEBUG
+
+                    std::stringstream ss;
+                    std::string v,a,e;
+                    ss << image.getexptime();
+                    e = ss.str();
+                    ss.clear();
+                    ss<<image.getvoltage();
+                    v = ss.str();
+                    ss.clear();
+                    ss<<image.getamperage();
+                    a = ss.str();
+                    ss.clear();
+
+                    image.writetofloatfile("C:\\awing\\gaintemp\\" + v + "_" + a + "_" + e  + ".binf");
+
+
+
+                std::cout <<"Images loaded from directory " << subdirectory.absolutePath().toStdString()
+                         <<"With mean: " << image.getmean()
+                        << "voltage: "  <<image.getvoltage()
+                        <<" amperage: " << image.getamperage()
+                       <<"exptime: " << image.getexptime()<<std::endl;
+                }
+            else //(if count <=1)
                {
-
-               images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
-
-               meanVoltage += ( (images_temp.back().getvoltage()) );
-               meanAmperage += ((images_temp.back().getamperage()));
-               meanExptime += ((images_temp.back().getexptime()));
-               meanIntensity += ((images_temp.back().getmean()) );
-               }
-       }
-       //if there is any non-blank images, calculate mean values!
-       if(images_temp.size() > 0)
-       {
-           meanVoltage/=images_temp.size();
-           meanAmperage/=images_temp.size();
-           meanExptime/=images_temp.size();
-           meanIntensity/=images_temp.size();
-       }
+                std::cout <<"Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
+                std::cout << "meanIntensity = "<< meanIntensity <<std::endl;
+            }
 
 
 
 
 
-       image.clear(); // I'll sum the good images to this variable.
-       //DEBUG Could be improved. E.g. sum at the GPU memory.
+
+     } // end of for(every subdir at given voltage
 
 
 
-       int count = 0; //counts good images in a subfolder.
+
+     //----------------------------------------------------------------------------
+     //
+     //                      CALCULATING
+     //
+     //----------------------------------------------------------------------------
+
+     Image_cuda_compatible slope;
+     Image_cuda_compatible intercept;
+
+     im_container.calculate(slope,intercept);
+
+     std::ostringstream oss;
+     oss << iter->first; // voltage
+
+     std::string ending = oss.str();
+     std::string slopefile = gcfolder + "/" + "slope" + ending + ".binf";
+     std::string interceptfile = gcfolder + "/" + "intercept" + ending + ".binf";
+     slope.writetofloatfile(slopefile);
+     slope.clear();
+     intercept.writetofloatfile(interceptfile);
+     intercept.clear();
+
+    slopes[iter->first] =slope;
+    intercepts[iter->first] = intercept;
 
 
 
-       //Ignoring images that differs more than 10 percent from the mean. Recalculating mean values.
-           for(std::vector<Image_cuda_compatible>::iterator iter = images_temp.begin(); iter != images_temp.end();)
-           {
-               //Checking for every image if they parameters are near the mean of the parameters.
-               //(10% difference is allowed.)
-               //DEBUG: Is that OK?
-               if     (
-                     abs(iter->getmean() - meanIntensity) > meanIntensity * 0.1f ||
-                    abs(iter->getvoltage() - meanVoltage) > meanVoltage * 0.1f ||
-                    abs(iter->getamperage() - meanAmperage) > meanAmperage * 0.1f ||
-                    abs(iter->getexptime() - meanExptime) > meanExptime * 0.1f
-                       )
-               { //if the image is corrupted, ignore it. Also put som info to the console.
-                   std::cout << "Bad image: " << iter->getid() <<" in folder " << subdirectory.absolutePath().toStdString()<<std::endl;
-                   std::cout << "meanIntenstiy = " << meanIntensity << "getmean =" <<iter->getmean()
-                             <<"meanVoltage = " << meanVoltage << " getvoltage =" <<iter->getvoltage()
-                            <<"meanAmperage = " << meanAmperage << "getamperage = " << iter->getamperage()
-                           <<"meanExptime = " << meanExptime << "getexptime = " << iter ->getexptime()
-                          <<"Filelist.length()" << filelist.length()
-                         <<std::endl<<std::endl;
-                   ++iter;//
+ } // end of for( iterate through voltages)
 
-               }
-               else // image is good.
-                   {
-
-                   count +=1;
-
-                    image+=*iter; //Summing images at the image variable.
-                    //DEBUG: Should sum at the GPU.
-                   ++iter;
-                   }
-           }
+image.clear();
+images_temp.clear();
 
 
+//Write saturation to file and final check:
 
-           //Image processing finished in the current subdir. If there was some good image in that folder, add the averaged image to the averaged images' vector.
-           if( count > 1)
-               {
-               //Dividing image parameters and pixel values by count
-               //(count is the total number of good images in the subdirectory.)
+if(saturation.empty() )
+{
+    std::cout << "ERROR: There is no saturation data. (I do not know what failed.)"
+              << "gain correction calculation is unsuccessfull."
+              <<std::endl;
+    slopes.clear();
+    intercepts.clear();
+    return;
+}
 
-               image/=count;
+for(std::map<int, int>::iterator iter = saturation.begin();
+        iter!= saturation.end();)
+{
+    int voltage = iter->first;
+    if( slopes.find(voltage) == slopes.end() ||
+            intercepts.find(voltage) == intercepts.end())
+    {
+        std::cout <<"ERROR: NO saturation data for voltage " << voltage
+                 <<" (I do not know what failed.)" <<std::endl
+                <<"Slope and saturation data for gain correction at this voltage are erased."
+               <<std::endl;
 
-               //Rounding voltage to multiply of 5          //
-               int voltage = round(image.getvoltage());     //
-               int remainder  = voltage %5;                 //
-                                                            //
-               if(remainder != 0)                           //
-                                                            //
-               {                                            //
-                   voltage = voltage + 5 - remainder;       //
-               }                                            //
+        saturation.erase(iter++);
+        if(slopes.find(voltage) != slopes.end())
+        {
+            slopes.erase(slopes.find(voltage));
+        }
+        if(intercepts.find(voltage) != intercepts.end())
+        {
+            intercepts.erase(intercepts.find(voltage));
+        }
 
+    }
+    else
+    {
+        ++iter;
+    }
+}
 
-               //Searching for saturation exposition.
-               if(image.maxintensity() > 16382)  // saturation at 16383
-                   //DEBUG: Possibly need to replace this part to the offset correction,
-                   //once it is written.
-               {
-                   int satvalue = (int) (image.getexptime() * image.getamperage());
-                   saturation.insert(std::pair<int,int> (voltage, satvalue ));
-                   if( (int) ((saturation.find(voltage))->second) > satvalue)
-                   {
-                       saturation[voltage] = satvalue;
-                   }
-               }
+//write slope data to file
+std::ofstream myfile ( gcfolder + "/saturation.txt", std::ios_base::trunc);
+if(!(myfile.is_open()))
+{
+    std::cout <<"Warnig! text file to write slope data could not be opened at "
+             <<  gcfolder + "/saturation.txt" <<std::endl;
+    return;
+}
 
-
-               //Copying sum  of good images in the current subfolder to the imagemap class.
-               //DEBUG: Wastes a lot of memory, should count exact space need before doing anything.
-               std::cout <<"reserving memory for " << subdirs.size() << "with " << voltage <<" kv.  Needed RAM: " << image.size*sizeof(float)*subdirs.size() / 1024/1024 << " Mb." <<std::endl;
-                   imagemap[voltage].reserveIfEmpty(subdirs.size());
-
-
-                   imagemap[voltage].add(image);
-
-
-               std::cout <<"Images loaded from directory " << subdirectory.absolutePath().toStdString()
-                        <<"With mean: " << image.getmean()
-                       << "voltage: "  <<image.getvoltage()
-                       <<" amperage: " << image.getamperage()
-                      <<"exptime: " << image.getexptime()<<std::endl;
-               std::cout<<std::endl << "Images with voltage " <<voltage << ": " << imagemap[voltage].getimageno() << std::endl;
-               }
-           else //(if count <=1)
-              {
-               std::cout <<"Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
-               std::cout << "meanIntensity = "<< meanIntensity <<std::endl;
-           }
-
-
-     } //    end of    if(filelist.length() == 0) {} else {
-
-
-    } // end of for (every subdirectory)
-
- std::cout << "Exiting read();" <<std::endl;
-return 0;
-
+for(std::map<int,int>::iterator iter=saturation.begin();
+    iter!=saturation.end();
+    ++iter)
+{
+    myfile <<iter->first <<'\n';
+    myfile << iter->second <<'\n';
+}
+myfile.close();
 
 } // end of readimages() function.
 
+
+
+
+void Gaincorr::readoffsetfactors()
+{
+    if(slopes.find(0) != slopes.end())
+    {
+        slopes.erase(slopes.find(0));
+    }
+    if(intercepts.find(0) != intercepts.end())
+    {
+        intercepts.erase(intercepts.find(0));
+    }
+
+    QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to load gain correction factors from (slope and intercept)"),
+                                                    "C:\\",
+                                                     QFileDialog::ReadOnly );
+    gcfolder = Qgcfolder.toStdString();
+
+    QFileInfo checkslope( QString::fromStdString(gcfolder + "/" + "offsetslope"  + ".binf"));
+    QFileInfo checkintercept( QString::fromStdString(gcfolder + "/" + "offsetintercept"  + ".binf"));
+    Image_cuda_compatible slope;
+    Image_cuda_compatible intercept;
+
+    if(checkslope.exists() && checkslope.isFile())
+    {
+        slope.readfromfloatfile(gcfolder + "/" + "offsetslope"  + ".binf");
+    }
+    else
+    {
+        std::cout << "ERROR! offsetslope.binf file not found in folder" << gcfolder
+                  <<std::endl;
+    }
+    if(checkintercept.exists() && checkintercept.isFile())
+    {
+        intercept.readfromfloatfile(gcfolder + "/" + "offsetintercept"  + ".binf");
+    }
+    else
+    {
+        std::cout << "ERROR! offsetintercept.binf not found in folder " << gcfolder
+                  <<std::endl;
+    }
+    intercept.calculate_meanvalue_on_GPU();
+    slope.calculate_meanvalue_on_GPU();
+    if(intercept.getmean() > 0 && slope.getmean() > 0)
+    {
+        slopes[0] = slope;
+        intercepts[0] = intercept;
+        std::cout <<"Offset data read succesfull." << std::endl;
+    }
+    else
+    {
+        std::cout << "ERROR : There were errors while reading offset data."
+                  <<std::endl;
+    }
+
+
+
+}
 
 
 //! Reads factors for gain correction from files.
@@ -237,12 +870,43 @@ return 0;
 //! In this folder there should be the files containing slope and intercept data for gain correction.
 //! Name format: intercept<voltage>.binf and slope<voltage>.binf. Reads every file with the given syntax,
 //! and stores them, if both an intercept and a slope file is there for a given voltage.
-//DEBUG file names will possibly change onceoffset correction is written.
 
 
 
-void Gaincorr::readfactors()
+
+void Gaincorr::readgainfactors()
 {
+    saturation.clear();
+    for(std::map<int, Image_cuda_compatible>::iterator iter = slopes.begin();
+        iter != slopes.end();)
+    {
+        if(iter -> first != 0)
+        {
+            slopes.erase(iter++);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+
+
+
+
+        for(std::map<int, Image_cuda_compatible>::iterator iter = intercepts.begin();
+            iter != intercepts.end();)
+        {
+            if(iter -> first != 0)
+            {
+                intercepts.erase(iter++);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+
+
 
     QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to load gain correction factors from (slope and intercept)"),
                                                     "C:\\",
@@ -295,17 +959,15 @@ void Gaincorr::readfactors()
        if(interceptvoltages.find(thisvoltage) != interceptvoltages.end()) // if both slope and intercept is aviable with that voltage...
        {
            //Read them...
-           std::string filename = gcfolder;
-           filename.append("/intercept");
-           filename.append(thisvoltage);
-           filename.append(".binf");
+           Image_cuda_compatible slope;
+           Image_cuda_compatible intercept;
+
+           std::string filename = gcfolder +"/intercept" + thisvoltage + ".binf" ;
+
            intercept.readfromfloatfile(filename);
            intercept.calculate_meanvalue_on_CPU();
 
-           filename = gcfolder;
-           filename.append("/slope");
-           filename.append(thisvoltage);
-           filename.append(".binf");
+           filename = gcfolder + "/slope" + thisvoltage + ".binf" ;
            slope.readfromfloatfile(filename);
            slope.calculate_meanvalue_on_CPU();
            //Check if they are not blank...
@@ -347,15 +1009,164 @@ void Gaincorr::readfactors()
    }
 
 
-   intercept.clear();
-   slope.clear();
-   image.clear();
+   std::ifstream myfile( gcfolder + "/saturation.txt");
+   if(! (myfile.is_open()))
+   {
+       slopes.clear();
+       intercepts.clear();
+       slopes.clear();
+       std::cout << "ERROR! Slope sata file is not readable at "
+                 <<gcfolder + "/saturation.txt" <<std::endl
+                <<"Gain correction data read is unsucesfull." <<std::endl;
+       return;
+   }
+   std::string line;
+   do
+   {
+       if( (getline(myfile,line)))
+       {
+
+           int voltage = std::atoi(line.c_str());
+           getline(myfile,line);
+           int sat = std::atoi(line.c_str());
+           if(voltage > 0 && sat > 0)
+           {
+               saturation.insert(std::pair<int,int>(voltage,sat));
+           }
+           else
+           {
+               std::cout << "WARNING! saturation file is corrupted. (Invalid data)." << std::endl;
+           }
+       }
+   } while( !(myfile.eof()));
+
+   //final check:
+    for(std::map<int,int>::iterator iter = saturation.begin();
+        iter!=saturation.end();)
+    {
+        int voltage = iter -> first;
+        if(slopes.find(voltage) == slopes.end() || intercepts.find(voltage) == intercepts.end() )
+        {
+            std::cout << "WARNING: no slope or intercept for voltage " << voltage
+            << " with valid saturation data." <<std::endl;
+            saturation.erase(iter++);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+
+
+    for(std::map<int,Image_cuda_compatible>::iterator iter = slopes.begin();
+            iter != slopes.end();)
+    {
+        int voltage = iter->first;
+        if(voltage !=0)
+        {
+
+
+            if(saturation.find(voltage ) == saturation.end() ||
+                    intercepts.find(voltage) == intercepts.end())
+            {
+                std::cout << "WARNING: no saturation or intercept for voltage " << voltage
+                << " with valid slope data." <<std::endl;
+                slopes.erase(iter++);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+
+
+    for(std::map<int,Image_cuda_compatible>::iterator iter = intercepts.begin();
+            iter != intercepts.end();)
+    {
+        int voltage = iter->first;
+        if(voltage !=0)
+        {
+
+            if(saturation.find(voltage ) == saturation.end() ||
+                    slopes.find(voltage) == slopes.end())
+            {
+                std::cout << "WARNING: no saturation or slope for voltage " << voltage
+                << " with valid intercept data." <<std::endl;
+                intercepts.erase(iter++);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+
+    std::cout<<"Readed gain correction data for voltages:" <<std::endl;
+   for( std::map<int,int>::iterator iter = saturation.begin();
+                iter != saturation.end();
+                ++iter)
+   {
+       std::cout << iter->first << std::endl;
+   }
+
+
+
+
 
 
 
 
 } //end of void readfactors()
 
+
+
+void Gaincorr::offsetcorrigateimage(Image_cuda_compatible &image)
+
+{
+    float expTime  = image.getexptime();
+    if( !(expTime > 0))
+    {
+
+            std::cout << "ERROR : There is no info or info is invalid for image"<<std::endl
+                      <<"Id: " << image.getid() << std::endl
+                      <<"Voltage: " << image.getvoltage() << std::endl
+                      <<"Amperage:" << image.getamperage()<<std::endl
+                      <<"filename: " << image.getfilename() << std::endl;
+            std::cout<<"I can't offse corrigat that." <<std::endl <<std::endl;
+            return;
+    }
+    if(slopes.find(0)== slopes.end() || intercepts.find(0) == intercepts.end()) // do not contain.
+    {
+        std::cout << "ERROR: There is no data to do offset corrigation." << std::endl;
+        return;
+    }
+    if( !(slopes[0].getmean() > 0) || !(intercepts[0].getmean() > 0) )
+    {
+        std::cout << "ERROR: offset correction picture is empty. (Probably not read?)"
+                  <<std::endl;
+        return;
+    }
+
+    image.copy_to_GPU();
+    image.remove_from_CPU();
+    slopes[0].copy_to_GPU();
+    intercepts[0].copy_to_GPU();
+
+    //could write operator*, but it would not be faster ...
+    Image_cuda_compatible slopeTimesExp = slopes[0];
+    slopeTimesExp *= image.getexptime();
+    image-=intercepts[0];
+    image-=slopeTimesExp;
+}
 
 
 
