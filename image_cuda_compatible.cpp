@@ -199,6 +199,8 @@ void Image_cuda_compatible::initialize()
     amperage = 0;
     exptime = 0;
     mean = 0;
+    min = 0;
+    max = 1e30f;
     return;
 }
 
@@ -216,6 +218,8 @@ void Image_cuda_compatible::clear()
     voltage =0;
     amperage=0;
     exptime = 0;
+    min = 0;
+    max = 1e30f;
 }
 
 
@@ -425,6 +429,14 @@ float Image_cuda_compatible::getexptime()
 float Image_cuda_compatible::getmean()
 {
     return mean;
+}
+float Image_cuda_compatible::getmin()
+{
+    return min;
+}
+float Image_cuda_compatible::getmax()
+{
+    return max;
 }
 
 std::string Image_cuda_compatible::getid()

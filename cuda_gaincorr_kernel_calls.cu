@@ -19,7 +19,7 @@
 
 
 
-__global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, float* d_saturation, float* d_image, float* d_settings )
+__global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, int* d_saturation, float* d_image)
 {
 
     unsigned int tid = threadIdx.x;
@@ -29,7 +29,7 @@ __global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, float* d
 
 
 
-        d_image[pixel] = (d_image[pixel] - d_intercept[pixel] ) / d_slope[pixel]  * 16383 / *d_saturation;
+        d_image[pixel] = (d_image[pixel] - d_intercept[pixel] ) / d_slope[pixel]  * 16383.0f / *d_saturation;
     return;
 }
 
@@ -72,9 +72,9 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
 
 
-    float* d_saturation;
+    int* d_saturation;
     //DEBUG
-    float sat = saturation[voltage];
+    int sat = saturation[voltage];
     float* d_slope;
     float* d_intercept;
     d_slope = slopes.find(voltage)->second.copy_to_GPU();
@@ -83,16 +83,14 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
     d_image= image.copy_to_GPU();
 
-    cudaMalloc( (void**)&d_saturation, sizeof(float) );
-   cudaMemcpy(d_saturation, &sat, sizeof(float), cudaMemcpyHostToDevice );
+    cudaMalloc( (void**)&d_saturation, sizeof(int) );
+   cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice );
 
-   float settings = image.getamperage() * image.getexptime();
-   float* d_settings;
 
-   cudaMalloc( (void**)&d_settings, sizeof(float) );
-  cudaMemcpy(d_settings, &settings, sizeof(float), cudaMemcpyHostToDevice );
 
-    kernel_do_gaincorr<<<41472,32>>>( d_slope,  d_intercept, d_saturation,  d_image , d_settings);
+
+
+    kernel_do_gaincorr<<<41472,32>>>( d_slope,  d_intercept, d_saturation,  d_image );
     image.copy_GPU_array(d_image);
     image.remove_from_CPU();
 
@@ -104,7 +102,6 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
 
     cudaFree(d_saturation);
-    cudaFree(d_settings);
 
 }
 

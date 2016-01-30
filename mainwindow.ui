@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Rettentően fasza ct kiértékelő program</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
@@ -24,15 +24,15 @@
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="button_choosefile">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>630</x>
       <y>40</y>
-      <width>241</width>
+      <width>191</width>
       <height>23</height>
      </rect>
     </property>
@@ -53,83 +53,71 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>250</y>
-      <width>251</width>
-      <height>61</height>
+      <x>630</x>
+      <y>190</y>
+      <width>191</width>
+      <height>83</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Calculate Gaincorr Data</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Calculate Gaincorr Data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Read gaincorr factors from file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Gain corrigate and owewrite image</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>310</y>
-      <width>251</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Read gaincorr factors from file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>370</y>
-      <width>271</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Gain corrigate and owewrite image</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_4">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
+      <x>630</x>
       <y>80</y>
-      <width>241</width>
-      <height>41</height>
+      <width>188</width>
+      <height>83</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Calculate offset correction data</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>120</y>
-      <width>231</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>read offset data from file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_6">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>160</y>
-      <width>281</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Offset corrigate and overwrite image</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="text">
+        <string>Calculate offset correction data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="text">
+        <string>read offset data from file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_6">
+       <property name="text">
+        <string>Offset corrigate and overwrite image</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

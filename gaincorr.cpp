@@ -24,6 +24,17 @@ Gaincorr::Gaincorr()
 
 
 
+//! Reads image files for osset calibration, caluclates and saves ofset corrigation data.
+
+//! Asks the user for the folder that contains offset correction image set, and another folder
+//! to save the offset correction factors.
+//! Images should be in the subfolders of the given input folder. Every subolder should contain
+//! images with the same exposition time settings.
+//! Images are read and then offset corrections factors are determined by linear fit to everry pixel
+//! in the function of the exposition time.
+//! They are saved in float type binary image files in the output folder,
+//! with names offsetslope.binf and offsetintercept.binf
+
 
 void Gaincorr::readAndCalculateOffset()
 {
@@ -51,8 +62,9 @@ void Gaincorr::readAndCalculateOffset()
     QString path = directory.absolutePath();
     directory.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
     QStringList subdirs  = directory.entryList();
-    for(int i=0; i<subdirs.size(); i++)
+    for(int i=0; i<subdirs.size(); i++) //for every subdirectory
     {
+        //Readinf info files to determine number of valid folders.
 
         std::ifstream myfile;
         myfile.open(path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt" );
@@ -85,7 +97,8 @@ void Gaincorr::readAndCalculateOffset()
         }
 
 
-        //reading infos
+        //reading info and calculating mean exposition time and checking if the
+        //images are made without operating the X-ray source.
         int count = 0;
 
         while(getline (myfile,line) && line.length() > 2)
@@ -280,7 +293,7 @@ void Gaincorr::readAndCalculateOffset()
 
                //----------------------------------------------------------------------------
                //
-               //                      CALCULATING
+               //                      CALCULATING AND SAVING DATA
                //
                //----------------------------------------------------------------------------
 
@@ -300,34 +313,20 @@ void Gaincorr::readAndCalculateOffset()
 
               slopes[0] =slope;
               intercepts[0] = intercept;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 
 
 //! Reads images to calculate gain correction data.
 
-//! The functions asks for an input folder. In this folder, images sould be in subfolders.
-//! Every subfolder sould contain one ore more image with the same settings (Voltage, Exp time, amperage), with an info file.
+//! The functions asks for an input folder and an output folder. In the input folder,
+//! images sould be in subfolders.
+//! Every subfolder sould contain one ore more image with the same settings
+//! (Voltage, Exp time, amperage), with an info file.
 //! Images are only loaded from the subfolders of the user given directory.
-//! Images are stored in the gc_im_container class.
-
-
-
-
+//! Images are stored in the gc_im_container class, then gain correction data are calculated
+//! by linear fitting to offset corrected pixel values in the function of the product of
+//! exposition time and amperage.
 
 
 void Gaincorr::readAndCalculateGain()
@@ -365,7 +364,7 @@ void Gaincorr::readAndCalculateGain()
     QString path = directory.absolutePath();
     directory.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
     QStringList subdirs  = directory.entryList();
-    for(int i=0; i<subdirs.size(); i++)
+    for(int i=0; i<subdirs.size(); i++) // for every subfolder
     {
 
         std::ifstream myfile;
@@ -683,7 +682,7 @@ void Gaincorr::readAndCalculateGain()
                     a = ss.str();
                     ss.clear();
 
-                    image.writetofloatfile("C:\\awing\\gaintemp\\" + v + "_" + a + "_" + e  + ".binf");
+                  // image.writetofloatfile("C:\\awing\\gaintemp\\" + v + "_" + a + "_" + e  + ".binf");
 
 
 
@@ -804,10 +803,14 @@ myfile.close();
 } // end of readimages() function.
 
 
+//! Reads offset correction data.
 
-
+//!  Reads slope and intercept files for offset correction. Asks the user to choose a folder.
+//! In this folder there should be the files containing slope and intercept data for offset correction.
+//! Name format: offsetintercept.binf and offsetslope.binf.
 void Gaincorr::readoffsetfactors()
 {
+    //Removes old factors.
     if(slopes.find(0) != slopes.end())
     {
         slopes.erase(slopes.find(0));
@@ -1126,6 +1129,10 @@ void Gaincorr::readgainfactors()
 
 
 } //end of void readfactors()
+
+//! Offset corrigates the given image.
+
+//! Image is offset corrigated and owerwritten in the memory.
 
 
 

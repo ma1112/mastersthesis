@@ -74,6 +74,8 @@ public:
     float getamperage();
     float getexptime();
     float getmean();
+    float getmax();
+    float getmin();
     std::string getid();
     float minintensity(); //!<Experimental feature
     float maxintensity();//!<Experimental feature
@@ -90,6 +92,8 @@ protected:
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
     float* im; //!< Array to store image values. float sould be 16 bit.
     float mean ;  //!< Mean value of the image.
+    float max;
+    float min;
     float deviation; //!< Standard deviation of the pixel values.
     std::string filename ;  //!< File name that the image was read from.
     std::string directory ;  //!< Directory name that the image was read from.

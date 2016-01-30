@@ -33,8 +33,12 @@ void MainWindow::on_button_choosefile_clicked()
     else
     image.readfromfile(filename.toStdString());
     image.drawimage(ui->label);
-    image.calculate_meanvalue_on_CPU();
+    image.calculate_meanvalue_on_GPU();
     image.writedetailstoscreen(ui->textEdit);
+    std::cout << "max on GPU:" << image.getmax() <<std::endl<<
+                 "min on GPU: " << image.getmin() <<std::endl
+              <<"min on CPU: " << image.minintensity()<<std::endl
+             <<"max on CPU: "  << image.maxintensity()<<std::endl;
 
 
 }

@@ -13,6 +13,7 @@ __global__ void kernel_addImage(float* d_this, float* d_other)
 
 }
 
+//! Kernel to substract another image's pixel values from this image.
 
 __global__ void kernel_subtractImage(float* d_this, float* d_other)
 {
@@ -103,23 +104,31 @@ void Image_cuda_compatible::calculate_meanvalue_on_GPU()
     copy_to_GPU();
 
 
-  double* d_data;
-  HANDLE_ERROR (cudaMalloc( (void**)&d_data, sizeof(double) * 1024));
-  double* d_sum;
-  HANDLE_ERROR (cudaMalloc( (void**)&d_sum, sizeof(double)));
+  float* d_data;
+  HANDLE_ERROR (cudaMalloc( (void**)&d_data, 3*sizeof(float) * 1024));
+  float *d_sum, *d_min, *d_max;
+  HANDLE_ERROR (cudaMalloc( (void**)&d_sum, sizeof(float)));
+  HANDLE_ERROR (cudaMalloc( (void**)&d_min, sizeof(float)));
+  HANDLE_ERROR (cudaMalloc( (void**)&d_max, sizeof(float)));
 
-  kernel_reduce_sum_first_step<1024><<<64, 1024,  1024*sizeof(double)>>>(gpu_im,d_data, size);
-  kernel_reduce_sum_second_step<64><<<1,64, 64*sizeof(double)>>>(d_data, d_sum);
-  double *h_sum;
-h_sum = (double*) malloc(sizeof(double));
-HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(double), cudaMemcpyDeviceToHost));
- mean = (float) ( (*h_sum )/ size);
+
+  kernel_reduce_sum_first_step<1024><<<64, 1024,  3*1024*sizeof(float)>>>(gpu_im, d_data, size);
+  kernel_reduce_sum_second_step<64><<<1,64, 3*64*sizeof(float)>>>(d_data, d_sum, d_min, d_max);
+  float *h_sum;
+h_sum = (float*) malloc(sizeof(float));
+HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(float), cudaMemcpyDeviceToHost));
+ mean =  ( (*h_sum )/ size);
+ HANDLE_ERROR (cudaMemcpy(&min, d_min, sizeof(float), cudaMemcpyDeviceToHost));
+ HANDLE_ERROR (cudaMemcpy(&max, d_max, sizeof(float), cudaMemcpyDeviceToHost));
+
 
 
 
 free(h_sum);
   cudaFree(d_data);
   cudaFree(d_sum);
+  cudaFree(d_min);
+  cudaFree(d_max);
 
 }
 
@@ -221,4 +230,7 @@ void Image_cuda_compatible::multiply_on_GPU(float multiplier)
     kernel_multiplyImage<<<2592,512>>>(gpu_im, multiplier);
     remove_from_CPU();
 }
+
+
+
 

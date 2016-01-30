@@ -8,7 +8,6 @@ Image::Image( float* array) : Image_cuda_compatible(array){}
 
 Image::~Image()
 {
-  //  delete[] im;
 
 }
 
@@ -54,12 +53,13 @@ Image::Image(QString filename) : Image_cuda_compatible()
 
 
 
-//Reads the image from .bin file. Overload: filename can be either Qstring or std::string.
+//! Reads the image from .bin file.
 void  Image::Qreadfromfile( QString filename )
 {
     Image::readfromfile( filename.toStdString());
 }
-//Draws image to QLabel. Image must be read.
+
+//! Draws image to QLabel. Image must be read before.
 void Image::drawimage (QLabel* label)
 {
     float min = minintensity();
@@ -107,6 +107,10 @@ void Image::writedetailstoscreen(QTextEdit* textEdit)
     textEdit->append("Amperage: " + QString::number(amperage) );
     textEdit->append("Exposition time: " + QString::number(exptime) );
     textEdit->append("Mean:"+ QString::number(mean));
+    textEdit->append("Min:"+ QString::number(min));
+    textEdit->append("Max:"+ QString::number(max));
+
+
 
 
 
