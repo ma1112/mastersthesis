@@ -3,6 +3,7 @@
 #include "gaincorr.h"
 #include "math.h"
 #include <cuda.h>
+#include <iostream>
 
 
 
@@ -77,11 +78,11 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
     int sat = saturation[voltage];
     float* d_slope;
     float* d_intercept;
-    d_slope = slopes.find(voltage)->second.copy_to_GPU();
-    d_intercept = intercepts.find(voltage)->second.copy_to_GPU();
+    d_slope = slopes.find(voltage)->second.gpu_im;
+    d_intercept = intercepts.find(voltage)->second.gpu_im;
     float* d_image;
 
-    d_image= image.copy_to_GPU();
+    d_image= image.gpu_im;
 
     cudaMalloc( (void**)&d_saturation, sizeof(int) );
    cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice );
@@ -91,8 +92,6 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
 
     kernel_do_gaincorr<<<41472,32>>>( d_slope,  d_intercept, d_saturation,  d_image );
-    image.copy_GPU_array(d_image);
-    image.remove_from_CPU();
 
 
 
@@ -104,6 +103,10 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
     cudaFree(d_saturation);
 
 }
+
+
+
+
 
 
 

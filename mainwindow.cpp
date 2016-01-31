@@ -7,6 +7,7 @@
 #include <QDir>
 #include "gaincorr.h"
 #include <QTime> // debug reasons.
+#include<iostream>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
 
 }
 
@@ -36,9 +39,8 @@ void MainWindow::on_button_choosefile_clicked()
     image.calculate_meanvalue_on_GPU();
     image.writedetailstoscreen(ui->textEdit);
     std::cout << "max on GPU:" << image.getmax() <<std::endl<<
-                 "min on GPU: " << image.getmin() <<std::endl
-              <<"min on CPU: " << image.minintensity()<<std::endl
-             <<"max on CPU: "  << image.maxintensity()<<std::endl;
+                 "min on GPU: " << image.getmin() <<std::endl;
+
 
 
 }
@@ -67,6 +69,7 @@ void MainWindow::on_pushButton_3_clicked()
     if(filename.endsWith(QChar('f')))
     {
         image.readfromfloatfile(filename.toStdString());
+        readinfo();
     }
     else
     image.readfromfile(filename.toStdString());

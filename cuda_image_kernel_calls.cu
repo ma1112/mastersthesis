@@ -2,6 +2,10 @@
 //#include "cuda_image_kernel_calls.h"
 #include "image_cuda_compatible.h"
 #include "book.h"
+#include <stdio.h>
+#include <iostream>
+#include <string>
+
 
 //! Kernel to add another image's pixel values to this image.
 __global__ void kernel_addImage(float* d_this, float* d_other)
@@ -45,6 +49,23 @@ __global__ void kernel_multiplyImage(float* d_this, float multiplier)
     return;
 }
 
+__global__ void kernel_loadFromUShortArray(unsigned short* d_ushort, float* d_image)
+{
+    unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
+    d_image[pixel] = (float) d_ushort[pixel];
+    return;
+}
+
+
+__global__ void kernel_exportToUSarray( float* d_image, unsigned short* d_ushort)
+{
+    unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
+    d_ushort[pixel]   = (unsigned short) d_image[pixel];
+    return;
+}
+
+
+
 //! Deassings memory from the GPU.
 void Image_cuda_compatible::remove_from_GPU()
 {
@@ -55,45 +76,7 @@ void Image_cuda_compatible::remove_from_GPU()
     }
 }
 
-//! Reserves memory on the GPU for the image and copies data from the CPU memory. Return with the device pointer.
 
-float* Image_cuda_compatible::copy_to_GPU()
-{
-    if(im != NULL)
-    {
-      //  std::cout <<"copy_to_GPU(): im!= NULL: im = @" << im <<std::endl;
-        reserve_on_GPU();
-      //  std::cout <<"copy_to_GPU():reserved on GPU. GPU im = @" << gpu_im <<std::endl;
-
-        HANDLE_ERROR (cudaMemcpy(gpu_im,im,size * sizeof(float),cudaMemcpyHostToDevice));
-       // std::cout <<"copy_to_GPU():copied to GPU." <<std::endl;
-
-        return gpu_im;
-
-    }
-    else
-    {
-        return reserve_on_GPU();
-
-    }
-
-
-
-
-}
-
-void Image_cuda_compatible::copy_to_GPU(float* destination)
-{
-    if(destination != NULL)
-    {
-        //std::cout <<"Copying image " <<filename <<"to GPU." <<std::endl;
-    HANDLE_ERROR ( cudaMemcpy(destination,im,size * sizeof(float),cudaMemcpyHostToDevice));
-    }
-    else
-    {
-        std::cout << "WARNNG: space is not reserved on GPU." << std::endl;
-    }
-}
 
 
 
@@ -101,7 +84,11 @@ void Image_cuda_compatible::copy_to_GPU(float* destination)
 //! Copies image to the GPU and calculates the mean intensity on the GPU.
 void Image_cuda_compatible::calculate_meanvalue_on_GPU()
 {
-    copy_to_GPU();
+    if(gpu_im == NULL)
+    {
+        mean = 0.0f;
+        return;
+    }
 
 
   float* d_data;
@@ -125,44 +112,17 @@ HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(float), cudaMemcpyDeviceToHost));
 
 
 free(h_sum);
-  cudaFree(d_data);
-  cudaFree(d_sum);
-  cudaFree(d_min);
-  cudaFree(d_max);
+  HANDLE_ERROR(cudaFree(d_data));
+  HANDLE_ERROR(cudaFree(d_sum));
+  HANDLE_ERROR(cudaFree(d_min));
+  HANDLE_ERROR(cudaFree(d_max));
+
 
 }
 
 
-//! Copies an image from a GPU memory address to image's GPU memory.
-void Image_cuda_compatible::copy_GPU_array(float* d_image)
-{
-    reserve_on_GPU();
-    if(d_image != NULL && d_image != gpu_im)
-    {
-        HANDLE_ERROR ( cudaMemcpy(im,d_image, size*sizeof(float), cudaMemcpyDeviceToHost));
-        remove_from_CPU();
-    }
-    else if (d_image==NULL)
 
-    {
-        std::cout << "WARNING: Image is not on the GPU. " << std::endl;
-    }
-}
 
-//! Copies image to the CPU from the GPU.
-void Image_cuda_compatible::copy_from_GPU()
-{
-    reserve_on_CPU();
-    if(gpu_im != NULL)
-    {
-        HANDLE_ERROR ( cudaMemcpy(im,gpu_im, size*sizeof(float), cudaMemcpyDeviceToHost));
-        remove_from_GPU();
-    }
-    else
-    {
-        //std::cout << "WARNING: image" << id<<" is not on the GPU. " <<std::endl;
-    }
-}
 
 
 //! Reserves memory for the image on the GPU.
@@ -170,12 +130,16 @@ float* Image_cuda_compatible::reserve_on_GPU()
 {
     if( gpu_im == NULL)
     {
+      //  std::cout << "gpu_im ==" << gpu_im <<" And now mallocing memory. "
+       //           <<std::endl << "filename: " << filename << std::endl;
 
         HANDLE_ERROR( cudaMalloc( (void**)&gpu_im,size*sizeof(float)));
+     //   std::cout << "Malloc succesful & " << gpu_im <<std::endl;
        // std::cout << "Reserving memory on GPU for image "
                   //<<id << "at address @" << gpu_im <<std::endl;
-        cudaMemset(gpu_im,0,size*sizeof(float));
+       HANDLE_ERROR( cudaMemset(gpu_im,0,size*sizeof(float)));
     }
+
     return gpu_im;
 }
 
@@ -186,9 +150,8 @@ float* Image_cuda_compatible::copy_GPU_image(float* other)
     reserve_on_GPU();
     if(other !=NULL)
     {
-       // std::cout << "Copy image data from @" << other<< " to @" <<gpu_im <<std::endl;
+        //std::cout << "Copy image data from @" << other<< " to @" <<gpu_im <<std::endl;
         HANDLE_ERROR (cudaMemcpy( gpu_im,other,size * sizeof(float),cudaMemcpyDeviceToDevice));
-        remove_from_CPU();
     }
     else
     {
@@ -201,36 +164,112 @@ float* Image_cuda_compatible::copy_GPU_image(float* other)
 void Image_cuda_compatible::add_on_GPU(Image_cuda_compatible &other)
 {
 //    std::cout << "Add_on_GPU()" << std::endl;
-    other.copy_to_GPU();
-    copy_to_GPU();
+
    //std::cout << "kernel_addimage (@" << gpu_im<< ", @" << other.gpu_im<<std::endl;
     kernel_addImage<<<2592,512>>>(gpu_im, other.gpu_im);
    // std::cout <<"done" << std::endl;
-    remove_from_CPU();
 }
 
 void Image_cuda_compatible::subtract_on_GPU(Image_cuda_compatible &other)
 {
-    other.copy_to_GPU();
-    copy_to_GPU();
+
     kernel_subtractImage<<<2592,512>>>(gpu_im, other.gpu_im);
-    remove_from_CPU();
+
 }
 
 void Image_cuda_compatible::divide_on_GPU(float divisor)
 {
-    copy_to_GPU();
+
     kernel_divideImage<<<2592,512>>>(gpu_im, divisor);
-    remove_from_CPU();
+
 }
 
 void Image_cuda_compatible::multiply_on_GPU(float multiplier)
 {
-    copy_to_GPU();
     kernel_multiplyImage<<<2592,512>>>(gpu_im, multiplier);
-    remove_from_CPU();
+
+}
+
+void Image_cuda_compatible::cudaReadFromFile(const char* filename)
+{
+
+    FILE *file;
+    file = fopen(filename,"rb");
+    if (!file)
+        {
+                printf("Unable to open file! %s", filename);
+                return;
+        }
+    unsigned short *temp, *d_temp;
+    HANDLE_ERROR(cudaHostAlloc((void**)&temp, size*sizeof(unsigned short), cudaHostAllocDefault));
+    fread(temp,sizeof(unsigned short),size,file);
+    HANDLE_ERROR(cudaMalloc((void**)&d_temp,size*sizeof(unsigned short)));
+    HANDLE_ERROR(cudaMemcpy(d_temp,temp,sizeof(unsigned short) * size, cudaMemcpyHostToDevice));
+    HANDLE_ERROR(cudaFreeHost(temp));
+    kernel_loadFromUShortArray<<<2592,512>>>(d_temp, reserve_on_GPU());
+    HANDLE_ERROR(cudaFree(d_temp));
+    fclose(file);
+
+
+}
+
+
+void Image_cuda_compatible::cudaReadFromFloatFile(const char* filename)
+{
+    FILE *file;
+    file = fopen(filename,"rb");
+    if (!file)
+        {
+                printf("Unable to open file! %s", filename);
+                return;
+        }
+    float *temp;
+    HANDLE_ERROR(cudaHostAlloc((void**)&temp, size*sizeof(float), cudaHostAllocDefault));
+    fread(temp,sizeof(float),size,file);
+    HANDLE_ERROR(cudaMemcpy(reserve_on_GPU(),temp,sizeof(float) * size, cudaMemcpyHostToDevice));
+    HANDLE_ERROR(cudaFreeHost(temp));
+    fclose(file);
+
+
+}
+
+void Image_cuda_compatible::cudaGetShortArrayToHost(unsigned short *h_sImage)
+{
+    unsigned short *d_usimage;
+    HANDLE_ERROR(cudaMalloc((void**) & d_usimage, size*sizeof(unsigned short)));
+   kernel_exportToUSarray<<<2592,512>>>( gpu_im, d_usimage);
+   HANDLE_ERROR(cudaMemcpy(h_sImage, d_usimage, sizeof(unsigned short) * size , cudaMemcpyDeviceToHost));
+   HANDLE_ERROR(cudaFree(d_usimage));
+   return;
+}
+
+void Image_cuda_compatible::cudaGetArrayToHost(float *h_image)
+{
+    HANDLE_ERROR(cudaMemcpy(h_image, gpu_im,sizeof(float) * size, cudaMemcpyDeviceToHost));
+    return;
 }
 
 
 
+//! Writes image values to a binary file, with unsigned int values.
 
+void Image_cuda_compatible::writetofile(std::string filename)
+{
+    unsigned short* sh_im = new unsigned short[size];
+    cudaGetShortArrayToHost(sh_im);
+
+
+    FILE *file;
+
+
+    file = fopen(filename.c_str(), "wb");
+    if(file == NULL)
+    {
+            std::cout << "Failed to open file " << filename << "for writing."<< std::endl;
+            return;
+    }
+    fwrite(sh_im, sizeof(unsigned short), size, file );
+    delete[] sh_im;
+    fclose(file);
+
+}

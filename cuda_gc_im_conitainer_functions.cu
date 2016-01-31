@@ -1,7 +1,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include "gc_im_container.h"
-
+#include<iostream>
 
 
 //! Kernel for calculating gain correction factors. (Linear fit on pixels). Launch with <<<x,32>>>
@@ -43,21 +43,20 @@ __global__ void kernel_gaincorr_calculator(float* d_images, float* d_settings, f
 void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)
 {
 
-
-
-
-
-
             float xmean = calculateXmean();
             float x2mean = calculateX2mean();
             float denominator = x2mean - (xmean * xmean);
+            slope.reserve_on_GPU();
+            intercept.reserve_on_GPU();
 
-            kernel_gaincorr_calculator<<<41472,32>>>(d_images, d_settings, slope.copy_to_GPU(), intercept.copy_to_GPU(), images, size, xmean, denominator);  //41472 * 32  = 1327104
+            kernel_gaincorr_calculator<<<41472,32>>>(d_images, d_settings, slope.gpu_im, intercept.gpu_im, images, size, xmean, denominator);  //41472 * 32  = 1327104
 
 
 
             slope.calculate_meanvalue_on_GPU();
+            intercept.calculate_meanvalue_on_GPU();
             std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
+            std::cout << "intercept mean : " << intercept.getmean() << std::endl;
 
 
 
@@ -163,7 +162,6 @@ void gc_im_container::add(Image_cuda_compatible &im)
 {
     if(images < size)
     {
-        im.copy_to_GPU();
         kernel_gc_im_add<<<2592,512>>> (d_images, im.gpu_im, size, images);
         kernel_set_settings<<<1,1>>> (d_settings, (im.getamperage() * im.getexptime()), images );
         images++;

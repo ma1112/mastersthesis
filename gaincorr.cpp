@@ -11,6 +11,7 @@
 #include <fstream>
 #include <vector>
 #include <fstream>      // std::ofstream
+#include<sstream>
 
 
 
@@ -93,6 +94,7 @@ void Gaincorr::readAndCalculateOffset()
             std::cout << "WARNING There is no info in the info file in folder "
                       << path.toStdString() + "/" +subdirs.at(i).toStdString()
                       <<"." << std::endl;
+            myfile.close();
             continue;
         }
 
@@ -167,8 +169,9 @@ void Gaincorr::readAndCalculateOffset()
            QDir subdirectory(directory.absoluteFilePath(goodFolderList.at(i))); //Qdir for storing actual subdirectory.
 
            QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
-           images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
            images_temp.clear();
+           images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
+
 
            if(filelist.size() == 0)
            {
@@ -188,7 +191,6 @@ void Gaincorr::readAndCalculateOffset()
            {
                //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
                image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-               image.copy_to_GPU();
                image.calculate_meanvalue_on_GPU();
 
 
@@ -223,7 +225,7 @@ void Gaincorr::readAndCalculateOffset()
            int count = 0; //counts good images in a subfolder.
 
            //Ignoring images that differs more than 10 percent from the mean. Recalculating mean values.
-               for(int k=0; k <  images_temp.size(); k++)
+               for(size_t k=0; k <  images_temp.size(); k++)
                {
                    //Checking for every image if they parameters are near the mean of the parameters.
                    //(10% difference is allowed.)
@@ -307,12 +309,14 @@ void Gaincorr::readAndCalculateOffset()
                std::string slopefile = gcfolder + "/" + "offsetslope"  + ".binf";
                std::string interceptfile = gcfolder + "/" + "offsetintercept"  + ".binf";
                slope.writetofloatfile(slopefile);
-               slope.clear();
                intercept.writetofloatfile(interceptfile);
-               intercept.clear();
 
               slopes[0] =slope;
               intercepts[0] = intercept;
+              slope.clear();
+              intercept.clear();
+
+
 }
 
 
@@ -394,6 +398,7 @@ void Gaincorr::readAndCalculateGain()
             std::cout << "WARNING There is no info in the info file in folder "
                       << path.toStdString() + "/" +subdirs.at(i).toStdString()
                       <<"." << std::endl;
+            myfile.close();
             continue;
         }
 
@@ -574,7 +579,6 @@ void Gaincorr::readAndCalculateGain()
         {
             //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
             image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-            image.copy_to_GPU();
             image.calculate_meanvalue_on_GPU();
 
 
@@ -607,7 +611,7 @@ void Gaincorr::readAndCalculateGain()
         int count = 0; //counts good images in a subfolder.
 
         //Ignoring images that differs more than 10 percent from the mean. Recalculating mean values.
-            for(int k=0; k <  images_temp.size(); k++)
+            for(size_t k=0; k <  images_temp.size(); k++)
             {
                 //Checking for every image if they parameters are near the mean of the parameters.
                 //(10% difference is allowed.)
@@ -646,10 +650,11 @@ void Gaincorr::readAndCalculateGain()
                 //(count is the total number of good images in the subdirectory.)
 
                 image/=count;
+                image.calculate_meanvalue_on_GPU();
 
 
                 //Searching for saturation exposition.
-                if(image.maxintensity() > 16382)  // saturation at 16383
+                if(image.getmax() > 16382)  // saturation at 16383
 
                 {
                     int satvalue = (int) round((image.getexptime() * image.getamperage()));
@@ -745,7 +750,7 @@ images_temp.clear();
 
 if(saturation.empty() )
 {
-    std::cout << "ERROR: There is no saturation data. (I do not know what failed.)"
+    std::cout << "ERROR: There is no saturated image. You must read at least one image with a saturated pixel."
               << "gain correction calculation is unsuccessfull."
               <<std::endl;
     slopes.clear();
@@ -968,11 +973,11 @@ void Gaincorr::readgainfactors()
            std::string filename = gcfolder +"/intercept" + thisvoltage + ".binf" ;
 
            intercept.readfromfloatfile(filename);
-           intercept.calculate_meanvalue_on_CPU();
+           intercept.calculate_meanvalue_on_GPU();
 
            filename = gcfolder + "/slope" + thisvoltage + ".binf" ;
            slope.readfromfloatfile(filename);
-           slope.calculate_meanvalue_on_CPU();
+           slope.calculate_meanvalue_on_GPU();
            //Check if they are not blank...
            //DEBUG: Could check if every number is 0...
 
@@ -1156,17 +1161,17 @@ void Gaincorr::offsetcorrigateimage(Image_cuda_compatible &image)
         std::cout << "ERROR: There is no data to do offset corrigation." << std::endl;
         return;
     }
-    if( !(slopes[0].getmean() > 0) || !(intercepts[0].getmean() > 0) )
+    if( !(slopes[0].getmean() > 0) || ( !(intercepts[0].getmean() > 0) )  )
     {
         std::cout << "ERROR: offset correction picture is empty. (Probably not read?)"
+                     "slope mean : "  << slopes[0].getmean() <<
+                     std::endl<<
+                     "intercept mean " << intercepts[0].getmean()
                   <<std::endl;
         return;
     }
 
-    image.copy_to_GPU();
-    image.remove_from_CPU();
-    slopes[0].copy_to_GPU();
-    intercepts[0].copy_to_GPU();
+
 
     //could write operator*, but it would not be faster ...
     Image_cuda_compatible slopeTimesExp = slopes[0];

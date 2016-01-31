@@ -3,7 +3,6 @@
 
 
 Image::Image() : Image_cuda_compatible() {}
-Image::Image( float* array) : Image_cuda_compatible(array){}
 
 
 Image::~Image()
@@ -25,25 +24,6 @@ Image::~Image()
 
 
 
-Image::Image(std::string filename) : Image_cuda_compatible()
-{
-    //TODO: Error handling.
-   // im = new float[size];
-
-
-
-    readfromfile(filename);
-}
-
-
-
-Image::Image(QString filename) : Image_cuda_compatible()
-{
-    //TODO: Error handling.
-   // im = new float[size];
-    Qreadfromfile(filename);
-
-}
 
 
 
@@ -62,7 +42,7 @@ void  Image::Qreadfromfile( QString filename )
 //! Draws image to QLabel. Image must be read before.
 void Image::drawimage (QLabel* label)
 {
-    float min = minintensity();
+  /*  float min = minintensity();
     float max = maxintensity();
     //16 bit to 8 bit
          unsigned char *im_8_bit = new unsigned char[size];
@@ -87,6 +67,7 @@ void Image::drawimage (QLabel* label)
              label->show();
 
              delete[] im_8_bit;
+             */
 
 }
 

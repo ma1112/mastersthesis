@@ -1,15 +1,12 @@
 #ifndef IMAGE_CUDA_COMPATIBLE_H
 #define IMAGE_CUDA_COMPATIBLE_H
 
-#include <iostream>
-#include<stdio.h>
+
 #include <string>
-#include <algorithm>
-#include <fstream>
-#include <sstream>
+
 //#include "gc_im_container.h"
 class gc_im_container;
-class gaincorr;
+class Gaincorr;
 
 
 
@@ -21,13 +18,11 @@ class gaincorr;
 class Image_cuda_compatible
 {
 friend class gc_im_container;
-friend class gaincorr;
+friend class Gaincorr;
 
 public:
     Image_cuda_compatible(); //!< Default constructor.
-    Image_cuda_compatible (float* array);  //!<Constructor that copies image from a this.size long array
    virtual ~Image_cuda_compatible (); //!<Destructor.
-    void readfromarray(float* array); //!< Copies image from an array.
     Image_cuda_compatible& operator=( const Image_cuda_compatible& other); //!< Assigment operator
      Image_cuda_compatible& operator+=( Image_cuda_compatible &other);
      Image_cuda_compatible& operator-= (Image_cuda_compatible &other);
@@ -36,15 +31,10 @@ public:
 
      void clear(); //!<Cleans the image.
 
-     float* copy_to_GPU();
-     void copy_to_GPU(float* destination);
      void copy_GPU_array(float* d_image);
-     void copy_from_GPU();
      void remove_from_GPU();
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
 
-     float* reserve_on_CPU();
-     void remove_from_CPU();
 
 
      static const int width = 1536;  //!<Width of the image. Constant among all images.
@@ -53,6 +43,9 @@ public:
 
 
      void readfromfile(std::string filename ); //!< Reads image data from file.
+     void cudaReadFromFile(const char* filename); //! Cuda function that copies data from file to GPU.
+     void cudaReadFromFloatFile(const char* filename);
+
      void readfromfloatfile(std::string fname);
      void readinfo(); //!< Reads image info from the info file. Info file must be in the same folder as the image.
 
@@ -62,7 +55,11 @@ public:
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
 
 
-    void  calculate_meanvalue_on_CPU();  //!<Calculates the mean value of the image on the CPU.
+
+    void cudaGetShortArrayToHost(unsigned short *h_sImage);
+    void cudaGetArrayToHost(float *h_image);
+
+
 
 
     //Getter setters:
@@ -77,8 +74,6 @@ public:
     float getmax();
     float getmin();
     std::string getid();
-    float minintensity(); //!<Experimental feature
-    float maxintensity();//!<Experimental feature
     std::string getfilename();
 
 
@@ -90,7 +85,7 @@ protected:
 
 
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
-    float* im; //!< Array to store image values. float sould be 16 bit.
+    // Images are not stored on the host anymore. float* im; //!< Array to store image values. float sould be 16 bit.
     float mean ;  //!< Mean value of the image.
     float max;
     float min;
