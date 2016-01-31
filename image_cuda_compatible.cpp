@@ -170,7 +170,7 @@ void Image_cuda_compatible::initialize()
     amperage = 0;
     exptime = 0;
     mean = 0;
-    min = 0;
+    min = 0.0f;
     max = 1e30f;
     return;
 }
@@ -189,7 +189,7 @@ void Image_cuda_compatible::clear()
     voltage =0;
     amperage=0;
     exptime = 0;
-    min = 0;
+    min = 0.0f;
     max = 1e30f;
 }
 
@@ -361,10 +361,18 @@ float Image_cuda_compatible::getmean()
 }
 float Image_cuda_compatible::getmin()
 {
+    if(min ==0.0f)
+    {
+        calculate_meanvalue_on_GPU();
+    }
     return min;
 }
 float Image_cuda_compatible::getmax()
 {
+    if(max == 1e30f)
+    {
+        calculate_meanvalue_on_GPU();
+    }
     return max;
 }
 

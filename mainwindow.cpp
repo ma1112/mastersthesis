@@ -69,10 +69,13 @@ void MainWindow::on_pushButton_3_clicked()
     if(filename.endsWith(QChar('f')))
     {
         image.readfromfloatfile(filename.toStdString());
-        readinfo();
+        image.readinfo();
     }
     else
-    image.readfromfile(filename.toStdString());
+    {
+     image.readfromfile(filename.toStdString());
+     image.readinfo();
+    }
     image.drawimage(ui->label);
     image.writedetailstoscreen(ui->textEdit);
 

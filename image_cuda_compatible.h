@@ -24,16 +24,16 @@ public:
     Image_cuda_compatible(); //!< Default constructor.
    virtual ~Image_cuda_compatible (); //!<Destructor.
     Image_cuda_compatible& operator=( const Image_cuda_compatible& other); //!< Assigment operator
-     Image_cuda_compatible& operator+=( Image_cuda_compatible &other);
-     Image_cuda_compatible& operator-= (Image_cuda_compatible &other);
-     Image_cuda_compatible& operator*=(float n);
-     Image_cuda_compatible& operator/=(float n);
+     Image_cuda_compatible& operator+=( Image_cuda_compatible &other); //!< Adds another image on the GPU.
+     Image_cuda_compatible& operator-= (Image_cuda_compatible &other); //! Subtracts another image on the GPU.
+     Image_cuda_compatible& operator*=(float n); //!< Multiplies with a float, on the GPU.
+     Image_cuda_compatible& operator/=(float n);  //! < Divides an image on the GPU.
 
      void clear(); //!<Cleans the image.
 
      void copy_GPU_array(float* d_image);
      void remove_from_GPU();
-     void  calculate_meanvalue_on_GPU(); //!<Calculates the mean value of the image on the GPU.
+     void  calculate_meanvalue_on_GPU(); //!<Calculates the mean, minimum and maximum value of the image on the GPU.
 
 
 
@@ -58,6 +58,7 @@ public:
 
     void cudaGetShortArrayToHost(unsigned short *h_sImage);
     void cudaGetArrayToHost(float *h_image);
+    void cudaGetUCArrayToHost(unsigned char *h_image);
 
 
 

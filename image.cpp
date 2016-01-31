@@ -42,19 +42,9 @@ void  Image::Qreadfromfile( QString filename )
 //! Draws image to QLabel. Image must be read before.
 void Image::drawimage (QLabel* label)
 {
-  /*  float min = minintensity();
-    float max = maxintensity();
-    //16 bit to 8 bit
+
          unsigned char *im_8_bit = new unsigned char[size];
-         float temp;
-         for(int i=0;i<size;i++)
-         {
-
-             temp = 256 * ( im[i] - min) / max ;
-             im_8_bit[i] = (unsigned char) ( round(temp));
-
-         }
-
+         cudaGetUCArrayToHost(im_8_bit);
 
              QImage im_Pixmap (im_8_bit, width, height, QImage::Format_Indexed8);
 
@@ -67,7 +57,6 @@ void Image::drawimage (QLabel* label)
              label->show();
 
              delete[] im_8_bit;
-             */
 
 }
 

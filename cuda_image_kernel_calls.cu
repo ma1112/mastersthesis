@@ -64,7 +64,11 @@ __global__ void kernel_exportToUSarray( float* d_image, unsigned short* d_ushort
     return;
 }
 
-
+__global__ void kernel_exportToUCArray(float* d_image, unsigned char *d_ucimage, float min, float max)
+{
+    unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
+    d_ucimage [pixel] = (round(256 * ( d_image[pixel] - min) / max ));
+}
 
 //! Deassings memory from the GPU.
 void Image_cuda_compatible::remove_from_GPU()
@@ -86,7 +90,11 @@ void Image_cuda_compatible::calculate_meanvalue_on_GPU()
 {
     if(gpu_im == NULL)
     {
+        std::cout <<"ERROR: When calculating mean on image " << id
+                 <<std::endl << "Image is empty." << std::endl;
         mean = 0.0f;
+        max = 1e30f;
+        min =0.0f;
         return;
     }
 
@@ -271,5 +279,16 @@ void Image_cuda_compatible::writetofile(std::string filename)
     fwrite(sh_im, sizeof(unsigned short), size, file );
     delete[] sh_im;
     fclose(file);
+
+}
+
+void Image_cuda_compatible::cudaGetUCArrayToHost(unsigned char *h_image)
+{
+    unsigned char *d_ucimage;
+    HANDLE_ERROR(cudaMalloc((void**) & d_ucimage, size*sizeof(unsigned char)));
+    kernel_exportToUCArray<<<2592,512>>>(gpu_im, d_ucimage, getmin(), getmax());
+    HANDLE_ERROR(cudaMemcpy(h_image, d_ucimage, sizeof(unsigned char) * size , cudaMemcpyDeviceToHost));
+    HANDLE_ERROR(cudaFree(d_ucimage));
+    return;
 
 }

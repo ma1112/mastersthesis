@@ -68,7 +68,7 @@ void Gaincorr::readAndCalculateOffset()
         //Readinf info files to determine number of valid folders.
 
         std::ifstream myfile;
-        myfile.open(path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt" );
+        myfile.open((path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt").c_str() );
         if (! (myfile.is_open()))
         {
             std::cout<< "Warning: There is no info.txt file in folder "
@@ -372,7 +372,7 @@ void Gaincorr::readAndCalculateGain()
     {
 
         std::ifstream myfile;
-        myfile.open(path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt" );
+        myfile.open( (path.toStdString() + "/" +subdirs.at(i).toStdString() +"/info.txt").c_str() );
         if (! (myfile.is_open()))
         {
             std::cout<< "Warning: There is no info.txt file in folder "
@@ -543,8 +543,9 @@ void Gaincorr::readAndCalculateGain()
          continue;
      }
      gc_im_container  im_container;
+     std::vector<Image_cuda_compatible> imagesFromSubdirs;
+     imagesFromSubdirs.reserve(iter->second.size());
 
-     im_container.inicialize(iter->second.size());
 
 
      for(int i = 0; i< iter->second.size(); i++)
@@ -646,6 +647,7 @@ void Gaincorr::readAndCalculateGain()
             //Image processing finished in the current subdir. If there was some good image in that folder, add the averaged image to the averaged images' vector.
             if( count > 1)
                 {
+
                 //Dividing image parameters and pixel values by count
                 //(count is the total number of good images in the subdirectory.)
 
@@ -671,11 +673,11 @@ void Gaincorr::readAndCalculateGain()
 
 
 
-
-                    im_container.add(image);
+                    imagesFromSubdirs.push_back(image);
+                   // im_container.add(image);
                     //DEBUG
 
-                    std::stringstream ss;
+                   /* std::stringstream ss;
                     std::string v,a,e;
                     ss << image.getexptime();
                     e = ss.str();
@@ -685,7 +687,7 @@ void Gaincorr::readAndCalculateGain()
                     ss.clear();
                     ss<<image.getamperage();
                     a = ss.str();
-                    ss.clear();
+                    ss.clear();*/
 
                   // image.writetofloatfile("C:\\awing\\gaintemp\\" + v + "_" + a + "_" + e  + ".binf");
 
@@ -699,7 +701,7 @@ void Gaincorr::readAndCalculateGain()
                 }
             else //(if count <=1)
                {
-                std::cout <<"Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
+                std::cout <<"WARNING: Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
                 std::cout << "meanIntensity = "<< meanIntensity <<std::endl;
             }
 
@@ -709,6 +711,32 @@ void Gaincorr::readAndCalculateGain()
 
 
      } // end of for(every subdir at given voltage
+
+     int valids = 0;
+
+     for(size_t i=0; i<imagesFromSubdirs.size();i++)
+     {
+         if(imagesFromSubdirs.at(i).getexptime() *
+                 imagesFromSubdirs.at(i).getamperage() > saturation[iter->first])
+         {
+             std::cout << "Subdir with amperage " <<  imagesFromSubdirs.at(i).getamperage()
+                       << " and exptime " <<  imagesFromSubdirs.at(i).getexptime()
+                       <<" was saturated and thus ignored." << std::endl;
+             continue;
+         }
+         valids++;
+     }
+     im_container.inicialize(valids);
+     for(size_t i=0; i<imagesFromSubdirs.size();i++)
+     {
+         if(imagesFromSubdirs.at(i).getexptime() *
+                 imagesFromSubdirs.at(i).getamperage() > saturation[iter->first])
+         {
+             continue;
+         }
+       im_container.add(imagesFromSubdirs.at(i));
+     }
+     imagesFromSubdirs.clear();
 
 
 
@@ -788,7 +816,7 @@ for(std::map<int, int>::iterator iter = saturation.begin();
 }
 
 //write slope data to file
-std::ofstream myfile ( gcfolder + "/saturation.txt", std::ios_base::trunc);
+std::ofstream myfile ( (gcfolder + "/saturation.txt").c_str(), std::ios_base::trunc);
 if(!(myfile.is_open()))
 {
     std::cout <<"Warnig! text file to write slope data could not be opened at "
@@ -1017,7 +1045,7 @@ void Gaincorr::readgainfactors()
    }
 
 
-   std::ifstream myfile( gcfolder + "/saturation.txt");
+   std::ifstream myfile( (gcfolder + "/saturation.txt").c_str());
    if(! (myfile.is_open()))
    {
        slopes.clear();
