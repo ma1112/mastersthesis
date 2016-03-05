@@ -17,9 +17,12 @@ SOURCES += main.cpp\
     image.cpp \
     image_cuda_compatible.cpp \
     gaincorr.cpp \
-    gc_im_container.cpp
+    gc_im_container.cpp \
+    geomcorr.cpp
 
 HEADERS  += mainwindow.h
+HEADERS  += geomcorr.h
+HEADERS  +=  book.cuh
 HEADERS +=  gc_im_container.h
 
 HEADERS +=   gaincorr.h
@@ -51,6 +54,9 @@ OTHER_FILES +=      # cuda_code.cu # this is my cu file need to compile
 CUDA_SOURCES += cuda_image_kernel_calls.cu     # let NVCC know which file you want to compile CUDA NVCC
 CUDA_SOURCES += cuda_gaincorr_kernel_calls.cu
 CUDA_SOURCES += cuda_gc_im_conitainer_functions.cu
+CUDA_SOURCES += cuda_geomcorr_kernel_calls.cu
+CUDA_SOURCES += book.cu
+
 
 
 CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
@@ -117,4 +123,6 @@ DISTFILES += \
     cuda_reduce_kernels.cuh \
     cuda_image_kernel_calls.cu \
     cuda_gaincorr_kernel_calls.cu \
-    cuda_gc_im_conitainer_functions.cu
+    cuda_gc_im_conitainer_functions.cu \
+    cuda_geomcorr_kernel_calls.cu \
+    book.cu

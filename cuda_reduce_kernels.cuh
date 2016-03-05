@@ -1,6 +1,7 @@
     #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include"stdio.h"
+#include "math.h"
 
 
 //sums a long array to a Blockdim size array. Extern shared is used! Need second step to sum the last array.
@@ -21,32 +22,44 @@ if (blockSize >= 64) {
     sdata[tid] += sdata[tid + 32];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 32]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 32]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 32];
+
     }
 
 if (blockSize >= 32){
     sdata[tid] += sdata[tid + 16];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 16]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 16]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 16];
+
     }
 if (blockSize >= 16) {
     sdata[tid] += sdata[tid + 8];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 8]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 8]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 8];
+
     }
 if (blockSize >= 8) {
     sdata[tid] += sdata[tid + 4];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 4]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 4]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 4];
+
     }
 if (blockSize >= 4) {
     sdata[tid] += sdata[tid + 2];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 2]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 2]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 2];
+
     }
 if (blockSize >= 2) {
     sdata[tid] += sdata[tid + 1];
     sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 1]);
     sdata[tid + 2*blockSize] = fmaxf(sdata[tid + 2*blockSize] , sdata[tid + 2* blockSize + 1]);
+    sdata[tid + 3*blockSize] = sdata[tid + 3*blockSize] + sdata[tid + 3* blockSize + 1];
+
     }
 }
 
@@ -70,31 +83,43 @@ extern __shared__ float sdata[];
 sdata[tid] = 0.0f;
 sdata[blockSize + tid] = 1e30f; //min
 sdata[2* blockSize + tid] = 0.0f; //max
+sdata[3* blockSize + tid] = 0.0f; //stdev
+float value;
 while (i < n) {
-    sdata[tid] += g_idata[i];
-    sdata[blockSize + tid] = fminf( sdata[ blockSize + tid], g_idata[i]);
-    sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , g_idata[i]);
+    value = g_idata[i];
+    sdata[tid] += value;
+    sdata[blockSize + tid] = fminf( sdata[ blockSize + tid], value);
+    sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , value);
+    sdata[3*blockSize + tid] += value * value;
     i += gridSize;  } //modified here
 __syncthreads();
 if (blockSize >= 1024) { if (tid < 512) {
         sdata[tid] += sdata[tid + 512];
         sdata[blockSize + tid] = fminf(sdata[blockSize + tid] , sdata[blockSize + tid + 512]);
         sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , sdata[2*blockSize + tid + 512]);
+        sdata[3*blockSize + tid] = sdata[3*blockSize + tid] + sdata[3*blockSize + tid + 512];
+
    } __syncthreads(); } //added line
 if (blockSize >= 512) { if (tid < 256) {
         sdata[tid] += sdata[tid + 256];
         sdata[blockSize + tid] = fminf(sdata[blockSize + tid] , sdata[blockSize + tid + 256]);
         sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , sdata[2*blockSize + tid + 256]);
+        sdata[3*blockSize + tid] = sdata[3*blockSize + tid] + sdata[3*blockSize + tid + 256];
+
     } __syncthreads(); }
 if (blockSize >= 256) { if (tid < 128) {
         sdata[tid] += sdata[tid + 128];
         sdata[blockSize + tid] = fminf(sdata[blockSize + tid] , sdata[blockSize + tid + 128]);
         sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , sdata[2*blockSize + tid + 128]);
+        sdata[3*blockSize + tid] = sdata[3*blockSize + tid] + sdata[3*blockSize + tid + 128];
+
     } __syncthreads(); }
 if (blockSize >= 128) { if (tid < 64) {
         sdata[tid] += sdata[tid + 64];
         sdata[blockSize + tid] = fminf(sdata[blockSize + tid] , sdata[blockSize + tid + 64]);
         sdata[2*blockSize + tid] = fmaxf(sdata[2*blockSize + tid] , sdata[2*blockSize + tid + 64]);
+        sdata[3*blockSize + tid] = sdata[3*blockSize + tid] + sdata[3*blockSize + tid + 64];
+
     } __syncthreads(); }
 if (tid < 32) {
     warpReduce<blockSize>(sdata, tid);
@@ -103,6 +128,8 @@ if (tid == 0){
     g_odata[blockIdx.x] = sdata[0]; //sum
     g_odata[blockIdx.x + gridDim.x] = sdata[blockSize]; //min
     g_odata[blockIdx.x + 2* gridDim.x] = sdata[ 2* blockSize]; //max
+    g_odata[blockIdx.x + 3* gridDim.x] = sdata[ 3* blockSize]; //stdev
+
 }
 
 
@@ -114,39 +141,55 @@ if (tid == 0){
 //!
 //! Adds the elements of d_in and stores the sum in the d_out float.
 template <unsigned int blockSize>
-__global__ void kernel_reduce_sum_second_step(float * d_in, float* d_sum, float* d_min, float* d_max )
+__global__ void kernel_reduce_sum_second_step(float * d_in, float* d_sum, float* d_min, float* d_max, float* d_stdev )
 {
     extern __shared__ float sdata[];
     unsigned int tid = threadIdx.x;
     sdata[tid] = d_in[tid];
     sdata[tid+blockSize] = d_in[tid + blockSize];
     sdata[tid+ 2 * blockSize] = d_in[tid + 2* blockSize];
+    sdata[tid+ 3 * blockSize] = d_in[tid + 3* blockSize];
+
     __syncthreads();
     if (blockSize >= 1024) { if (tid < 512) {
             sdata[tid] += sdata[tid + 512];
             sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 512]);
             sdata[tid + 2 * blockSize] = fmaxf(sdata[tid + 2 * blockSize] , sdata[tid + 2* blockSize + 512]);
+            sdata[tid + 3 * blockSize] = sdata[tid + 3 * blockSize] + sdata[tid + 3* blockSize + 512];
+
         } __syncthreads(); }
     if (blockSize >= 512) { if (tid < 256) {
             sdata[tid] += sdata[tid + 256];
             sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 256]);
             sdata[tid + 2 * blockSize] = fmaxf(sdata[tid + 2 * blockSize] , sdata[tid + 2* blockSize + 256]);
+            sdata[tid + 3 * blockSize] = sdata[tid + 3 * blockSize] + sdata[tid + 3* blockSize + 256];
+
         } __syncthreads(); }
+
     if (blockSize >= 256) { if (tid < 128) {
             sdata[tid] += sdata[tid + 128];
             sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 128]);
             sdata[tid + 2 * blockSize] = fmaxf(sdata[tid + 2 * blockSize] , sdata[tid + 2* blockSize + 128]);
+            sdata[tid + 3 * blockSize] = sdata[tid + 3 * blockSize] + sdata[tid + 3* blockSize + 128];
+
         } __syncthreads(); }
     if (blockSize >= 128) { if (tid < 64) {
             sdata[tid] += sdata[tid + 64];
             sdata[tid + blockSize] = fminf(sdata[tid + blockSize] , sdata[tid + blockSize + 64]);
             sdata[tid + 2 * blockSize] = fmaxf(sdata[tid + 2 * blockSize] , sdata[tid + 2* blockSize + 64]);
+            sdata[tid + 3 * blockSize] = sdata[tid + 3 * blockSize] + sdata[tid + 3* blockSize + 64];
+
         } __syncthreads(); }
     if (tid < 32) {
      warpReduce<blockSize>(sdata, tid);
 
 }
-    if (tid == 0) { *d_sum =  sdata[0]; *d_min= sdata[blockSize]; *d_max = sdata[2*blockSize];}
+    if (tid == 0) {
+        *d_sum =  sdata[0];
+        *d_min= sdata[blockSize];
+        *d_max = sdata[2*blockSize];
+        *d_stdev =  sdata[3*blockSize];
+    }
 
 
 }

@@ -1,8 +1,10 @@
 
 #include "image.h"
+#include"qstring.h"
+#include "iostream"
 
 
-Image::Image() : Image_cuda_compatible() {}
+Image::Image() {initialize();}
 
 
 Image::~Image()
@@ -70,6 +72,7 @@ void Image::drawimage (QLabel* label)
 
 
 
+
 void Image::writedetailstoscreen(QTextEdit* textEdit)
 {
     textEdit->clear();
@@ -77,6 +80,7 @@ void Image::writedetailstoscreen(QTextEdit* textEdit)
     textEdit->append("Amperage: " + QString::number(amperage) );
     textEdit->append("Exposition time: " + QString::number(exptime) );
     textEdit->append("Mean:"+ QString::number(mean));
+    textEdit->append("StDev:"+ QString::number(stdev));
     textEdit->append("Min:"+ QString::number(min));
     textEdit->append("Max:"+ QString::number(max));
 

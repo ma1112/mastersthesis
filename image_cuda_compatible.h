@@ -28,10 +28,11 @@ public:
      Image_cuda_compatible& operator-= (Image_cuda_compatible &other); //! Subtracts another image on the GPU.
      Image_cuda_compatible& operator*=(float n); //!< Multiplies with a float, on the GPU.
      Image_cuda_compatible& operator/=(float n);  //! < Divides an image on the GPU.
+     void equalmax(Image_cuda_compatible &other);
 
      void clear(); //!<Cleans the image.
+     void clearwitinradius(int x, int y, int r);
 
-     void copy_GPU_array(float* d_image);
      void remove_from_GPU();
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean, minimum and maximum value of the image on the GPU.
 
@@ -51,6 +52,8 @@ public:
 
      void writetofile(std::string filename);
      void writetofloatfile(std::string filename);
+     void saveAsJPEG(std::string filename);
+
 
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
 
@@ -72,11 +75,18 @@ public:
     float getamperage();
     float getexptime();
     float getmean();
+    float getstdev();
     float getmax();
     float getmin();
     std::string getid();
     std::string getfilename();
+    float* reserve_on_GPU();
+    float* copy_GPU_image(float* other);
 
+
+
+    //DEBUG
+    float* gpu_im; //!< Poiter to the image on the GPU
 
 
 
@@ -88,6 +98,7 @@ protected:
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
     // Images are not stored on the host anymore. float* im; //!< Array to store image values. float sould be 16 bit.
     float mean ;  //!< Mean value of the image.
+    float stdev; //!< Standard deviation
     float max;
     float min;
     float deviation; //!< Standard deviation of the pixel values.
@@ -102,9 +113,6 @@ protected:
 
     //GPU stuff:
 
-    float* gpu_im; //!< Poiter to the image on the GPU
-    float* copy_GPU_image(float* other);
-    float* reserve_on_GPU();
     void add_on_GPU(Image_cuda_compatible &other);
     void subtract_on_GPU(Image_cuda_compatible &other);
 

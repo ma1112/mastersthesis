@@ -2,6 +2,7 @@
 #include "device_launch_parameters.h"
 #include "gc_im_container.h"
 #include<iostream>
+#include"book.cuh"
 
 
 //! Kernel for calculating gain correction factors. (Linear fit on pixels). Launch with <<<x,32>>>
@@ -137,10 +138,10 @@ float gc_im_container::calculateXmean()
 {
     float* d_xmean;
     float h_xmean;
-    cudaMalloc( (void**)&d_xmean, sizeof(float));
+    HANDLE_ERROR (cudaMalloc( (void**)&d_xmean, sizeof(float)));
     kernel_calculate_xmean_atomic<<<1,images>>>(d_settings, images, d_xmean);
-    cudaMemcpy(&h_xmean,d_xmean,sizeof(float), cudaMemcpyDeviceToHost);
-    cudaFree(d_xmean);
+    HANDLE_ERROR (cudaMemcpy(&h_xmean,d_xmean,sizeof(float), cudaMemcpyDeviceToHost));
+    HANDLE_ERROR (cudaFree(d_xmean));
     return h_xmean;
 }
 
@@ -149,10 +150,10 @@ float gc_im_container::calculateX2mean()
 {
     float* d_x2mean;
     float h_x2mean;
-    cudaMalloc( (void**)&d_x2mean, sizeof(float));
+   HANDLE_ERROR (cudaMalloc( (void**)&d_x2mean, sizeof(float)));
     kernel_calculate_x2mean_atomic<<<1,images>>>(d_settings, images, d_x2mean);
-    cudaMemcpy(&h_x2mean,d_x2mean,sizeof(float), cudaMemcpyDeviceToHost);
-    cudaFree(d_x2mean);
+    HANDLE_ERROR (cudaMemcpy(&h_x2mean,d_x2mean,sizeof(float), cudaMemcpyDeviceToHost));
+    HANDLE_ERROR (cudaFree(d_x2mean));
     return h_x2mean;
 }
 
@@ -186,11 +187,11 @@ void  gc_im_container::inicialize(int n)
     if( n > 0)
     {
         size = n;
-        cudaMalloc( (void**)&d_images,  sizeof(float) *1327104 * size);
-        cudaMalloc( (void**)&d_settings,  sizeof(float)  * size);
+        HANDLE_ERROR (cudaMalloc( (void**)&d_images,  sizeof(float) *1327104 * size));
+        HANDLE_ERROR (cudaMalloc( (void**)&d_settings,  sizeof(float)  * size));
 
-        cudaMemset(&d_images, 0,sizeof(float) *1327104 * size );
-        cudaMemset(&d_settings, 0,sizeof(float)  * size );
+        HANDLE_ERROR (cudaMemset(d_images, 0,sizeof(float) *1327104 * size ));
+        HANDLE_ERROR (cudaMemset(d_settings, 0,sizeof(float)  * size ));
 
     }
 return;
@@ -200,12 +201,12 @@ void gc_im_container::clear()
 {
     if(d_images != NULL)
     {
-        cudaFree(d_images);
+        HANDLE_ERROR (cudaFree(d_images));
         d_images = NULL;
     }
     if(d_settings != NULL)
     {
-        cudaFree(d_settings);
+        HANDLE_ERROR (cudaFree(d_settings));
         d_settings =NULL;
     }
     images =0;

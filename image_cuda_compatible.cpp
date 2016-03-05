@@ -2,6 +2,8 @@
 
 #include <QTime>
 #include <QFileInfo>
+#include <QImage>
+#include<QPixmap>
 #include<QString>
 #include<iostream>
 #include<fstream>
@@ -39,6 +41,7 @@ Image_cuda_compatible::Image_cuda_compatible(const Image_cuda_compatible& other)
     amperage= other.amperage;
     exptime = other.exptime;
      mean=other.mean;
+     stdev = other.stdev;
      filename = other.filename;
      directory = other.directory;
      id = other.id;
@@ -67,6 +70,7 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
      amperage= other.amperage;
      exptime = other.exptime;
       mean=other.mean;
+      stdev = other.stdev;
 
          filename = other.filename;
          directory = other.directory;
@@ -99,6 +103,7 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
 
     mean+=other.mean;
+    stdev = 0.0f;
     voltage +=other.voltage;
     amperage +=other.amperage;
     exptime +=other.exptime;
@@ -115,6 +120,7 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 
 
      mean-=other.mean;
+     stdev = 0.0f;
      voltage -=other.voltage;
      amperage -=other.amperage;
      exptime -=other.exptime;
@@ -137,6 +143,7 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
         amperage /=n;
         exptime /=n;
         mean /=n;
+        stdev = 0.0f;
         }
      else
         {
@@ -154,6 +161,7 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
     amperage *=n;
     exptime *=n;
     mean *=n;
+    stdev = 0.0f;
     return *this;
 }
 
@@ -172,6 +180,7 @@ void Image_cuda_compatible::initialize()
     mean = 0;
     min = 0.0f;
     max = 1e30f;
+    stdev = 0.0f;
     return;
 }
 
@@ -186,6 +195,7 @@ void Image_cuda_compatible::clear()
     filename="";
     directory="";
     mean=0;
+    stdev = 0.0f;
     voltage =0;
     amperage=0;
     exptime = 0;
@@ -375,6 +385,14 @@ float Image_cuda_compatible::getmax()
     }
     return max;
 }
+float Image_cuda_compatible::getstdev()
+{
+    if( stdev ==0.0f)
+    {
+        calculate_meanvalue_on_GPU();
+    }
+    return stdev;
+}
 
 std::string Image_cuda_compatible::getid()
 {
@@ -407,6 +425,32 @@ std::string Image_cuda_compatible::getfilename()
 }
 
 
+
+void Image_cuda_compatible::saveAsJPEG(std::string filename)
+{
+    unsigned char *im_8_bit = new unsigned char[size];
+    cudaGetUCArrayToHost(im_8_bit);
+    bool vanvalami = false;
+    for( int i=0; i< size; i++)
+    {
+        if(im_8_bit[i] > 1)
+        {
+            vanvalami = true;
+            break;
+        }
+    }
+
+
+
+        QImage im_Pixmap (im_8_bit, width, height, QImage::Format_Indexed8);
+        QVector<QRgb> my_table;
+        for(int i = 0; i < 256; i++) my_table.push_back(qRgb(i,i,i));
+        im_Pixmap.setColorTable(my_table);
+
+        im_Pixmap.save(QString::fromStdString( filename));
+        delete[] im_8_bit;
+
+}
 
 
 

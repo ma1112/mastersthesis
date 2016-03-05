@@ -5,6 +5,7 @@
 #include <cuda.h>
 #include <iostream>
 #include <list>
+#include"book.cuh"
 
 __global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, int* d_saturation, float* d_image)
 {
@@ -70,8 +71,9 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
     d_image= image.gpu_im;
 
+   /*
     std::cout << "GAIN CORRECTION" <<std::endl<<std::endl;
-    std::cout << "Image:" <<std::endl;
+   std::cout << "Image:" <<std::endl;
     std::cout << "VOltage: " << image.getvoltage();
    std::cout << "Min: " << image.getmin() <<"\t Mean: " << image.getmean()
              <<"\t Max: " << image.getmax() <<std::endl <<std::endl;
@@ -82,19 +84,20 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
    std::cout << "Min: " << intercepts.find(voltage)->second.getmin() <<"\t Mean: " << intercepts.find(voltage)->second.getmean()
              <<"\t Max: " << intercepts.find(voltage)->second.getmax() <<std::endl <<std::endl;
    std::cout <<"Saturation: " << sat << std::endl << std::endl;
+   */
 
 
 
 
 
-    cudaMalloc( (void**)&d_saturation, sizeof(int) );
-   cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice );
+    HANDLE_ERROR (cudaMalloc( (void**)&d_saturation, sizeof(int) ));
+   HANDLE_ERROR (cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice ));
 
     kernel_do_gaincorr<<<41472,32>>>( d_slope,  d_intercept, d_saturation,  d_image );
 
 
 
-    cudaFree(d_saturation);
+    HANDLE_ERROR (cudaFree(d_saturation));
 
 }
 

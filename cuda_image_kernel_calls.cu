@@ -1,11 +1,22 @@
 #include "cuda_reduce_kernels.cuh"
 //#include "cuda_image_kernel_calls.h"
 #include "image_cuda_compatible.h"
-#include "book.h"
+#include "book.cuh"
 #include <stdio.h>
 #include <iostream>
 #include <string>
 
+
+
+//!Kernel to do equalmax. Every pixel becomes max(value on this image, value on other image.)
+
+__global__ void kernel_equalmax(float* d_this, float* d_other)
+{
+    unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
+    d_this[pixel] = max(d_other[pixel], d_this[pixel]);
+    return;
+
+}
 
 //! Kernel to add another image's pixel values to this image.
 __global__ void kernel_addImage(float* d_this, float* d_other)
@@ -67,7 +78,7 @@ __global__ void kernel_exportToUSarray( float* d_image, unsigned short* d_ushort
 __global__ void kernel_exportToUCArray(float* d_image, unsigned char *d_ucimage, float min, float max)
 {
     unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
-    d_ucimage [pixel] = (round(256 * ( d_image[pixel] - min) / max ));
+    d_ucimage [pixel] = (unsigned char) ((255 * ( d_image[pixel] - min) / max ));
 }
 
 //! Deassings memory from the GPU.
@@ -75,6 +86,7 @@ void Image_cuda_compatible::remove_from_GPU()
 {
     if(gpu_im != NULL)
         {
+      //  std::cout << "removing image" << filename<<" from @" << gpu_im <<std::endl;
        HANDLE_ERROR ( cudaFree(gpu_im));
         gpu_im = NULL;
     }
@@ -95,26 +107,43 @@ void Image_cuda_compatible::calculate_meanvalue_on_GPU()
         mean = 0.0f;
         max = 1e30f;
         min =0.0f;
+        stdev = 0.0f;
         return;
     }
 
 
   float* d_data;
   HANDLE_ERROR (cudaMalloc( (void**)&d_data, 3*sizeof(float) * 1024));
-  float *d_sum, *d_min, *d_max;
+  float *d_sum, *d_min, *d_max, *d_stdev;
   HANDLE_ERROR (cudaMalloc( (void**)&d_sum, sizeof(float)));
+
   HANDLE_ERROR (cudaMalloc( (void**)&d_min, sizeof(float)));
   HANDLE_ERROR (cudaMalloc( (void**)&d_max, sizeof(float)));
+  HANDLE_ERROR (cudaMalloc( (void**)&d_stdev, sizeof(float)));
 
 
-  kernel_reduce_sum_first_step<1024><<<64, 1024,  3*1024*sizeof(float)>>>(gpu_im, d_data, size);
-  kernel_reduce_sum_second_step<64><<<1,64, 3*64*sizeof(float)>>>(d_data, d_sum, d_min, d_max);
+
+  kernel_reduce_sum_first_step<1024><<<64, 1024,  4*1024*sizeof(float)>>>(gpu_im, d_data, size);
+  kernel_reduce_sum_second_step<64><<<1,64, 4*64*sizeof(float)>>>(d_data, d_sum, d_min, d_max, d_stdev);
   float *h_sum;
 h_sum = (float*) malloc(sizeof(float));
 HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(float), cudaMemcpyDeviceToHost));
  mean =  ( (*h_sum )/ size);
  HANDLE_ERROR (cudaMemcpy(&min, d_min, sizeof(float), cudaMemcpyDeviceToHost));
  HANDLE_ERROR (cudaMemcpy(&max, d_max, sizeof(float), cudaMemcpyDeviceToHost));
+ HANDLE_ERROR (cudaMemcpy(&stdev, d_stdev, sizeof(float), cudaMemcpyDeviceToHost));
+ stdev /=size;
+ if(stdev - mean*mean < 0)
+ {
+     std::cout <<"WARNING: Stdev < 0 at image " << id << std::endl;
+     stdev = max;
+ }
+ else
+ {
+    stdev = sqrt(stdev - mean*mean);
+ }
+
+
 
 
 
@@ -124,6 +153,8 @@ free(h_sum);
   HANDLE_ERROR(cudaFree(d_sum));
   HANDLE_ERROR(cudaFree(d_min));
   HANDLE_ERROR(cudaFree(d_max));
+  HANDLE_ERROR(cudaFree(d_stdev));
+
 
 
 }
@@ -138,13 +169,14 @@ float* Image_cuda_compatible::reserve_on_GPU()
 {
     if( gpu_im == NULL)
     {
-      //  std::cout << "gpu_im ==" << gpu_im <<" And now mallocing memory. "
-       //           <<std::endl << "filename: " << filename << std::endl;
+     //   std::cout << "gpu_im ==" << gpu_im <<" And now mallocing memory. "
+      //           <<std::endl << "filename: " << filename
+      //          <<"size:" << size <<std::endl;
 
         HANDLE_ERROR( cudaMalloc( (void**)&gpu_im,size*sizeof(float)));
      //   std::cout << "Malloc succesful & " << gpu_im <<std::endl;
        // std::cout << "Reserving memory on GPU for image "
-                  //<<id << "at address @" << gpu_im <<std::endl;
+       //            <<id << "at address @" << gpu_im <<std::endl;
        HANDLE_ERROR( cudaMemset(gpu_im,0,size*sizeof(float)));
     }
 
@@ -156,6 +188,7 @@ float* Image_cuda_compatible::reserve_on_GPU()
 float* Image_cuda_compatible::copy_GPU_image(float* other)
 {
     reserve_on_GPU();
+
     if(other !=NULL)
     {
         //std::cout << "Copy image data from @" << other<< " to @" <<gpu_im <<std::endl;
@@ -167,6 +200,20 @@ float* Image_cuda_compatible::copy_GPU_image(float* other)
     }
     return gpu_im;
 }
+
+//! Every pixel becomes the maximum of itself or the pixel at the other image.
+void Image_cuda_compatible::equalmax(Image_cuda_compatible &other)
+{
+    if(other.gpu_im==NULL)
+    {
+        return;
+    }
+    reserve_on_GPU();
+    kernel_equalmax<<<2592,512>>>(gpu_im, other.gpu_im);
+}
+
+
+
 
 //! Adds an image's pixel values to this image on the GPU.
 void Image_cuda_compatible::add_on_GPU(Image_cuda_compatible &other)
@@ -197,6 +244,25 @@ void Image_cuda_compatible::multiply_on_GPU(float multiplier)
     kernel_multiplyImage<<<2592,512>>>(gpu_im, multiplier);
 
 }
+
+void Image_cuda_compatible::clearwitinradius(int x, int y, int r)
+{
+    //int pixel = x + y * width;
+    for (int dy = -r; dy <=r; dy++)
+    {
+        for( int dx = -r; dx <=r; dx++)
+        {
+            int pixel2 = x + dx + (y+ dy)*width;
+            if(x + dx >=0 && x + dx < width && y+ dy >=0 && y+ dy < height )
+            {
+             cudaMemset(gpu_im + pixel2,0,sizeof(float) );
+            }
+        }
+
+    }
+
+}
+
 
 void Image_cuda_compatible::cudaReadFromFile(const char* filename)
 {
@@ -285,7 +351,13 @@ void Image_cuda_compatible::writetofile(std::string filename)
 void Image_cuda_compatible::cudaGetUCArrayToHost(unsigned char *h_image)
 {
     unsigned char *d_ucimage;
+    calculate_meanvalue_on_GPU();
     HANDLE_ERROR(cudaMalloc((void**) & d_ucimage, size*sizeof(unsigned char)));
+    if( getmin() == getmax())
+    {
+        memset(h_image,0,sizeof(unsigned char) * size);
+        return;
+    }
     kernel_exportToUCArray<<<2592,512>>>(gpu_im, d_ucimage, getmin(), getmax());
     HANDLE_ERROR(cudaMemcpy(h_image, d_ucimage, sizeof(unsigned char) * size , cudaMemcpyDeviceToHost));
     HANDLE_ERROR(cudaFree(d_ucimage));

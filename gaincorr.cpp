@@ -171,7 +171,7 @@ void Gaincorr::readAndCalculateOffset()
            QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
            images_temp.clear();
            images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
-
+           images_temp.push_back(Image_cuda_compatible());
 
            if(filelist.size() == 0)
            {
@@ -190,24 +190,33 @@ void Gaincorr::readAndCalculateOffset()
            //Note: subdirectory is indexed by i, files are indexed by j.
            {
                //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
-               image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-               image.calculate_meanvalue_on_GPU();
+               //image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+               images_temp.back().readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+              // image.calculate_meanvalue_on_GPU();
+
+               images_temp.back().calculate_meanvalue_on_GPU();
 
 
-     //Note: images with 0 voltage or amperage (or other parameters) are ignored. X-ray tube was probably off...
+     //Note: images with 0 voltage or amperage (or other parameters) are kept.
                if      (
-                       ((!(image.getvoltage() > 0) && !(image.getvoltage() <0))
-                       || (!(image.getamperage() > 0) && !(image.getamperage() <0 ) ) )
-                       && image.getexptime() > 1 &&  image.getmean() > 1
+                       ((!(images_temp.back().getvoltage() > 0) && !(images_temp.back().getvoltage() <0))
+                       || (!(images_temp.back().getamperage() > 0) && !(images_temp.back().getamperage() <0 ) ) )
+                       && images_temp.back().getexptime() > 1 &&  images_temp.back().getmean() > 1
                        )
                    {
 
-                   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
+                //   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
 
                    meanExptime += ((images_temp.back().getexptime()));
                    meanIntensity += ((images_temp.back().getmean()) );
+                   images_temp.push_back(Image_cuda_compatible());
                    }
+               else
+               {
+
+               }
            } //end of for( every image in current subfolder)
+           images_temp.pop_back(); // last one is always empty.
 
            //if there is any non-blank images, calculate mean values!
            if(images_temp.size() > 0)
@@ -853,7 +862,7 @@ void Gaincorr::readoffsetfactors()
         intercepts.erase(intercepts.find(0));
     }
 
-    QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to load gain correction factors from (slope and intercept)"),
+    QString Qgcfolder = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to load offset correction factors from (slope and intercept)"),
                                                     "C:\\",
                                                      QFileDialog::ReadOnly );
     gcfolder = Qgcfolder.toStdString();

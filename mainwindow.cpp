@@ -6,6 +6,7 @@
 #include <QChar>
 #include <QDir>
 #include "gaincorr.h"
+#include "geomcorr.h"
 #include <QTime> // debug reasons.
 #include<iostream>
 
@@ -118,4 +119,20 @@ void MainWindow::on_pushButton_6_clicked()
     image.calculate_meanvalue_on_GPU();
     image.writedetailstoscreen(ui->textEdit);
     image.writetofloatfile(filename.toStdString() +"f");
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+
+    Geomcorr geomcor;
+
+    geomcor.readAndCalculateGeom(6);
+    geomcor.exportText("C:/awing/ellipses.txt");
+    std::cout <<"finito" << std::endl;
+
+
+
+
+
+
 }
