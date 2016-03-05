@@ -193,6 +193,7 @@ __global__ void kernel_zero_crossing_extractor(float* image, float* out, int num
 
 }
 
+/* NOT USED ANYMORE.
 __global__ void kernel_local_maximum_extractor(float* formerImage, float* newImage, int numCols, int numRows, int temp, int r)
 {
     int x = blockIdx.x * blockDim.x+ threadIdx.x;
@@ -253,7 +254,7 @@ __global__ void kernel_local_maximum_extractor(float* formerImage, float* newIma
         printf("Image %d, r= %d, Maximum value at x=%d, y= %d\n",temp,r,x,y);
     return;
 }
-
+*/
 
 __global__ void kernel_vertical_line_remover(float* image, float* out, int numCols, int numRows)
 {
@@ -369,9 +370,8 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image)
     const dim3 blockSize(16 + filterWidth-1 , 16 + filterWidth-1);
     const dim3 gridSize((image.width + 15) / 16  , (image.height + 15 ) / 16);
 
-    Image_cuda_compatible convolvedImage,transformedImageA,transformedImageB, zeroCrossImage, cleanZeroCrossing,maxImg;
-    transformedImageA.reserve_on_GPU();
-    transformedImageB.reserve_on_GPU();
+    Image_cuda_compatible convolvedImage,transformedImage, zeroCrossImage, cleanZeroCrossing,maxImg;
+    transformedImage.reserve_on_GPU();
     maxImg.reserve_on_GPU();
     maxImg.clear();
 
@@ -393,50 +393,30 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image)
    int rMax = 24;
 
    //r=5 here.
-   transformedImageA.clear();
-   kernel_hough_transform<<<newgridSize,newblockSize>>>(cleanZeroCrossing.reserve_on_GPU(), transformedImageA.reserve_on_GPU(), rMin, image.width, image.height , 1);
 
-    for( int i=rMin +1; i<=rMax;i++)
+    for( int i=rMin; i<=rMax;i++)
     {
-        printf("Image %s, r= %d\n\n", image.getid().c_str(), i);
+       //printf("Image %s, r= %d\n\n", image.getid().c_str(), i);
 
-        //Tranforming image with radius r to either transformdeImageA or transformedimageB, alternately.
-        //than inspecting the change in the values and decide wether a pixel is a middle of a circle.
-        if( i % 2 == (rMin +1) %2)
-        {
-            //Transform to B
-            transformedImageB.clear();
-            kernel_hough_transform<<<newgridSize,newblockSize>>>(cleanZeroCrossing.reserve_on_GPU(), transformedImageB.reserve_on_GPU(), i, image.width, image.height , 1);
-            kernel_local_maximum_extractor<<<newgridSize,newblockSize>>>(transformedImageA.reserve_on_GPU(), transformedImageB.reserve_on_GPU(), image.width, image.height,atoi(image.getid().c_str()), i);
+
+            transformedImage.clear();
+            kernel_hough_transform<<<newgridSize,newblockSize>>>(cleanZeroCrossing.reserve_on_GPU(), transformedImage.reserve_on_GPU(), i, image.width, image.height , 1);
             char str[3];
             sprintf(str,"%d",i);
 
-           // transformedImageA.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".binf");
-           // transformedImageA.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".jpg");
-            maxImg.equalmax(transformedImageA);
+           // transformedImage.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".binf");
+           // transformedImage.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".jpg");
+            maxImg.equalmax(transformedImage);
 
-        }
-        else
-        {
-            //transform to A
-            transformedImageA.clear();
-            kernel_hough_transform<<<newgridSize,newblockSize>>>(cleanZeroCrossing.reserve_on_GPU(), transformedImageA.reserve_on_GPU(), i, image.width, image.height , 1);
-            kernel_local_maximum_extractor<<<newgridSize,newblockSize>>>(transformedImageB.reserve_on_GPU(), transformedImageA.reserve_on_GPU(), image.width, image.height,atoi(image.getid().c_str()),i);
-            char str[3];
-            sprintf(str,"%d",i);
 
-           // transformedImageB.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".binf");
-            //transformedImageB.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".jpg");
-            maxImg.equalmax(transformedImageB);
 
-        }
 
     //kernel_local_maximum_extractor<<<newgridSize,newblockSize>>>(transformedImage.reserve_on_GPU(), image.width, image.height);
 
     }
 
-    maxImg.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_max_.jpg");
-    maxImg.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_max_.binf");
+    //maxImg.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_max_.jpg");
+    //maxImg.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_max_.binf");
     //Extracting maximums
 
     for( int i =0; i< n; i++)
@@ -450,7 +430,7 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image)
     unsigned int position = &(*iter) - d_ptr;
     float max_val = *iter;
 
-    std::cout  <<" The maximum value is " << max_val << " at position: x " << position % maxImg.width <<" y: " << position / maxImg.width << std::endl;
+    //std::cout  <<" The maximum value is " << max_val << " at position: x " << position % maxImg.width <<" y: " << position / maxImg.width << std::endl;
 
     maxImg.clearwitinradius(position % maxImg.width, position / maxImg.width , 2*rMax+1 );
 
@@ -501,7 +481,6 @@ void Geomcorr::addCoordinates()
         return;
     }
 
-    std::cout << "AddedCoordinates: " << addedCoordinates << std::endl;
 
     kernel_addCoordinates<<<1,n>>>( d_coordinates, d_coordinatesFromThatImage, n, size, addedCoordinates, Image_cuda_compatible::width, Image_cuda_compatible::height);
     addedCoordinates++;

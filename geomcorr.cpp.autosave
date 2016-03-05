@@ -36,7 +36,7 @@ gc.readoffsetfactors();
        for(int i = 0; i<filelist.size(); i++)
        {
            //Process each images.
-           std::cout << "Processing image " << i<<" of " <<filelist.size()<<". (" << (100*i) / filelist.size()<<" %." << std::endl;
+           std::cout << "Processing image " << i<<" of " <<filelist.size()<<". (" << (100*i) / filelist.size()<<"%.)" << std::endl;
            image.readfromfile(directory.absoluteFilePath(filelist.at(i)).toStdString());
            if( !(image.getamperage() > 0 && image.getexptime() >0 && image.getvoltage() > 0))
            {
