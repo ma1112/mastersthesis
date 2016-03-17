@@ -13,25 +13,13 @@ Image::~Image()
 }
 
 
-//copy constructor
+//!copy constructor
  Image::Image (Image const& image)
  {
     // std::cout << "Calling copy constructor for Image az &" <<this<<std::endl;
      *this = image;
 
  }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -62,17 +50,7 @@ void Image::drawimage (QLabel* label)
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
+//! Writes the image details to the given QTextEdit. Used to debug reasons at the moment.
 void Image::writedetailstoscreen(QTextEdit* textEdit)
 {
     textEdit->clear();

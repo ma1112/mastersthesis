@@ -18,9 +18,11 @@ SOURCES += main.cpp\
     image_cuda_compatible.cpp \
     gaincorr.cpp \
     gc_im_container.cpp \
-    geomcorr.cpp
+    geomcorr.cpp \
+    geomcorrcheckerdialog.cpp
 
 HEADERS  += mainwindow.h
+HEADERS  +=    geomcorrcheckerdialog.h
 HEADERS  += geomcorr.h
 HEADERS  +=  book.cuh
 HEADERS +=  gc_im_container.h
@@ -32,7 +34,8 @@ HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
 
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    geomcorrcheckerdialog.ui
 
 
 
@@ -60,8 +63,8 @@ CUDA_SOURCES += book.cu
 
 
 CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
-SYSTEM_NAME = Win32         # Depending on your system either 'Win32', 'x64', or 'Win64'
-SYSTEM_TYPE = 32            # '32' or '64', depending on your system
+SYSTEM_NAME = x64         # Depending on your system either 'Win32', 'x64', or 'Win64'
+SYSTEM_TYPE = 64            # '32' or '64', depending on your system
 CUDA_ARCH = sm_20           # Type of CUDA architecture, for example 'compute_10', 'compute_11', 'sm_10'
 NVCC_OPTIONS += --use_fast_math # default setting
 
@@ -71,11 +74,11 @@ INCLUDEPATH += $$CUDA_DIR/include\
 
 
 # library directories
-QMAKE_LIBDIR += $$CUDA_DIR/lib/Win32\
+QMAKE_LIBDIR += $$CUDA_DIR/lib/x64\
 
 
 # Add the necessary libraries
-CUDA_LIBS= -lcuda -lcudart
+CUDA_LIBS= -lcuda -lcudart -lcusolver -lcusparse
 #add quotation for those directories contain space (Windows required)
 CUDA_INC +=$$join(INCLUDEPATH,'" -I"','-I"','"')
 
@@ -92,7 +95,7 @@ CONFIG(debug, debug|release) {
     cuda_d.output   = $$CUDA_OBJECTS_DIR/${QMAKE_FILE_BASE}_cuda.obj
     cuda_d.commands = $$CUDA_DIR/bin/nvcc.exe -D_DEBUG $$NVCC_OPTIONS $$CUDA_INC $$LIBS \
                       --machine $$SYSTEM_TYPE -arch=$$CUDA_ARCH \
-                      --compile -cudart static -g -DWIN32 -D_MBCS \
+                      --compile -cudart static -g -DWIN64 -D_MBCS \
                       -Xcompiler "/wd4819,/EHsc,/W3,/nologo,/Od,/Zi,/RTC1" \
                       -Xcompiler $$MSVCRT_LINK_FLAG_DEBUG \
                       -c -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}
@@ -105,7 +108,7 @@ else {
      cuda.output   = $$CUDA_OBJECTS_DIR/${QMAKE_FILE_BASE}_cuda.obj
      cuda.commands = $$CUDA_DIR/bin/nvcc.exe $$NVCC_OPTIONS $$CUDA_INC $$LIBS \
                     --machine $$SYSTEM_TYPE -arch=$$CUDA_ARCH \
-                    --compile -cudart static -DWIN32 -D_MBCS \
+                    --compile -cudart static -DWIN64 -D_MBCS \
                     -Xcompiler "/wd4819,/EHsc,/W3,/nologo,/O2,/Zi" \
                     -Xcompiler $$MSVCRT_LINK_FLAG_RELEASE \
                     -c -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME}

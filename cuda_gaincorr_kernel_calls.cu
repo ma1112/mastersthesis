@@ -7,6 +7,11 @@
 #include <list>
 #include"book.cuh"
 
+
+//! Kernel to gain corrigates the given image with the given slope and intercept data on the GPU.
+
+//! Intercept and slope arrays are images with the same size, storing intercept and slope correction
+//! factor to every pixel.
 __global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, int* d_saturation, float* d_image)
 {
 
@@ -21,12 +26,7 @@ __global__ void kernel_do_gaincorr (float* d_slope, float* d_intercept, int* d_s
     return;
 }
 
-
-
-
-
-
-
+//! Executes gain correction of the given image.
 void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 {
     //Rounding voltage to multiply of 5
@@ -71,25 +71,6 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
 
     d_image= image.gpu_im;
 
-   /*
-    std::cout << "GAIN CORRECTION" <<std::endl<<std::endl;
-   std::cout << "Image:" <<std::endl;
-    std::cout << "VOltage: " << image.getvoltage();
-   std::cout << "Min: " << image.getmin() <<"\t Mean: " << image.getmean()
-             <<"\t Max: " << image.getmax() <<std::endl <<std::endl;
-   std::cout << "slope:" <<std::endl;
-   std::cout << "Min: " << slopes.find(voltage)->second.getmin() <<"\t Mean: " << slopes.find(voltage)->second.getmean()
-             <<"\t Max: " << slopes.find(voltage)->second.getmax() <<std::endl <<std::endl;
-   std::cout << "Intercept:" <<std::endl;
-   std::cout << "Min: " << intercepts.find(voltage)->second.getmin() <<"\t Mean: " << intercepts.find(voltage)->second.getmean()
-             <<"\t Max: " << intercepts.find(voltage)->second.getmax() <<std::endl <<std::endl;
-   std::cout <<"Saturation: " << sat << std::endl << std::endl;
-   */
-
-
-
-
-
     HANDLE_ERROR (cudaMalloc( (void**)&d_saturation, sizeof(int) ));
    HANDLE_ERROR (cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice ));
 
@@ -100,9 +81,4 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
     HANDLE_ERROR (cudaFree(d_saturation));
 
 }
-
-
-
-
-
 

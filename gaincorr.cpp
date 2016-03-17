@@ -19,8 +19,6 @@
 Gaincorr::Gaincorr()
 {
     gcfolder = "";
-
-
 }
 
 

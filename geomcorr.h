@@ -10,20 +10,22 @@ class Geomcorr
 public:
     Geomcorr();
     ~Geomcorr();
-    void extractCoordinates(Image_cuda_compatible &image);
+    void extractCoordinates(Image_cuda_compatible &image, bool drawOnly = false, bool onlyN = false);
     void readAndCalculateGeom(int n);
-    void initializeDeviceVector(int n, int size);
+    void initializeDeviceVector(int n, int size, int u);
     void addCoordinates();
     void exportText(std::string filename);
+    void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, float* error);
+
 
 private:
-    Gaincorr gc;
     float* d_filter;
     const int filterWidth = 9;
     Gaincorr *gaincorr;
     int* d_coordinates;
-    int addedCoordinates;
-    int n;
+    int* d_addedCoordinates;
+    int n; // number of circles visible on all images
+    int u; // unseen circles ( on first image)
     int size;
     int* d_coordinatesFromThatImage;
 

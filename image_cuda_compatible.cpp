@@ -9,16 +9,13 @@
 #include<fstream>
 #include<sstream>
 
+
+//! Constructor.
 Image_cuda_compatible::Image_cuda_compatible()  {
 initialize();
 }
 
-
-
-
-
-
-
+//! Destructor.
 Image_cuda_compatible::~Image_cuda_compatible() {
     //std::cout << "DESTROYING "<<filename<<std::endl;
     remove_from_GPU(); }
@@ -95,7 +92,6 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
  }
 
 //! Operator for addition.
-
 //! Adds another image's attributes to this. Also adds pixel values on the GPU.
  Image_cuda_compatible&  Image_cuda_compatible::operator+=(Image_cuda_compatible &other)
  {
@@ -164,6 +160,9 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
     stdev = 0.0f;
     return *this;
 }
+
+
+
 
 
 
@@ -344,23 +343,26 @@ void Image_cuda_compatible::readfromfloatfile(std::string fname)
 
 
 
-//Getter-setters:
-
+//! Returns the voltage of the image.
 float Image_cuda_compatible::getvoltage()
 {
     return voltage;
 }
 
+//! Returns the amperage of the image.
 float Image_cuda_compatible::getamperage()
 {
     return amperage;
 }
 
+//! Returns the exptime of the image.
 float Image_cuda_compatible::getexptime()
 {
     return exptime;
 }
 
+//! Returns the mean of the image.
+//! If the mean value is not yet calculated ( or it is 0), (re)calculates it.
 float Image_cuda_compatible::getmean()
 {
     if(! (mean >0))
@@ -369,6 +371,8 @@ float Image_cuda_compatible::getmean()
     }
     return mean;
 }
+//! Returns the minimum intensity of the image.
+//! If the minimum intensity value is not yet calculated ( or it is 0), (re)calculates it.
 float Image_cuda_compatible::getmin()
 {
     if(min ==0.0f)
@@ -377,6 +381,9 @@ float Image_cuda_compatible::getmin()
     }
     return min;
 }
+
+//! Returns the maximum intensity of the image.
+//! If the maximum intensity value is not yet calculated,, calculates it.
 float Image_cuda_compatible::getmax()
 {
     if(max == 1e30f)
@@ -394,62 +401,54 @@ float Image_cuda_compatible::getstdev()
     return stdev;
 }
 
+//! Returns the ID of the image.
 std::string Image_cuda_compatible::getid()
 {
     return id;
 }
 
-
+//! Sets the voltage value of the image.
 void Image_cuda_compatible::setvoltage(float f)
 {
     voltage = f;
     return;
 }
 
+//! Sets the amperage value of the image.
 void Image_cuda_compatible::setamperage(float f)
 {
     amperage = f;
     return;
 }
-
+//! Sets the exptime value of the image.
 void Image_cuda_compatible::setexptime(float f)
 {
     exptime = f;
     return;
 }
 
-
+//! Returns with the filanem of the image.
+//! If the image was not read from  a file, returns "".
 std::string Image_cuda_compatible::getfilename()
 {
     return filename;
 }
 
 
+//! Saves the image as a Jpeg.
 
+//! It can actually save any Qt supported format, filename extension determines
+//! the image type.
 void Image_cuda_compatible::saveAsJPEG(std::string filename)
 {
     unsigned char *im_8_bit = new unsigned char[size];
     cudaGetUCArrayToHost(im_8_bit);
-    bool vanvalami = false;
-    for( int i=0; i< size; i++)
-    {
-        if(im_8_bit[i] > 1)
-        {
-            vanvalami = true;
-            break;
-        }
-    }
-
-
-
-        QImage im_Pixmap (im_8_bit, width, height, QImage::Format_Indexed8);
-        QVector<QRgb> my_table;
-        for(int i = 0; i < 256; i++) my_table.push_back(qRgb(i,i,i));
-        im_Pixmap.setColorTable(my_table);
-
-        im_Pixmap.save(QString::fromStdString( filename));
-        delete[] im_8_bit;
-
+   QImage im_Pixmap (im_8_bit, width, height, QImage::Format_Indexed8);
+   QVector<QRgb> my_table;
+   for(int i = 0; i < 256; i++) my_table.push_back(qRgb(i,i,i));
+   im_Pixmap.setColorTable(my_table);
+   im_Pixmap.save(QString::fromStdString( filename));
+   delete[] im_8_bit;
 }
 
 

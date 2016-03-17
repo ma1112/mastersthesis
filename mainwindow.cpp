@@ -42,6 +42,8 @@ void MainWindow::on_button_choosefile_clicked()
     std::cout << "max on GPU:" << image.getmax() <<std::endl<<
                  "min on GPU: " << image.getmin() <<std::endl;
 
+    std::cout <<"correlating with itsetlf : " << image.correlateWith(image) << std::endl;
+
 
 
 }

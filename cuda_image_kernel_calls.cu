@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <algorithm>    // std::max, std::min
+
 
 
 
@@ -51,6 +53,7 @@ __global__ void kernel_divideImage(float* d_this, float divisor)
 }
 
 
+//! Kernel to miltiply all pixel values by a float.
 
 __global__ void kernel_multiplyImage(float* d_this, float multiplier)
 {
@@ -60,6 +63,10 @@ __global__ void kernel_multiplyImage(float* d_this, float multiplier)
     return;
 }
 
+//! Kernel to load an image from an unsigned short array on the GPU.
+
+//! Used in cudaReadFromFile() where the file is read into an unsigned short array, copied to the GPU
+//! and then assigned to the float array.
 __global__ void kernel_loadFromUShortArray(unsigned short* d_ushort, float* d_image)
 {
     unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
@@ -67,7 +74,8 @@ __global__ void kernel_loadFromUShortArray(unsigned short* d_ushort, float* d_im
     return;
 }
 
-
+//! Kernel that exports the float array of an image to an unsigned short array.
+//! Used when communicating with the CPU.
 __global__ void kernel_exportToUSarray( float* d_image, unsigned short* d_ushort)
 {
     unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
@@ -75,11 +83,42 @@ __global__ void kernel_exportToUSarray( float* d_image, unsigned short* d_ushort
     return;
 }
 
+//! Kernel that exports the float array of an image to an unsigned char array.
+//! Used when communicating with the CPU.
 __global__ void kernel_exportToUCArray(float* d_image, unsigned char *d_ucimage, float min, float max)
 {
     unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
     d_ucimage [pixel] = (unsigned char) ((255 * ( d_image[pixel] - min) / max ));
 }
+
+
+__global__ void kernel_correlate2d(float* d_this, float* d_other, float* result, float meanThis, float meanOther)
+{
+    unsigned int pixel = blockIdx.x*blockDim.x + threadIdx.x; //thread is computing pixel-th pixel
+    result[pixel] = (d_this[pixel] - meanThis) * (d_other[pixel] - meanOther);
+    return;
+}
+
+//! Kernel to invert only one pixel. Used when drawing a cross to the image.
+__global__ void kernel_invert_pixel(float* d_image, int x, int y,const int numCols, float minimum, float maximum)
+{
+    d_image[x + y*numCols] = 2* maximum;
+}
+
+
+float Image_cuda_compatible::correlateWith(Image_cuda_compatible &other)
+{
+    calculate_meanvalue_on_GPU();
+    other.calculate_meanvalue_on_GPU();
+    Image_cuda_compatible corr2;
+
+    kernel_correlate2d<<<2592,512>>>(gpu_im, other.gpu_im, corr2.reserve_on_GPU(), mean, other.mean);
+    corr2.calculate_meanvalue_on_GPU();
+    return (corr2.getmean() / ( stdev * other.stdev));
+
+}
+
+
 
 //! Deassings memory from the GPU.
 void Image_cuda_compatible::remove_from_GPU()
@@ -142,11 +181,6 @@ HANDLE_ERROR (cudaMemcpy(h_sum, d_sum, sizeof(float), cudaMemcpyDeviceToHost));
  {
     stdev = sqrt(stdev - mean*mean);
  }
-
-
-
-
-
 
 free(h_sum);
   HANDLE_ERROR(cudaFree(d_data));
@@ -225,6 +259,7 @@ void Image_cuda_compatible::add_on_GPU(Image_cuda_compatible &other)
    // std::cout <<"done" << std::endl;
 }
 
+//! Subtracts an image's pixel values to this image on the GPU.
 void Image_cuda_compatible::subtract_on_GPU(Image_cuda_compatible &other)
 {
 
@@ -232,6 +267,7 @@ void Image_cuda_compatible::subtract_on_GPU(Image_cuda_compatible &other)
 
 }
 
+//! Divides an image's pixel values to this image on the GPU.
 void Image_cuda_compatible::divide_on_GPU(float divisor)
 {
 
@@ -239,12 +275,24 @@ void Image_cuda_compatible::divide_on_GPU(float divisor)
 
 }
 
+//! Multiplies an image's pixel values to this image on the GPU.
 void Image_cuda_compatible::multiply_on_GPU(float multiplier)
 {
     kernel_multiplyImage<<<2592,512>>>(gpu_im, multiplier);
 
 }
 
+
+
+
+
+
+
+
+
+
+//! Clears pixels around the given (x,y) coordinates, within a
+//! square(!) with r/2+1 side.
 void Image_cuda_compatible::clearwitinradius(int x, int y, int r)
 {
     //int pixel = x + y * width;
@@ -263,7 +311,8 @@ void Image_cuda_compatible::clearwitinradius(int x, int y, int r)
 
 }
 
-
+//! Reads the image from an unsigned short binary file to a float array on the GPU.
+//! (Data from the scanner is unsighed short.)
 void Image_cuda_compatible::cudaReadFromFile(const char* filename)
 {
 
@@ -287,7 +336,8 @@ void Image_cuda_compatible::cudaReadFromFile(const char* filename)
 
 }
 
-
+//! Reads the image from a float binary file to a float array on the GPU.
+//! This program is able to save an image as a binary float array.)
 void Image_cuda_compatible::cudaReadFromFloatFile(const char* filename)
 {
     FILE *file;
@@ -307,6 +357,8 @@ void Image_cuda_compatible::cudaReadFromFloatFile(const char* filename)
 
 }
 
+//! Exports the (float) image array from the GPU to the CPU, as an unsigned short array.
+//! Used when saving image as a binary file.
 void Image_cuda_compatible::cudaGetShortArrayToHost(unsigned short *h_sImage)
 {
     unsigned short *d_usimage;
@@ -317,6 +369,8 @@ void Image_cuda_compatible::cudaGetShortArrayToHost(unsigned short *h_sImage)
    return;
 }
 
+//! Exports the (float) image array from the GPU to the CPU, as an float array.
+//! Used when saving image as a float binary file.
 void Image_cuda_compatible::cudaGetArrayToHost(float *h_image)
 {
     HANDLE_ERROR(cudaMemcpy(h_image, gpu_im,sizeof(float) * size, cudaMemcpyDeviceToHost));
@@ -325,7 +379,7 @@ void Image_cuda_compatible::cudaGetArrayToHost(float *h_image)
 
 
 
-//! Writes image values to a binary file, with unsigned int values.
+//! Writes image values to a binary file, with unsigned short values.
 
 void Image_cuda_compatible::writetofile(std::string filename)
 {
@@ -348,6 +402,8 @@ void Image_cuda_compatible::writetofile(std::string filename)
 
 }
 
+//! Exports the (float) image array from the GPU to the CPU, as an unsigned char array.
+//! Used when saving image as a JPEG file or drawing it.
 void Image_cuda_compatible::cudaGetUCArrayToHost(unsigned char *h_image)
 {
     unsigned char *d_ucimage;
@@ -362,5 +418,57 @@ void Image_cuda_compatible::cudaGetUCArrayToHost(unsigned char *h_image)
     HANDLE_ERROR(cudaMemcpy(h_image, d_ucimage, sizeof(unsigned char) * size , cudaMemcpyDeviceToHost));
     HANDLE_ERROR(cudaFree(d_ucimage));
     return;
+
+}
+
+
+//! Draws a cross to the image. Used when displaying Hough circle midpoints.
+void Image_cuda_compatible::drawCross(int x, int y, int size)
+{
+    if( y < 0 || y >= height || x< 0 || x >= width)
+    {
+        std::cout << "WARNING : Could no draw cross at coordinates " << x << "," << y <<
+                     ". (Out of boundary)." <<std::endl;
+        return;
+    }
+    if( size <= 0)
+    {
+        std::cout << "Could not draw criss with size " << size <<"." << std::endl;
+        return;
+    }
+
+
+    for(int dx = (int)(- round(size * 0.5f)); dx <= (int)( round(size * 0.5f)); dx++)
+    {
+        int xnew;
+        xnew = x + dx;
+        xnew  = std::min(xnew,(width-1));
+        xnew = std::max(0,xnew);
+        for(int j=-2; j<=2; j++)
+        {
+            if( 0 <= y + j && height > y +j)
+            {
+                kernel_invert_pixel<<<1,1>>>(reserve_on_GPU(), xnew, y+j,width, getmin(),getmax());
+
+            }
+        }
+
+    }
+    for(int dy = (int)(- round(size * 0.5f)); dy <= (int)( round(size * 0.5f)); dy++)
+    {
+        int ynew;
+        ynew = y + dy;
+        ynew  =std::min(ynew, height-1);
+        ynew = std::max(0,ynew);
+        for(int j = -2; j<=2; j++)
+        {
+            if( 0 <= x + j && width > x +j )
+            {
+                kernel_invert_pixel<<<1,1>>>(reserve_on_GPU(), x+j, ynew,width, getmin(),getmax());
+
+            }
+        }
+    }
+
 
 }

@@ -29,6 +29,8 @@ public:
      Image_cuda_compatible& operator*=(float n); //!< Multiplies with a float, on the GPU.
      Image_cuda_compatible& operator/=(float n);  //! < Divides an image on the GPU.
      void equalmax(Image_cuda_compatible &other);
+     float correlateWith(Image_cuda_compatible &other);
+
 
      void clear(); //!<Cleans the image.
      void clearwitinradius(int x, int y, int r);
@@ -54,6 +56,7 @@ public:
      void writetofloatfile(std::string filename);
      void saveAsJPEG(std::string filename);
 
+     void drawCross(int x, int y, int size = 30);
 
     Image_cuda_compatible(const Image_cuda_compatible& other); //!< Copy constructor.
 
@@ -85,6 +88,7 @@ public:
 
 
 
+
     //DEBUG
     float* gpu_im; //!< Poiter to the image on the GPU
 
@@ -93,6 +97,7 @@ public:
 protected:
     void divide_on_GPU(float divisor);
     void multiply_on_GPU(float multiplier);
+
 
 
     void initialize(); //!< Initializes the image. Sets everything to 0 or NULL, creates the im array. Used in constructors.
