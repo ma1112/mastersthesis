@@ -162,7 +162,7 @@ void geomCorrCheckerDialog::validateResult()
         int maxCorrelationIndex = firstIndex;
 
 
-        for(int j =  lastIndex - correlationRadius; j <= std::min(lastIndex + correlationRadius, fileList.length()) ; j++)
+        for(int j =  lastIndex - correlationRadius; j <= std::min(lastIndex + correlationRadius, fileList.length()-1) ; j++)
         {
             current.readfromfile(dir.absoluteFilePath(fileList.at(j)).toStdString());
             gaincorr.offsetcorrigateimage(current);
@@ -290,7 +290,7 @@ void geomCorrCheckerDialog::calculate()
     for(int i = firstIndex; i<lastIndex; i++)
     {
         //Process each images.
-       std::cout << "Processing image " << i<<" of " <<fileList.size()<<". (" << (100*i) / fileList.size()<<"%.)" << std::endl;
+       std::cout << "Processing image " << i<<" withing range of "<< firstIndex << " - " << lastIndex<<". (" << (100.0f*(i - firstIndex)) / (float)(lastIndex - firstIndex)<<"%.)" << std::endl;
         image.readfromfile(dir.absoluteFilePath(fileList.at(i)).toStdString());
         gaincorr.offsetcorrigateimage(image);
         gaincorr.gaincorrigateimage(image);

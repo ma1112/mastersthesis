@@ -19,9 +19,11 @@ SOURCES += main.cpp\
     gaincorr.cpp \
     gc_im_container.cpp \
     geomcorr.cpp \
-    geomcorrcheckerdialog.cpp
+    geomcorrcheckerdialog.cpp \
+    directorystructureconverter.cpp
 
 HEADERS  += mainwindow.h
+HEADERS  +=    directorystructureconverter.h
 HEADERS  +=    geomcorrcheckerdialog.h
 HEADERS  += geomcorr.h
 HEADERS  +=  book.cuh

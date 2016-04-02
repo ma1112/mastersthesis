@@ -752,6 +752,41 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
         std::cout << std::endl << std::endl ;
 
 
+        long double stdevNumerator = 0.0;
+
+        for(int j=0; j<addedCoordinates;j++)
+        {
+            long double numeratorTemp = 0.0;
+            for(int i=0;i<5;i++)
+            {
+                numeratorTemp += x[i]*csrValA[5*j+i];
+            }
+            numeratorTemp-=vector[j];
+            stdevNumerator+= (numeratorTemp*numeratorTemp);
+            //std::cout << "stdevNumerator at j = "<< j << " is " << stdevNumerator << std::endl;
+
+        }
+
+        for(int i=0;i<5;i++)
+        {
+            long double stdevDenominator = 0.0;
+
+            for(int j=0;j<addedCoordinates;j++)
+            {
+                stdevDenominator+=(csrValA[5*j+i]) * (csrValA[5*j+i]);
+                //std::cout << "stdevDenominator at i = "<< i << " and j = " <<j << " is " << stdevDenominator << std::endl;
+            }
+            stdevDenominator *= (addedCoordinates-5);
+            std::cout << "parameter " << i << " : " << x[i];
+            std::cout << "Error of parameter " << i << ": " << sqrt(stdevNumerator / stdevDenominator) << std::endl;
+            std::cout << "Relative error: " << sqrt(stdevNumerator / stdevDenominator) / x[i] * 100.0f << " per cent." << std::endl;
+        }
+        std::cout << std::endl;
+
+
+
+
+
 
 
     }
