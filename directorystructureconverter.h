@@ -9,7 +9,8 @@ class DirectoryStructureConverter
 {
 public:
     DirectoryStructureConverter();
-    void doConversion();
+    void copyAll();
+    void copyDirAsImage();
 };
 
 #endif // DIRECTORYSTRUCTURECONVERTER_H

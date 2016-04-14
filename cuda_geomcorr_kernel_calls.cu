@@ -23,7 +23,8 @@
 
 Geomcorr::Geomcorr()
 {
-
+filterWidth = 9;
+eta = 0.0;
 HANDLE_ERROR (cudaMalloc( (void**)&d_filter, 81* sizeof(float)));
 float filter[81] = {14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.62541433f, 8.588367701f, 10.91566001f, 13.3313922f, 14.7107721f,
                     13.3313922f, 9.452580065f, 4.056226896f, -0.747480748f, -2.678033129f, -0.747480748f, 4.056226896f, 9.452580065f, 13.3313922f,
@@ -323,7 +324,7 @@ __global__ void kernel_vertical_line_remover(float* image, float* out, int numCo
 //! Adds the nearest point to every ellipse from the given coordinates.
 
 
-__global__ void kernel_addCoordinates(int* d_coordinates, int* d_coordinatesFromThatImage, int n, int u, int size, int* d_addedCoordinates, int numCols, int numRows)
+__global__ void kernel_addCoordinates(int* d_coordinates, int* d_coordinatesFromThatImage, float* d_image, int n, int u, int size, int* d_addedCoordinates, int numCols, int numRows)
 {
     int i = threadIdx.x;
     if( i >=n)
@@ -337,8 +338,6 @@ __global__ void kernel_addCoordinates(int* d_coordinates, int* d_coordinatesFrom
         printf("ERROR at kernel_addCoordinates. Container is full at sircle number %d.\n",i);
         return;
     }
-
-
 
     if( d_addedCoordinates[i] ==0) // if there is no coordinate in the container
     {
@@ -366,29 +365,119 @@ __global__ void kernel_addCoordinates(int* d_coordinates, int* d_coordinatesFrom
             ynearest = ynew;
             mindist = dist;
         }
-
     }
 
-
-    if( (ynearest < 20 || ynearest  > numRows - 20 || xnearest < 20 || xnearest  > numCols -20) // last coordinate is at the edge of the picture -> the ball is likely get off the picture
-            ||(abs(ynearest - y) > 10 || ( abs(xnearest - x) > 50))) // outlier
+    if (!( (ynearest < 10 || ynearest  > numRows - 10 || xnearest < 10 || xnearest  > numCols -10) // last coordinate is at the edge of the picture -> the ball is likely get off the picture
+            ||(abs(ynearest - y) > 15 || ( abs(xnearest - x) > 100)))) // NOT outlier
     {
-        //nothing.
+        d_coordinates[i*2*size + 2*(d_addedCoordinates[i])] = xnearest;
+         d_coordinates[i*2*size + 2*(d_addedCoordinates[i]) +1] = ynearest;
+         d_addedCoordinates[i]+=1;
         return;
     }
 
-    if(xnearest== x && ynearest ==y) // duplicate...
+    else // no global maxima near -> search for local maxima on image.
     {
-        return;
+        //average of the last 2 coordinates:
+        int xAvg = (int) round( x * 0.5f + d_coordinates[i*2*size + 2*(d_addedCoordinates[i]-2)] * 0.5f);
+        int yAvg = (int) round( y * 0.5f + d_coordinates[i*2*size + 2*(d_addedCoordinates[i]-2) +1 ] * 0.5f);
+
+
+        if( d_image == NULL)
+        {
+            printf( "ERROR: there is no image loaded in kernel_addCoordinates \n");
+            d_coordinates[i*2*size + 2*(d_addedCoordinates[i])] = x;
+             d_coordinates[i*2*size + 2*(d_addedCoordinates[i]) +1] = y;
+             d_addedCoordinates[i]+=1;
+             return;
+        }
+
+        float localmax = 0;
+        float xLocal = 0;
+        float yLocal = 0;
+        for(int xx = max(0,(xAvg-8)); xx< min((xAvg+8),numCols); xx++)
+        {
+            for(int yy = max(0,yAvg-3); yy < min ( yAvg+3, numRows); yy++)
+            {
+                if(d_image[xx + yy*numCols] > localmax )
+                {
+                    localmax = d_image[xx + yy*numCols];
+                    xLocal = xx;
+                    yLocal = yy;
+                }
+
+            }
+        }
+        if ( xLocal > 0 && yLocal > 0)
+        {
+
+            d_coordinates[i*2*size + 2*(d_addedCoordinates[i])] = xLocal;
+             d_coordinates[i*2*size + 2*(d_addedCoordinates[i]) +1] = yLocal;
+             d_addedCoordinates[i]+=1;
+             return;
+        }
+        else
+        {
+            d_coordinates[i*2*size + 2*(d_addedCoordinates[i])] = xAvg;
+             d_coordinates[i*2*size + 2*(d_addedCoordinates[i]) +1] = yAvg;
+             d_addedCoordinates[i]+=1;
+        }
     }
-
-       d_coordinates[i*2*size + 2*(d_addedCoordinates[i])] = xnearest;
-        d_coordinates[i*2*size + 2*(d_addedCoordinates[i]) +1] = ynearest;
-        d_addedCoordinates[i]+=1;
-
 
     return;
 }
+
+//! Kernel to fill the gpu matrix and vector before calculating eta.
+
+//! Matrix is stored in CSR storage format. Every thread is working on an ellipse pair.
+//! Matrix rows are: [u_j - u_i;  v_j - v_i; ], vector is [v_i * u_j - v_j * u_i].
+
+
+__global__ void kernel_fill_eta_matrix(float* d_csrValA, int* csrRowPtrA, int* csrColIndA, float* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
+{
+    int i = threadIdx.x ; // i=1....n. i-th thread is filling the data of the i-th point. of the n-th ellipse.
+    int N = addedCoordinates;
+    int Nover2 = (N%2 ==0)? N/2-1 : (N-1)/2;
+    if(addedCoordinates > size)
+    {
+        printf("ERROR: Out of boundaryy at kernel_fill_matrix. addedCoordinates is %d and size is %d \n",addedCoordinates, size);
+        return;
+    }
+
+    if(i >= Nover2)
+    {
+        return;
+    }
+
+    float uj, vj;
+    float ui, vi;
+    ui=(float) d_coordinates[2*i +2*eliipseNo*size];
+    vi= (float) d_coordinates[2*i+1 +2*eliipseNo*size];
+
+    uj=(float) d_coordinates[2*(i + Nover2)  +2*eliipseNo*size];
+    vj= (float) d_coordinates[2*(i + Nover2)+1 +2*eliipseNo*size];
+
+
+    d_csrValA[2*i] = uj-ui;
+    d_csrValA[2*i+1] = -(vj-vi);
+
+    csrRowPtrA[i] = 2*i;
+
+    csrColIndA[2*i] =0;
+    csrColIndA[2*i +1] =1;
+
+
+
+    d_vector[i] = vi*uj - vj*ui;
+
+    if(i==0)
+    {
+        csrRowPtrA[Nover2 +1] = ( Nover2 +1) * 2;
+    }
+
+}
+
+
 
 //! Kernel to fill the gpu matrix and vector before fitting ellipse with least square fitting.
 
@@ -399,7 +488,7 @@ __global__ void kernel_addCoordinates(int* d_coordinates, int* d_coordinatesFrom
 __global__ void kernel_fill_matrix(float* d_csrValA, int* csrRowPtrA, int* csrColIndA, float* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
 {
     int i = threadIdx.x; // i=1....n. i-th thread is filling the data of the i-th point. of the n-th ellipse.
-    if(addedCoordinates >= size)
+    if(addedCoordinates > size)
     {
         printf("ERROR: Out of boundaryy at kernel_fill_matrix.\n");
         return;
@@ -505,8 +594,15 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
 
 
 
+
+
     //kernel_local_maximum_extractor<<<newgridSize,newblockSize>>>(transformedImage.reserve_on_GPU(), image.width, image.height);
 
+    }
+
+    if(!drawOnly)
+    {
+        image = maxImg;
     }
 
     //maxImg.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_max_.jpg");
@@ -542,7 +638,6 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     }
     else
         {
-        image.drawCross(x,y); //cinema
         HANDLE_ERROR(cudaMemcpy(d_coordinatesFromThatImage+i*2,&x,sizeof(int),cudaMemcpyHostToDevice));
         HANDLE_ERROR(cudaMemcpy(d_coordinatesFromThatImage+i*2 +1,&y,sizeof(int),cudaMemcpyHostToDevice));
         }
@@ -591,7 +686,20 @@ void Geomcorr::addCoordinates()
 
 
 
-    kernel_addCoordinates<<<1,n>>>( d_coordinates, d_coordinatesFromThatImage, n, u, size, d_addedCoordinates, Image_cuda_compatible::width, Image_cuda_compatible::height);
+    kernel_addCoordinates<<<1,n>>>( d_coordinates, d_coordinatesFromThatImage, NULL, n, u, size, d_addedCoordinates, Image_cuda_compatible::width, Image_cuda_compatible::height);
+
+}
+
+void Geomcorr::addCoordinates(Image_cuda_compatible& image)
+{
+
+    if(d_coordinates == NULL || d_coordinatesFromThatImage ==NULL)
+    {
+        std::cout <<"ERROR: Got a null pointer at geomcorr::addCoordinates(). Please initialize first! " <<std::endl;
+        return;
+    }
+
+    kernel_addCoordinates<<<1,n>>>( d_coordinates, d_coordinatesFromThatImage, image.reserve_on_GPU(), n, u, size, d_addedCoordinates, Image_cuda_compatible::width, Image_cuda_compatible::height);
 
 }
 
@@ -604,7 +712,7 @@ void Geomcorr::exportText(std::string filename)
     cudaMemcpy(addedCoordinates,d_addedCoordinates,n*sizeof(int),cudaMemcpyDeviceToHost);
 
     std::ofstream file;
-    file.open(filename);
+    file.open(filename.c_str());
     for( int i=0;i<n;i++)
     {
         file << "x\ty" << std::endl;
@@ -616,6 +724,167 @@ void Geomcorr::exportText(std::string filename)
     }
     file.close();
     delete[] coordinates;
+
+}
+
+//! Calculates eta and store's it in the Geomcorr class' eta variable.
+
+void Geomcorr::calculateEta()
+{
+
+
+
+    //See Cuda documentation [Cusolver Library]
+    cusolverSpHandle_t handle;
+    cusolverStatus_t  status;
+    status = cusolverSpCreate(&handle);
+    if(status != CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized while calculating eta." << std::endl;
+        return;
+    }
+    cusparseMatDescr_t descr = NULL;
+    cusparseStatus_t csp;
+    csp = cusparseCreateMatDescr(&descr);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized while calculating eta." << std::endl;
+        return;
+    }
+    csp = cusparseSetMatType(descr,CUSPARSE_MATRIX_TYPE_GENERAL);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized while calculating eta." << std::endl;
+        return;
+    }
+    csp = cusparseSetMatIndexBase(descr,CUSPARSE_INDEX_BASE_ZERO);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized while calculating eta." << std::endl;
+        return;
+    }
+
+    float* d_csrValA; // [uj-ui; vj-vi]
+    float* d_vector; // [vi*uj - vj*ui]
+    int* d_csrRowPtrA;
+    int* d_csrColIndA;
+
+    int N = 0;
+    HANDLE_ERROR(cudaMemcpy(&N,d_addedCoordinates,sizeof(int),cudaMemcpyDeviceToHost));
+    int Nover2 = (N%2 ==0)? N/2-1 : (N-1)/2;
+
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrValA,sizeof(float) * 2 *Nover2) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_vector,sizeof(float)  * Nover2 ));
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrColIndA,sizeof(int) *2 *Nover2) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrRowPtrA,sizeof(int) * (Nover2 +1) ));
+
+    float* uhat = new float [n]();
+    float* vhat = new float [n]();
+    float* norm = new float[n]();
+    for(int i=0; i<n; i++)
+    {
+        norm[i] = 100000000000;
+
+
+     kernel_fill_eta_matrix<<<((Nover2 + 1023) / 1024) ,1024 >>>(d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, N, i, size);
+
+
+        int rankA =0;
+        float min_norm =0;
+        float tol = 0;    // Does not have a clue what this value should be...
+        float* x = (float*)malloc(sizeof(float)* 5);
+        int* p =(int*) malloc(sizeof(int) * 5);
+
+        float* csrValA = (float*) malloc(sizeof(float) * 2 * Nover2);
+        HANDLE_ERROR(cudaMemcpy(csrValA,d_csrValA,sizeof(float) * 2 * Nover2,cudaMemcpyDeviceToHost));
+
+        int* csrRowPtrA = (int*) malloc ( sizeof(int) * (Nover2 + 1));
+        HANDLE_ERROR(cudaMemcpy(csrRowPtrA,d_csrRowPtrA,sizeof(int) *(Nover2+1),cudaMemcpyDeviceToHost));
+
+        int* csrColIndA = (int*) malloc( sizeof(int) * 2 * Nover2);
+        HANDLE_ERROR(cudaMemcpy(csrColIndA,d_csrColIndA,sizeof(int) * Nover2 * 2,cudaMemcpyDeviceToHost));
+
+
+        float* vector = (float*) malloc ( sizeof(float) * Nover2);
+        HANDLE_ERROR(cudaMemcpy(vector,d_vector,sizeof(float)  * Nover2,cudaMemcpyDeviceToHost));
+
+     status  = cusolverSpScsrlsqvqrHost(handle,Nover2,2,Nover2*2,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol, &rankA, x, p, &min_norm );
+
+
+    if(status!=CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR! uhat, vhat  fit failed for ellipse " << i << std::endl;
+    }
+    else
+    {
+        std::cout << "v-hat, u-hat fit for ellipse " << i << std::endl;
+        std::cout << " rankA : " << rankA <<std::endl;
+        std::cout << "min norm: " << min_norm << std::endl;
+        norm[i] = min_norm;
+
+        std::cout << std::endl << std::endl;
+        vhat[i] = x[0];
+        uhat[i] = x[1];
+
+
+        std::cout <<" vhat[i] =  " <<x[0]<< std::endl;
+        std::cout << " uhat[i] = " << x[1] << std::endl;
+        std::cout << std::endl << std::endl ;
+
+    }
+
+
+
+
+
+
+
+    cudaDeviceSynchronize();
+    free( x);
+    free(p);
+    free(csrValA);
+    free(csrRowPtrA);
+    free(csrColIndA);
+    free(vector);
+    }
+
+    //fitting eta:
+
+    double xmean =0;
+    double ymean = 0;
+    double x2mean =0;
+    double xymean =0;
+    for(int i=0; i<n;i++)
+    {
+        xmean += vhat[i];
+        ymean += uhat[i];
+        x2mean += vhat[i] * vhat[i];
+        xymean += vhat[i] * uhat[i];
+    }
+    xmean /= n;
+    ymean/=n;
+    x2mean /=n;
+    xymean/=n;
+    eta = std::atan((xymean - xmean * ymean) / ( x2mean - xmean * xmean ));
+
+    std::cout << "eta is " << eta << std::endl;
+
+
+
+
+
+
+    cusolverSpDestroy(handle);
+
+    cudaFree(d_csrValA);
+    cudaFree(d_vector);
+    cudaFree(d_csrColIndA);
+    cudaFree(d_csrRowPtrA);
+
+
+    delete[] vhat;
+    delete[] uhat;
+    delete [] norm;
 
 }
 
@@ -810,4 +1079,50 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     free(csrColIndA);
     free(vector);
 }
+
+
+double Geomcorr::calculatePhase(int i, float u)
+{
+    if( i>=n)
+    {
+        std::cout << "ERROR: asking  for phase for ellipse " << i << " of " << n << " ( out of boundary)" <<  std::endl;
+        return 0;
+    }
+    if( u < 0 || u > Image_cuda_compatible::width)
+    {
+        std::cout << "ERROR: invalid u at calculatePhase: u = " << u << std::endl;
+        return 0;
+    }
+
+    int addedCoordinates = 0;
+    HANDLE_ERROR(cudaMemcpy(&addedCoordinates,d_addedCoordinates+i,sizeof(int),cudaMemcpyDeviceToHost));
+
+    float* coordinates = new float[2*addedCoordinates]();
+    HANDLE_ERROR(cudaMemcpy(coordinates, d_coordinates + i * 2 *  size  , 2* sizeof(float) * addedCoordinates, cudaMemcpyDeviceToHost ));
+
+    float minu = 0.0f;
+
+    for( int j = 1; j <addedCoordinates-1; j++ )
+    {
+        float x  =coordinates[2*j];
+        float xNext = coordinates[2*j+1];
+        if( x < u && xNext > u )
+        {
+            delete[] coordinates;
+            return (double) j / addedCoordinates * 2.0 *CUDART_PI ;
+        }
+        if(x > u && xNext < u)
+        {
+            delete[] coordinates;
+            return (double) j / addedCoordinates * 2.0 *CUDART_PI  + CUDART_PI;
+        }
+    }
+    delete[] coordinates;
+    std::cout << "ERROR: could not determine phase with i = " << i << " and u = " << u << std::endl;
+    return 0;
+
+
+}
+
+
 

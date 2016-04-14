@@ -14,13 +14,17 @@ public:
     void readAndCalculateGeom(int n);
     void initializeDeviceVector(int n, int size, int u);
     void addCoordinates();
+    void addCoordinates(Image_cuda_compatible &);
     void exportText(std::string filename);
+    void calculateEta();
     void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, float* error);
+    int getn();
+    double calculatePhase(int i, float u);
 
 
 private:
     float* d_filter;
-    const int filterWidth = 9;
+   int filterWidth ;
     Gaincorr *gaincorr;
     int* d_coordinates;
     int* d_addedCoordinates;
@@ -28,6 +32,7 @@ private:
     int u; // unseen circles ( on first image)
     int size;
     int* d_coordinatesFromThatImage;
+    double eta;
 
 
 };

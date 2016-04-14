@@ -20,9 +20,11 @@ SOURCES += main.cpp\
     gc_im_container.cpp \
     geomcorr.cpp \
     geomcorrcheckerdialog.cpp \
-    directorystructureconverter.cpp
+    directorystructureconverter.cpp \
+    coordinatedialog.cpp
 
 HEADERS  += mainwindow.h
+HEADERS  +=    coordinatedialog.h
 HEADERS  +=    directorystructureconverter.h
 HEADERS  +=    geomcorrcheckerdialog.h
 HEADERS  += geomcorr.h
@@ -37,7 +39,8 @@ HEADERS  +=     image.h
 
 
 FORMS    += mainwindow.ui \
-    geomcorrcheckerdialog.ui
+    geomcorrcheckerdialog.ui \
+    coordinatedialog.ui
 
 
 

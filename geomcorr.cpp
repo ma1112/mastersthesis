@@ -18,3 +18,8 @@ void Geomcorr::readAndCalculateGeom(int n)
     gccDialog.exec();
 
 }
+
+int Geomcorr::getn()
+{
+    return n;
+}
