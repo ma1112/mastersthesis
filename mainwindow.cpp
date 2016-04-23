@@ -129,7 +129,7 @@ void MainWindow::on_pushButton_7_clicked()
 
     Geomcorr geomcor;
 
-    geomcor.readAndCalculateGeom(6);
+    geomcor.readAndCalculateGeom();
     geomcor.exportText("C:/awing/ellipses.txt");
     std::cout <<"finito" << std::endl;
 

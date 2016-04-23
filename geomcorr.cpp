@@ -9,7 +9,7 @@
 #include "geomcorrcheckerdialog.h"
 
 
-void Geomcorr::readAndCalculateGeom(int n)
+void Geomcorr::readAndCalculateGeom()
 {
 
 

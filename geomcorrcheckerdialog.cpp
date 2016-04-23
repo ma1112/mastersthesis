@@ -719,11 +719,11 @@ std::cout << "R : " << R << std::endl;
 
     //calculate D
 
-    // for every pair where z1z2 < 0
 
     int pairs = 0;
-    double Dmean = 0.0;
-    double D2mean = 0.0;
+    long double Dmean = 0.0;
+    long double Dnorm = 0.0;
+    long double dDmean = 0.0;
     for(int i=0; i<n; i++)
     {
         if(! validEllipse[i])
@@ -763,10 +763,12 @@ std::cout << "R : " << R << std::endl;
             double m0 = (v[j] - v[i] ) * sqrt(b[j]  - c[j] * c[j]  / a[j]);
             double n0 =(1.0-m0 * m0 - m1 * m1)  / ( 2 * m0 * m1);
             double n1 = (a[j] - a[i] * m1 * m1)  / (2.0 * m0 * m1);
-
-
-
-
+            double a1 =a[i];
+            double a2 = a[j];
+            double b1 = b[i];
+            double b2 = b[j];
+            double c1 = c[i];
+            double c2 = c[j];
 
             //du =
             double du1 = error[i*5];
@@ -791,19 +793,83 @@ std::cout << "R : " << R << std::endl;
             std::cout << "a[i]= " << a[i] << " and i= " << i << " j=" << j <<std::endl;
 
             double D =0.0;
+            int eps = -1;
 
             // alternative version:
 
-            D2 = ((a[i] - 2.0 * n0 * n1) + sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
+            D2 = ((a[i] - 2.0 * n0 * n1) -eps *  sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
             D = sqrt(D2);
             std::cout << "Alternative D= " << D << " and i= " << i << " j=" << j <<std::endl;
 
 
             //opposite version:
 
-            D2 = ((a[i] - 2.0 * n0 * n1) - sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
+            D2 = ((a[i] - 2.0 * n0 * n1) + eps *  sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
             D = sqrt(D2);
             std::cout << "D= " << D << " and i= " << i << " j=" << j <<std::endl;
+
+
+            //Error of D:
+
+           long double dm1 = sqrt(
+                        pow(da1 * m1 /2.0 / ( b1 - c1 * c1 / a1  ) * (c1 * c1 / a1 / a1),2)
+                        + pow(db1 * m1 / 2.0 / (b1 - c1 * c1 / a1) ,2)
+                        + pow(dc1 * m1 / 2.0 / (b1 - c1 * c1 / a1) * 2.0 * c1 / a1 ,2)
+                        + pow( da2 * m1 / 2.0 / (b2 - c2 * c2 / a2) * c2 * c2 / a2 / a2,2)
+                        + pow ( db2 * m1 / 2.0 / (b2 - c2 * c2 / a2) ,2 )
+                        + pow(dc2 * m1 / 2.0 / (b2 - c2 * c2 / a2) * 2.0 * c2 / a2 ,2)
+                        );
+
+           std::cout <<std::endl << "Error of m1 = " << dm1 << "that is " << dm1 / m1 * 100.0 << " percent" <<std::endl << std::endl;
+
+           long double dm0 = sqrt(
+                        pow(dv2 * sqrt(b2 - c2 * c2  / a2),2)
+                        + pow(dv1 *sqrt(b2 - c2 * c2  / a2),2 )
+                        + pow( da2 * m0 / 2.0 /sqrt(b2 - c2 * c2  / a2) * c2 * c2 / a2 / a2,2 )
+                        + pow( db2  * m0 / 2.0/sqrt(b2 - c2 * c2  / a2),2 )
+                        + pow ( dc2 * m0 / 2.0/sqrt(b2 - c2 * c2  / a2) * 2 * c2 / a2,2)
+                        );
+
+           std::cout <<std::endl << "Error of m0 = " << dm0 << "that is " << dm0 / m0 * 100.0 << " percent" <<std::endl << std::endl;
+
+
+           long double dn0  = sqrt(
+                        pow((dm0 *( -2.0 * m0 * 2 * m0 * m1 - (1.0 - m0 * m0 - m1 * m1) * 2.0 * m1) / pow(2.0 * m0* m1,2)),2)
+                        + pow ((dm1 *( -2.0 * m1 * 2 * m1 * m0 - (1.0 - m1 * m1 - m0 * m0) * 2.0 * m0) / pow(2.0 * m1* m0,2)),2  )
+                        );
+
+           std::cout <<std::endl << "Error of n0 = " << dn0 << "that is " << dn0 / n0 * 100.0 << " percent" <<std::endl << std::endl;
+
+
+
+           long double dn1 = sqrt(
+                        pow(da2 / (2.0 * m0 * m1),2)
+                        + pow(da1 * m1 * m1 /(2.0 * m1 * m1),2)
+                        + pow(dm0 * n1 / m0,2 )
+                        + pow(dm1 * (-2.0 * a1 * 2.0 * m0 * m1 - (a2 - a1 * m1 * m1) * 2 * m0) / pow(2.0*m0*m1,2),2)
+                        );
+
+           std::cout <<std::endl << "Error of n1 = " << dn1 << "that is " << dn1 / n1 * 100.0 << " percent" <<std::endl << std::endl;
+
+
+
+           long double dD2 = sqrt(
+                        pow(da1 /  2.0 / n1 / n1 *(1.0 - eps * 0.5 / sqrt(a1*a1+4.0*n1*n1-4.0*n0*n1*a1) * 2.0 * a1  - 4.0 * n0*n1  ),2 )
+                        + pow(dn0 / 2.0 / n1 / n1 * (-2.0 * n1 - eps * 0.5 / sqrt(a1*a1+4.0*n1*n1-4.0*n0*n1*a1) * 4*n1*a1 ),2)
+                       + pow(dn1 * (((-2.0 * n0 - eps * 0.5 / sqrt (a1 * a1 + 4.0 * n1 * n1 - 4.0 * n0 * n1 * a1)* (4.0 * n1 - 4.0 * n0 * a1))* 2.0 * n1 * n1) - D2 * 8.0 * n1 * n1 * n1) / (4 * pow(n1,4)),2)
+                        );
+
+           std::cout <<std::endl << "Error of D2 = " << dD2 << "that is " << dD2 / D2 * 100.0 << " percent" <<std::endl << std::endl;
+
+
+           long double dD = 0.5 * dD2 / D;
+
+           std::cout <<std::endl << "Error of D = " << dD << "that is " << dD / D * 100.0 << " percent" <<std::endl << std::endl;
+
+
+
+
+
             double v0star = v[i] - z1 * sqrt(a[i] + a[i] * a[i] * D2) / sqrt(a[i] * b[i] - c[i] * c[i]);
             double u0star = 0.5* u[i] + 0.5 * u[j] + 0.5 * c[i] / a[i] * (v[i] - v0star ) + 0.5 * c[j] / a[j]  * ( v[j] - v0star);
 
@@ -811,10 +877,12 @@ std::cout << "R : " << R << std::endl;
             std::cout << "v0star: " << v0star << std::endl;
             std::cout << "u0star : " << u0star << std::endl;
 
-            if(!(D!= D)) // if D is a number
+            if(!(D!= D) && ! (dD != dD)) // if D is a number
             {
-                Dmean += D;
-                D2mean += D2;
+                Dmean += D / pow(dD,2);
+                Dnorm += 1.0/ pow(dD,2);
+                dDmean += pow(1.0 / dD,2);
+
                 pairs++;
             }
         }
@@ -841,9 +909,13 @@ std::cout << "R : " << R << std::endl;
     }
 
 
-    double D = Dmean / pairs;
-    double D2 = D2mean / pairs;
-    std::cout << "D = " << D <<" with statictical error of " << sqrt(D2 - D*D) << ". Estimated from " << pairs << " pairs of ellipses."<<std::endl;
+    long double D = Dmean / Dnorm;
+    dDmean = sqrt(dDmean);
+    dDmean /= Dnorm;
+    long double D2 = D*D;
+
+
+    std::cout << "D = " << D <<" with  error of " << dDmean << ". That is  "<< dDmean / D * 100.0 << " percent.  Estimated from " << pairs << " pairs of ellipses."<<std::endl;
 
     double* xsi = new double[n];
     double v0starMean = 0.0;

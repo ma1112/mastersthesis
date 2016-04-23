@@ -11,11 +11,11 @@ public:
     Geomcorr();
     ~Geomcorr();
     void extractCoordinates(Image_cuda_compatible &image, bool drawOnly = false, bool onlyN = false);
-    void readAndCalculateGeom(int n);
+    void readAndCalculateGeom();
     void initializeDeviceVector(int n, int size, int u);
     void addCoordinates();
     void addCoordinates(Image_cuda_compatible &);
-    void exportText(std::string filename);
+    bool exportText(std::string filename);
     void calculateEta();
     void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, double *error);
     int getn();
