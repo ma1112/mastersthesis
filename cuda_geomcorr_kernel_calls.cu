@@ -529,6 +529,13 @@ __global__ void kernel_fill_matrix(float* d_csrValA, int* csrRowPtrA, int* csrCo
 
 
 
+//! Kernel to fill the gpu matrix and vector before fitting ellipse with least square fitting. This functions translates the ellipse to be in the origin by subtracting u0 and v0 from the coordinates.
+
+//! Matrix is stored in CSR storage format. Every thread is working on one point of the ellipse.
+//! Matrix rows are: [u^2 -2u -2v +2uv 1], vector is [-v^2].
+
+
+
 
 
 
@@ -704,7 +711,7 @@ void Geomcorr::addCoordinates(Image_cuda_compatible& image)
 }
 
 
-void Geomcorr::exportText(std::string filename)
+bool Geomcorr::exportText(std::string filename)
 {
     int *coordinates = new int[2*n*size];
     int* addedCoordinates = new int[n];
@@ -713,6 +720,8 @@ void Geomcorr::exportText(std::string filename)
 
     std::ofstream file;
     file.open(filename.c_str());
+    if ( !file.is_open())
+        return false;
     for( int i=0;i<n;i++)
     {
         file << "x\ty" << std::endl;
@@ -724,6 +733,7 @@ void Geomcorr::exportText(std::string filename)
     }
     file.close();
     delete[] coordinates;
+    return true;
 
 }
 
@@ -888,7 +898,7 @@ void Geomcorr::calculateEta()
 
 }
 
-void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, float* error)
+void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, double* error)
 {
 
 
@@ -901,7 +911,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     {
         std::cout << "ERROR! There are only " << addedCoordinates <<" number of points at ellipse " << i << std::endl;
         *a=*b=*c=*u=*v=0;
-        *error = 50000000000.0f;
+        *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
         return;
     }
 
@@ -913,7 +923,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     {
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         *a=*b=*c=*u=*v=0;
-        *error = 50000000000.0f;
+        *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
         return;
     }
     cusparseMatDescr_t descr = NULL;
@@ -923,7 +933,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     {
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         *a=*b=*c=*u=*v=0;
-        *error = 50000000000.0f;
+        *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
         return;
     }
     csp = cusparseSetMatType(descr,CUSPARSE_MATRIX_TYPE_GENERAL);
@@ -939,7 +949,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     {
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         *a=*b=*c=*u=*v=0;
-        *error = 50000000000.0f;
+        *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
         return;
     }
 
@@ -997,7 +1007,8 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     {
         std::cout << "ERROR! Ellipse fit failed." << std::endl;
         *a=*b=*c=*u=*v=0;
-        *error = 50000000000.0f;
+        *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
+
     }
     else
     {
@@ -1012,14 +1023,100 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
         *c = x[3] * (*b);
 
 
+
+
+
+
         std::cout << "u =" << *u ;
         std::cout << "v =" << *v ;
-        std::cout << "a =" << sqrt(1/(*a)) ;
-        std::cout << "b =" << sqrt(1/(*b)) ;
-        std::cout << "c =" << *c ;
+        std::cout << "a ( axis in pixels) =" << sqrt(1/(*a)) ;
+        std::cout << "b (axis in pixels) =" << sqrt(1/(*b)) ;
+        std::cout << "c ( axis in pixels) =" << *c ;
 
         std::cout << std::endl << std::endl ;
 
+        //calculating error:
+
+
+
+
+        //kernel_fill_matrix_and_translate_to_origin<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size, (*u) , (*v));
+
+        kernel_fill_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
+
+
+        int rankA_origin =0;
+        float min_norm_origin =0;
+        float tol_origin = 0;    // Does not have a clue what this value should be...
+        float* x_origin = (float*)malloc(sizeof(float)* 5);
+        int* p_origin =(int*) malloc(sizeof(int) * 5);
+
+        HANDLE_ERROR(cudaMemcpy(csrValA,d_csrValA,sizeof(float) * 5 * addedCoordinates,cudaMemcpyDeviceToHost));
+
+        HANDLE_ERROR(cudaMemcpy(csrRowPtrA,d_csrRowPtrA,sizeof(int) *(addedCoordinates+1),cudaMemcpyDeviceToHost));
+
+        HANDLE_ERROR(cudaMemcpy(csrColIndA,d_csrColIndA,sizeof(int) *addedCoordinates *5,cudaMemcpyDeviceToHost));
+
+
+        HANDLE_ERROR(cudaMemcpy(vector,d_vector,sizeof(float)  * addedCoordinates,cudaMemcpyDeviceToHost));
+
+
+
+
+
+
+        status  = cusolverSpScsrlsqvqrHost(handle,addedCoordinates,5,addedCoordinates*5,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol_origin, &rankA_origin, x_origin, p_origin, &min_norm );
+
+
+
+        double u_origin = 0.0;
+        double v_origin  = 0.0;
+        double a_origin = 0.0;
+        double b_origin = 0.0;
+        double c_origin = 0.0;
+
+        if(status!=CUSOLVER_STATUS_SUCCESS)
+        {
+            std::cout << "ERROR! Ellipse fit failed. at fitting at the origin. " << std::endl;
+            *a=*b=*c=*u=*v=0;
+            *error = *(error+1) = *(error+2) = *(error+3) = *(error+4) =  50000000000.0f;
+            cudaDeviceSynchronize();
+
+            cusolverSpDestroy(handle);
+
+            cudaFree(d_csrValA);
+            cudaFree(d_vector);
+            cudaFree(d_csrColIndA);
+            cudaFree(d_csrRowPtrA);
+            free( x);
+            free(p);
+            free(csrValA);
+            free(csrRowPtrA);
+            free(csrColIndA);
+            free(vector);
+            free(x_origin);
+            free(p_origin);
+            return;
+        }
+
+        else
+        {
+
+             u_origin =  (float) (x_origin[1] - ( x_origin[2] * x_origin[3] ) ) / (float) (x_origin[0] - x_origin[3] * x_origin[3]);
+             v_origin  = (float) (x_origin[0] * x_origin[2] - x_origin[1] * x_origin[3] ) / (float) (x_origin[0] - x_origin[3] * x_origin[3]);
+             a_origin = (float) x_origin[0] / (float) (x_origin[0] * (u_origin) * (u_origin) + (v_origin) * (v_origin) + 2 * x_origin[3] * (u_origin) * (v_origin)  - x_origin[4]);
+             b_origin = (a_origin) / (float) x_origin[0];
+             c_origin = x_origin[3] * (b_origin);
+
+
+            std::cout <<std::endl  << "At the origin:" << std::endl;
+
+            std::cout << "u =" << u_origin ;
+            std::cout << "v =" << v_origin ;
+            std::cout << "a ( axis in pixels) =" << sqrt(1/(a_origin)) ;
+            std::cout << "b (axis in pixels) =" << sqrt(1/(b_origin)) ;
+            std::cout << "c ( axis in pixels) =" << c_origin ;
+        }
 
         long double stdevNumerator = 0.0;
 
@@ -1028,13 +1125,15 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
             long double numeratorTemp = 0.0;
             for(int i=0;i<5;i++)
             {
-                numeratorTemp += x[i]*csrValA[5*j+i];
+                numeratorTemp += x_origin[i]* csrValA[5*j+i];
             }
             numeratorTemp-=vector[j];
             stdevNumerator+= (numeratorTemp*numeratorTemp);
             //std::cout << "stdevNumerator at j = "<< j << " is " << stdevNumerator << std::endl;
-
         }
+
+
+        double *xError = new double[5]();
 
         for(int i=0;i<5;i++)
         {
@@ -1042,26 +1141,44 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
 
             for(int j=0;j<addedCoordinates;j++)
             {
-                stdevDenominator+=(csrValA[5*j+i]) * (csrValA[5*j+i]);
+                stdevDenominator+=csrValA[5*j+i] * csrValA[5*j+i];
                 //std::cout << "stdevDenominator at i = "<< i << " and j = " <<j << " is " << stdevDenominator << std::endl;
             }
             stdevDenominator *= (addedCoordinates-5);
             std::cout << "parameter " << i << " : " << x[i];
+            xError[i] = sqrt(stdevNumerator / stdevDenominator);
             std::cout << "Error of parameter " << i << ": " << sqrt(stdevNumerator / stdevDenominator) << std::endl;
             std::cout << "Relative error: " << sqrt(stdevNumerator / stdevDenominator) / x[i] * 100.0f << " per cent." << std::endl;
         }
         std::cout << std::endl;
 
+        //du =
+        error[0] = sqrt( pow(xError[1] / ( x_origin[0] - x_origin[3] * x_origin[3]),2) + pow((x_origin[3] / (x_origin[0]  -  x_origin[3] * x_origin[3])) * xError[2],2) + pow(( -x_origin[2] * (x_origin[0] - x_origin[3] * x_origin[3]) + (x_origin[1] - x_origin[2] * x_origin[3] )  * 2 * x_origin[3]) / (x_origin[0] - x_origin[3] * x_origin[3]) * xError[3],2) + pow(((u_origin) / (x_origin[0] - x_origin[3] - x_origin[3]) ) * xError[0],2) );
+        // dv =
+        error[1] =sqrt( pow(xError[0] * (x_origin[2]*(x_origin[0] - x_origin[3] * x_origin[3]) - ( x_origin[0] * x_origin[2] - x_origin[1] * x_origin[3])) / pow((x_origin[0] - x_origin[3] * x_origin[3]),2),2)
+                + pow(xError[1] * (x_origin[3] / (x_origin[0] - x_origin[3] * x_origin[3])),2)
+                + pow(xError[2] * (x_origin[0] / (x_origin[0] - x_origin[3] * x_origin[3])),2)
+                + pow(xError[3] * (-1.0 * x_origin[1] * (x_origin[0] - x_origin[3]* x_origin[3]) + 2 * x_origin[3] * (x_origin[0] * x_origin[2] - x_origin[1] * x_origin[3])) / pow(x_origin[0] - x_origin[3] * x_origin[3],2) ,2) );
+        //da:
+        error[2] = sqrt( pow(xError[0] * ( (x_origin[0] / (a_origin) - x_origin[0] * (u_origin) * (u_origin)) * (a_origin) * (a_origin) / x_origin[0] / x_origin[0]),2) + pow(error[0] * ((a_origin) * (a_origin) / x_origin[0] * (x_origin[0] * 2.0 * (u_origin) + 2 * x_origin[3] * (v_origin))),2) + pow(error[1] * ( 2.0 * (a_origin) * (a_origin) / x_origin[0] * ((v_origin) + x_origin[3] * (u_origin))) ,2) + pow( xError[3] * (a_origin) * (a_origin) / x_origin[0] * (2 * (u_origin) * (v_origin)) ,2) +  pow( xError[4] * (a_origin) * (a_origin) / x_origin[0],2));
+        // db
+        error[3] = sqrt( pow( error[2] / x_origin[0] ,2)
+                + pow( xError[0] * (a_origin) / x_origin[0] / x_origin[0] ,2) );
+        //dc
+        error[4] = sqrt( pow  (xError[3] * (b_origin),2) + pow (error[3] * x_origin[3] ,2));
+
+        printf("\n\nPrinting fitting data with error: \n\n");
+
+        printf(" u = %lf and real. error is %lf percent\n " , (*u) , error[0] / (*u) * 100.0  );
+        printf(" v = %lf and real. error is %lf percent \n" , (*v) , error[1] / (*v) * 100.0  );
+        printf(" a = %lf and real. error is %lf percent \n" , (*a) , error[2] / (*a) * 100.0  );
+        printf(" b = %lf and real. error is %lf percent \n" , (*b) , error[3] / (*b) * 100.0  );
+        printf(" c = %lf and real. error is %lf percent \n" , (*c) , error[4] / (*c) * 100.0  );
 
 
 
-
-
-
+        free(xError);
     }
-
-
-
 
 
     cudaDeviceSynchronize();

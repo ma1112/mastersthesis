@@ -145,3 +145,43 @@ void MainWindow::on_pushButton_8_clicked()
     DirectoryStructureConverter dSC;
     dSC.copyDirAsImage();
 }
+
+void MainWindow::on_pushButton_9_clicked()
+{
+
+    Gaincorr gaincorr;
+    gaincorr.readgainfactors();
+    gaincorr.readoffsetfactors();
+
+    //Asking for input and output  directories.
+       QString inputDir = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, which projection images"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+
+       QString outputDir = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to save corrigated projection images"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+
+    QDir inputDirectory(inputDir);
+    QDir outputDirectory(outputDir);
+
+    QString inputPath = inputDirectory.absolutePath();
+    QString outputPath = outputDirectory.absolutePath();
+    QStringList nameFilter("*.bin"); //name filter.
+    QStringList fileList = inputDirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
+
+    std::cout << "Gain corrigating " << fileList.size() << " number of images from " << inputPath.toStdString() << " to " << outputPath.toStdString() << std::endl;
+
+    for(int i=0; i< fileList.size(); i++)
+    {
+        Image image;
+        image.readfromfile( QString ( inputPath + "/" +  fileList.at(i) ).toStdString());
+        std::cout << "image " << i << " with voltage: " << image.getvoltage() << " and amperage : " << image.getamperage() << " and mean intensity: " << image.getmean() << std::endl;
+        gaincorr.offsetcorrigateimage(image);
+        gaincorr.gaincorrigateimage(image);
+        image.writetofile( QString ( outputPath + "/"  + fileList.at(i) ).toStdString() );
+
+    }
+
+
+}

@@ -367,14 +367,16 @@ void geomCorrCheckerDialog::calculate()
     float* c = new float[n]();
     float* u = new float[n]();
     float* v = new float[n]();
-    float* error = new float[n]();
+    double* error = new double[n* 5]();
 
     for(int i=0; i<n; i++)
     {
-        geomcorr.fitEllipse(i, a+ i,b +i, c +i, u +i, v +i , error +i);
+        geomcorr.fitEllipse(i, a+ i,b +i, c +i, u +i, v +i , error +5*i);
     }
-    geomcorr.exportText("C:/awing/ellipses.txt");
-    std::cout << "fit success." << std::endl;
+    //DEBUG
+    std::cout << "fit success. " << std::endl;
+    if(     geomcorr.exportText("C:/awing/ellipses.txt"))
+        std::cout << "data saved to file : c:/awing/ellipses.txt" << std::endl;
 
 
     std::cout << "validEllipses:";
@@ -612,14 +614,6 @@ std::cout << "R : " << R << std::endl;
 */
 
 
-    //debug:
-      for(int i=0; i< n; i++)
-      {
-          std::cout << "b[" <<i <<"] = " << 1 / sqrt(b[i]) <<std::endl;
-      }
-
-
-
     //calculate Z=0 plane
     float minb = 50000;
     int minbIndex =-1;
@@ -744,16 +738,19 @@ std::cout << "R : " << R << std::endl;
                 continue;
             }
 
-            if( j <i)
+            if( j <= i)
             {
                 continue;
             }
+
             int z1 = v[i]<z0?1:-1;
             int z2 = v[j]<z0?1:-1;
+            /*
             if(z1 * z2 > 0)
             {
                 continue;
             }
+            */
 
             if( a[i] != a[i] || b[i] != b[i] || c[i] != c[i] ||
                     a[j] != a[j] || b[j] != b[j] || c[j] != c[j] ) // either is not a number
@@ -766,6 +763,25 @@ std::cout << "R : " << R << std::endl;
             double m0 = (v[j] - v[i] ) * sqrt(b[j]  - c[j] * c[j]  / a[j]);
             double n0 =(1.0-m0 * m0 - m1 * m1)  / ( 2 * m0 * m1);
             double n1 = (a[j] - a[i] * m1 * m1)  / (2.0 * m0 * m1);
+
+
+
+
+
+            //du =
+            double du1 = error[i*5];
+            double du2 = error[j*5];
+            double dv1 = error[i*5 + 1];
+            double dv2 = error[j*5 +1];
+            double da1 = error[i*5 + 2];
+            double da2 = error[j*5 + 2];
+            double db1 = error[i*5 + 3];
+            double db2 = error[j*5 + 3];
+            double dc1 = error[i*5 + 4];
+            double dc2 = error[j*5 + 4];
+
+            //double dm0 = sqrt( pow(dv1 * () ,2) +    );
+
             std::cout << "v[i]= " <<v[i] << " and i= " << i << " j=" << j <<std::endl;
             std::cout << "v[j]= " <<v[j] << " and i= " << i << " j=" << j <<std::endl;
             std::cout << "m1= " << m1 << " and i= " << i << " j=" << j <<std::endl;
@@ -785,7 +801,7 @@ std::cout << "R : " << R << std::endl;
 
             //opposite version:
 
-                D2 = ((a[i] - 2.0 * n0 * n1) - sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
+            D2 = ((a[i] - 2.0 * n0 * n1) - sqrt(a[i] * a[i] + 4 * n1 * n1 - 4 * n0 * n1 * a[i])) / ( 2 * n1 * n1);
             D = sqrt(D2);
             std::cout << "D= " << D << " and i= " << i << " j=" << j <<std::endl;
             double v0star = v[i] - z1 * sqrt(a[i] + a[i] * a[i] * D2) / sqrt(a[i] * b[i] - c[i] * c[i]);

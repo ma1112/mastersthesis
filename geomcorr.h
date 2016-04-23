@@ -17,7 +17,7 @@ public:
     void addCoordinates(Image_cuda_compatible &);
     void exportText(std::string filename);
     void calculateEta();
-    void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, float* error);
+    void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, double *error);
     int getn();
     double calculatePhase(int i, float u);
 

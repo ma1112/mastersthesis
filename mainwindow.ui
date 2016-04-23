@@ -135,14 +135,27 @@
    <widget class="QPushButton" name="pushButton_8">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>370</y>
-      <width>171</width>
+      <x>580</x>
+      <y>380</y>
+      <width>311</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Convert Directory Structure from subdirs to one dir.</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_9">
+    <property name="geometry">
+     <rect>
+      <x>594</x>
+      <y>462</y>
+      <width>281</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Convert Directory Structure</string>
+     <string>Gain corrigate projection folder</string>
     </property>
    </widget>
   </widget>
