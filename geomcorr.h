@@ -20,6 +20,7 @@ public:
     void fitEllipse(int i, float* a, float* b, float* c, float* u, float* v, double *error);
     int getn();
     double calculatePhase(int i, float u);
+    bool coordinatesToCPU(int* h_x, int* h_y, int n);
 
 
 private:

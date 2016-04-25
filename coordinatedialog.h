@@ -14,12 +14,15 @@ class CoordinateDialog : public QDialog
 
 public:
     explicit CoordinateDialog(QWidget *parent = 0);
+
     ~CoordinateDialog();
     void setX(int x);
     void setY(int y);
     void execute();
-    int getx();
-    int gety();
+    void getx(int* there);
+    void gety(int* there);
+    void setXDestination(int* xPointer);
+    void setYDestination(int* yPointer);
     void setLabel( QString string );
 
 private slots:
@@ -28,6 +31,8 @@ private slots:
 private:
     Ui::CoordinateDialog *ui;
     int x,y;
+    int* putXHere;
+    int* putYHere;
 };
 
 #endif // COORDINATEDIALOG_H

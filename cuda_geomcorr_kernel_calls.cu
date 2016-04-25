@@ -877,7 +877,8 @@ void Geomcorr::calculateEta()
     xymean/=n;
     eta = std::atan((xymean - xmean * ymean) / ( x2mean - xmean * xmean ));
 
-    std::cout << "eta is " << eta << std::endl;
+    std::cout << "eta is " << eta << " radian that is "
+              << eta * 0.5 / 3.1415926535897932384626433 * 360.0 << " degree. " << std::endl;
 
 
 
@@ -1160,6 +1161,29 @@ double Geomcorr::calculatePhase(int i, float u)
 
 
 }
+
+
+//! Copies the coordinates from the n-th ellipse to the given arrays on the CPU.
+bool Geomcorr::coordinatesToCPU(int* h_x, int *h_y, int n)
+{
+    if(n >this->n)
+    {
+        printf("Could not copy coordinates, because your n  ( %d) is bigger then the number of ellipses. (%d)" , n , this->n);
+                return false;
+    }
+
+    for(int i =0; i< size; i++)
+    {
+        HANDLE_ERROR(cudaMemcpy(h_x+ i,d_coordinates + size * n + i * 2,sizeof(int) ,cudaMemcpyDeviceToHost));
+        HANDLE_ERROR(cudaMemcpy(h_y+ i,d_coordinates + size * n + i * 2 + 1,sizeof(int) ,cudaMemcpyDeviceToHost));
+    }
+
+    return true;
+
+
+
+}
+
 
 
 

@@ -36,7 +36,8 @@ HEADERS +=   gaincorr.h
  HEADERS  +=   book.h
 HEADERS  +=    image_cuda_compatible.h
 HEADERS  +=     image.h
-
+HEADERS  +=     SemaphoreSet.h
+HEADERS  += initcuda.cuh
 
 FORMS    += mainwindow.ui \
     geomcorrcheckerdialog.ui \
@@ -64,6 +65,9 @@ CUDA_SOURCES += cuda_gaincorr_kernel_calls.cu
 CUDA_SOURCES += cuda_gc_im_conitainer_functions.cu
 CUDA_SOURCES += cuda_geomcorr_kernel_calls.cu
 CUDA_SOURCES += book.cu
+CUDA_SOURCES += SemaphoreSet.cpp
+CUDA_SOURCES +=    initcuda.cu
+
 
 
 
@@ -133,4 +137,6 @@ DISTFILES += \
     cuda_gaincorr_kernel_calls.cu \
     cuda_gc_im_conitainer_functions.cu \
     cuda_geomcorr_kernel_calls.cu \
-    book.cu
+    book.cu \
+    initcuda.cu \
+    initcuda.cuh
