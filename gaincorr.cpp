@@ -23,7 +23,7 @@ Gaincorr::Gaincorr()
 
 
 
-//! Reads image files for osset calibration, caluclates and saves ofset corrigation data.
+//! Reads image files for ofsset calibration, caluclates and saves ofset corrigation data.
 
 //! Asks the user for the folder that contains offset correction image set, and another folder
 //! to save the offset correction factors.

@@ -21,6 +21,8 @@ public:
     int getn();
     double calculatePhase(int i, float u);
     bool coordinatesToCPU(int* h_x, int* h_y, int n);
+    double getEta();
+void dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 );
 
 
 private:

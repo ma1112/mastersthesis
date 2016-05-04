@@ -23,3 +23,8 @@ int Geomcorr::getn()
 {
     return n;
 }
+
+double Geomcorr::getEta()
+{
+    return eta;
+}

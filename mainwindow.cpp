@@ -172,6 +172,10 @@ void MainWindow::on_pushButton_9_clicked()
 
     std::cout << "Gain corrigating " << fileList.size() << " number of images from " << inputPath.toStdString() << " to " << outputPath.toStdString() << std::endl;
 
+    if(!QDir(outputDir + "/jpegs").exists())
+    QDir().mkdir(outputDir + "/jpegs");
+
+
     for(int i=0; i< fileList.size(); i++)
     {
         Image image;
@@ -180,6 +184,7 @@ void MainWindow::on_pushButton_9_clicked()
         gaincorr.offsetcorrigateimage(image);
         gaincorr.gaincorrigateimage(image);
         image.writetofile( QString ( outputPath + "/"  + fileList.at(i) ).toStdString() );
+        image.saveAsJPEG(QString ( outputPath + "/jpegs/"  + fileList.at(i) ).toStdString() + ".jpg");
 
     }
 

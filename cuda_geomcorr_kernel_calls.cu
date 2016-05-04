@@ -485,7 +485,7 @@ __global__ void kernel_fill_eta_matrix(float* d_csrValA, int* csrRowPtrA, int* c
 //! Matrix rows are: [u^2 -2u -2v +2uv 1], vector is [-v^2].
 
 
-__global__ void kernel_fill_matrix(float* d_csrValA, int* csrRowPtrA, int* csrColIndA, float* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
+__global__ void kernel_fill_matrix(double eta, float* d_csrValA, int* csrRowPtrA, int* csrColIndA, float* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
 {
     int i = threadIdx.x; // i=1....n. i-th thread is filling the data of the i-th point. of the n-th ellipse.
     if(addedCoordinates > size)
@@ -499,9 +499,14 @@ __global__ void kernel_fill_matrix(float* d_csrValA, int* csrRowPtrA, int* csrCo
         return;
     }
 
-    float u, v;
-    u=(float) d_coordinates[2*i +2*eliipseNo*size];
-    v= (float) d_coordinates[2*i+1 +2*eliipseNo*size];
+    float u0, v0, u ,v;
+    u0=(float) d_coordinates[2*i +2*eliipseNo*size];
+    v0= (float) d_coordinates[2*i+1 +2*eliipseNo*size];
+
+    //Corrigating with eta:
+
+    u = u0 * cos(eta) - v0 * sin(eta);
+    v = u0 * sin(eta) + v0 * cos(eta);
 
 
     d_csrValA[5*i] = u*u;
@@ -526,14 +531,6 @@ __global__ void kernel_fill_matrix(float* d_csrValA, int* csrRowPtrA, int* csrCo
     }
 
 }
-
-
-
-//! Kernel to fill the gpu matrix and vector before fitting ellipse with least square fitting. This functions translates the ellipse to be in the origin by subtracting u0 and v0 from the coordinates.
-
-//! Matrix is stored in CSR storage format. Every thread is working on one point of the ellipse.
-//! Matrix rows are: [u^2 -2u -2v +2uv 1], vector is [-v^2].
-
 
 
 
@@ -734,6 +731,148 @@ bool Geomcorr::exportText(std::string filename)
     file.close();
     delete[] coordinates;
     return true;
+
+}
+
+
+//! Calculates D and V0 with Wu method.
+
+void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
+{
+
+    int rows = (n * (n-1) ) * 0.5;
+    std::cout << " welcome todAndVWithWu. n = " << n << " and rows = " << rows <<std::endl;
+
+
+    *D= 0.0f;
+    *v0 = 0.0f;
+
+    std::cout << " initialvalue of D and v0 set. " << std::endl;
+
+
+
+    //See Cuda documentation [Cusolver Library]
+    cusolverSpHandle_t handle;
+    cusolverStatus_t  status;
+    status = cusolverSpCreate(&handle);
+    if(status != CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        return;
+    }
+    std::cout << " handle created" << std::endl;
+    cusparseMatDescr_t descr = NULL;
+    cusparseStatus_t csp;
+    csp = cusparseCreateMatDescr(&descr);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        return;
+    }
+    std::cout << " descr created" << std::endl;
+
+    csp = cusparseSetMatType(descr,CUSPARSE_MATRIX_TYPE_GENERAL);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        return;
+    }
+    std::cout << " csp created" << std::endl;
+
+    csp = cusparseSetMatIndexBase(descr,CUSPARSE_INDEX_BASE_ZERO);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        return;
+    }
+    std::cout << " cps modified." << std::endl;
+
+    if(n==0)
+    {
+        return;
+    }
+
+    int rankA =0;
+    float min_norm =0;
+    float tol = 0;    // Does not have a clue what this value should be...
+    float* x = (float*)malloc(sizeof(float)* 2);
+    int* p =(int*) malloc(sizeof(int) * 2);
+
+    float* csrValA = (float*) malloc(sizeof(float) * 2 * rows);
+
+    int* csrRowPtrA = (int*) malloc ( sizeof(int) * (rows + 1));
+
+
+    int* csrColIndA = (int*) malloc( sizeof(int) * 2 * rows);
+
+
+    float* vector = (float*) malloc ( sizeof(float) * rows);
+
+
+    //Uploading matrixes to linear regression:
+
+    int index = 0;
+    std::cout << "bump " << std::endl;
+    for(int i=0; i< n; i++)
+    {
+        std::cout << " i =" << i << std::endl;
+        for(int j=i+1; j<n; j++)
+        {
+
+            std::cout << "Uploading matrix. i=" << i << ", j=" << j<<" and index =  " << index << std::endl;
+
+            csrValA[2*index] = 1.0f;
+            csrValA[2*index+1] = (float) ( 0.5 / (long double) (v[i]-v[j]) * (long double) (a[i] / b[i] - a[j]/ b[j])) ;
+
+
+            csrRowPtrA[index] = 2*index;
+
+            csrColIndA[2*index] =0;
+            csrColIndA[2*index +1] =1;
+
+            vector[index] = 0.5f * (v[i] + v[j]) - 0.5f / (v[i] - v[j]) * (1.0f / b[i] - 1.0f / b[j]);
+            std::cout << "Matrix row " << index << " : " << 1.0f <<  csrValA[2*index+1] <<std::endl;
+            std::cout << "vector [" << index << "]: " <<  vector[index] << std::endl;
+
+            index++;
+        }
+    }
+    csrRowPtrA[rows] = (rows) * 2;
+
+
+std::cout << " cusolverSpScsrlsqvqrHost" << std::endl;
+    status  = cusolverSpScsrlsqvqrHost(handle,rows,2,rows*2,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol, &rankA, x, p, &min_norm );
+
+
+    if(status!=CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR! linear regression failed." << std::endl;
+
+    }
+    else
+    {
+        std::cout << "linear regression with wu method to D and v0. Resuls are:"
+                  << std::endl << " v0: " << x[0] << std::endl
+                  << "D: " << sqrt(x[1]) << std::endl;
+        *D = sqrt(x[1]);
+        *v0 = x[0];
+    }
+
+
+
+    cudaDeviceSynchronize();
+
+    cusolverSpDestroy(handle);
+
+
+    free( x);
+    free(p);
+    free(csrValA);
+    free(csrRowPtrA);
+    free(csrColIndA);
+    free(vector);
+
+
 
 }
 
@@ -974,7 +1113,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
 
 
 
-    kernel_fill_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
+    kernel_fill_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(eta, d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
 
 
     int rankA =0;
