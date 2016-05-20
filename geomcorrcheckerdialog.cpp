@@ -1293,6 +1293,12 @@ std::cout << "R : " << R << std::endl;
             long double d2doverR2 = 0.0;
 
 
+            //Debug:
+            long double d2doverR2Part1 =0.0;
+            long double d2doverR2Part2 =0.0;
+            long double d2doverR2Part3 =0.0;
+
+
             for(int k=0; k< lastIndex - firstIndex; k++)
             {
 
@@ -1311,6 +1317,11 @@ std::cout << "R : " << R << std::endl;
 
                 doverR2 +=pow(xsi[i] * (u1[k] - u0star) / (v1[k] - v0star) - xsi[j] * (u2[k] - u0star) / (v2[k] - v0star) ,2 ) + pow((D*xsi[i] / (v1[k] - v0star)  - D * xsi[j] / (v2[k] - v0star)) ,2) + pow(xsi[i] - xsi[j],2);
 
+
+                d2doverR2Part1 +=pow(xsi[i] * (u1[k] - u0star) / (v1[k] - v0star) - xsi[j] * (u2[k] - u0star) / (v2[k] - v0star) ,2 );
+                d2doverR2Part2 += pow((D*xsi[i] / (v1[k] - v0star)  - D * xsi[j] / (v2[k] - v0star)) ,2);
+                    d2doverR2Part3 += pow(xsi[i] - xsi[j],2);
+
                 d2doverR2 += (
                             //Todo: Fill not xsi related stuff.... i do not want.
                             pow(dxsi[i] * ((2 * (xsi[i] * (u1[k]- u0star) / (v1[k] - v0star) - xsi[j] * (u2[k] - u0star) / (v2[k] - v0star)  ) *(u1[k]- u0star) / (v1[k] - v0star) ) + (2 *( D*xsi[i] / (v1[k] - v0star)  - D * xsi[j] / (v2[k] - v0star))) * D / (v1[k] - v0star) + 2 * (xsi[i] - xsi[j] )  )  ,2 )
@@ -1323,6 +1334,7 @@ std::cout << "R : " << R << std::endl;
 
             std::cout << "Ellipse " << i << " and " << j << ": doverR2 is" << doverR2 << " with error: " << ddoverR2 << " that is " << ddoverR2 *100.0 / doverR2 << " percent."<<std::endl;
 
+            std::cout << " d2doverR2Part1=" << d2doverR2Part1 / (lastIndex - firstIndex) << " d2doverR2Part2=" << d2doverR2Part2 / (lastIndex - firstIndex) << " d2doverR2Part3=" << d2doverR2Part3 / (lastIndex - firstIndex)  << std::endl;
             //search for the i-t ball:
 
             int ball1Index = 0;
