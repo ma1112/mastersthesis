@@ -34,6 +34,7 @@ private:
     int lastIndex;
     int n;
     int u;
+    long double D_estimated;
     Geomcorr geomcorr;
     Gaincorr gaincorr;
 

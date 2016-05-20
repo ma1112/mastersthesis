@@ -15,6 +15,7 @@ geomCorrCheckerDialog::geomCorrCheckerDialog(QWidget *parent) :
     ui->setupUi(this);
 
 
+    D_estimated = 1.0;
     gaincorr.readgainfactors();
     gaincorr.readoffsetfactors();
 
@@ -257,6 +258,8 @@ void geomCorrCheckerDialog::reset()
 
     ui->progressBar->setVisible(false);
     ui->progressBar->setValue(0);
+    ui->spinBox_D->setDisabled(false);
+
 
     ui->slider->setMinimum(0);
     ui->slider->setMaximum(0);
@@ -305,10 +308,13 @@ void geomCorrCheckerDialog::calculate()
 
 
 
+
     ui->goodButton->setDisabled(true);
     ui->resetButton->setDisabled(true);
     ui->spinBox->setDisabled(true);
     ui->spinBox_2->setDisabled(true);
+    D_estimated = (long double ) ui->spinBox_D->value() / 0.0748;
+    ui->spinBox_D->setDisabled(true);
     qApp->processEvents(); // refresh GUI
 
     if( !(dir.exists()) || fileList.length() <2 || firstIndex == 50000 || firstIndex >= fileList.length()
@@ -370,6 +376,8 @@ void geomCorrCheckerDialog::calculate()
         std::cout << "Coordinate for ball " << i << ": x:" << x_balls[i] << ", y:" << y_balls[i] << std::endl;
     }
     }
+
+
 //TODO: Save distance to file if it is aquired form the user.
 
     std::cout << std::endl;
@@ -806,8 +814,8 @@ std::cout << "R : " << R << std::endl;
                 continue;
             }
 
-            int z1 = v[i]<z0?1:-1;
-            int z2 = v[j]<z0?1:-1;
+            int z1 = v[i]<z0?-1:+1;
+            int z2 = v[j]<z0?-1:+1;
             /*
             if(z1 * z2 > 0)
             {
@@ -855,22 +863,37 @@ std::cout << "R : " << R << std::endl;
             std::cout << "n1= " << n1 << " and i= " << i << " j=" << j <<std::endl;
             std::cout << "a[i]= " << a[i] << " and i= " << i << " j=" << j <<std::endl;
 
-            double D =0.0;
+            double Dminus =0.0;
+            double Dplus = 0.0;
             int eps = -1;
 
             // alternative version:
 
             D2 = ((a[i] - 2.0 * n0 * n1) -eps *  sqrt(a[i] * a[i] + 4.0 * n1 * n1 - 4.0 * n0 * n1 * a[i])) / ( 2.0 * n1 * n1);
-            D = sqrt(D2);
-            std::cout << "Alternative D= " << D << " and i= " << i << " j=" << j <<std::endl;
+            Dminus = sqrt(D2);
+            std::cout << "Alternative D= " << Dminus << " and i= " << i << " j=" << j <<std::endl;
 
 
             //opposite version:
 
             D2 = ((a[i] - 2.0 * n0 * n1) + eps *  sqrt(a[i] * a[i] + 4.0 * n1 * n1 - 4.0 * n0 * n1 * a[i])) / ( 2.0 * n1 * n1);
-            D = sqrt(D2);
-            std::cout << "D= " << D << " and i= " << i << " j=" << j <<std::endl;
+            Dplus = sqrt(D2);
+            std::cout << "D= " << Dplus << " and i= " << i << " j=" << j <<std::endl;
 
+            double D;
+            if( abs ( Dplus - D_estimated) < abs(Dminus - D_estimated))
+            {
+                D= Dplus;
+                eps = +1;
+                std::cout << "Choosing " << Dplus << " as D. ( Eps = 1)" << std::endl;
+            }
+            else
+            {
+                D=Dminus;
+                eps = -1;
+           std::cout << "Choosing " << Dminus << " as D. ( eps = -1)"<< std::endl;
+
+            }
 
             //Error of D:
 
@@ -1006,7 +1029,7 @@ std::cout << "R : " << R << std::endl;
         long double dc1 = error[i*5 + 4];
 
 
-        int z1 = v[i]<z0?1:-1;
+        int z1 = v[i]<z0?-1:+1;
         xsi[i] = D * z1* a[i] * sqrt(a[i]) / sqrt(a[i]*b[i] + a[i] * a[i] * b[i] * D2 -c[i] * c[i] );
         //ITTAHIBA //TODO //CICA
         dxsi[i]= sqrt(
@@ -1110,8 +1133,8 @@ std::cout << "R : " << R << std::endl;
                 continue;
             }
 
-            int z1 = v[i]<z0?1:-1;
-            int z2 = v[j]<z0?1:-1;
+            int z1 = v[i]<z0?-1:+1;
+            int z2 = v[j]<z0?-1:+1;
 
 
             if( a[i] != a[i] || b[i] != b[i] || c[i] != c[i] ||
@@ -1252,8 +1275,8 @@ std::cout << "R : " << R << std::endl;
                 continue;
             }
 
-            int z1 = v[i]<z0?1:-1;
-            int z2 = v[j]<z0?1:-1;
+            int z1 = v[i]<z0?-1:+1;
+            int z2 = v[j]<z0?-1:+1;
 
 
             if( a[i] != a[i] || b[i] != b[i] || c[i] != c[i] ||
@@ -1388,7 +1411,7 @@ std::cout << "R : " << R << std::endl;
     geomcorr.dAndVWithWu( a,  b, v, &D_wu, &v0_wu );
 
     std::cout << " Wu method:" << std::endl
-              << "D: " << D_wu << std::endl
+              << "D: " << D_wu << " that is " << D_wu / 0.0748 << " mm"<< std::endl
               << " V0: " << v0_wu << std::endl;
 
 
@@ -1404,7 +1427,9 @@ std::cout << "R : " << R << std::endl;
     }
 
     u0_wu/=ellipses;
-    << " U0: " << u0_wu << std::endl;
+    std::cout<< " U0: " << u0_wu << std::endl;
+
+
 
 
 
