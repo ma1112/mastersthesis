@@ -1324,5 +1324,16 @@ bool Geomcorr::coordinatesToCPU(int* h_x, int *h_y, int n)
 }
 
 
+bool Geomcorr::isBallOnLeftSide(int i, float u0)
+{
+    int u1;
+    HANDLE_ERROR(cudaMemcpy(&u1,d_coordinates + size * i ,sizeof(int) ,cudaMemcpyDeviceToHost));
+    if( u1 < u0)
+        return true;
+    else
+        return false;
+
+}
+
 
 

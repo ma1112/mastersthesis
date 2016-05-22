@@ -22,7 +22,8 @@ public:
     double calculatePhase(int i, float u);
     bool coordinatesToCPU(int* h_x, int* h_y, int n);
     double getEta();
-void dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 );
+    void dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 );
+    bool isBallOnLeftSide(int i, float u0);
 
 
 private:

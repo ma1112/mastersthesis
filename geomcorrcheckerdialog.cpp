@@ -1031,7 +1031,6 @@ std::cout << "R : " << R << std::endl;
 
         int z1 = v[i]<z0?-1:+1;
         xsi[i] = D * z1* a[i] * sqrt(a[i]) / sqrt(a[i]*b[i] + a[i] * a[i] * b[i] * D2 -c[i] * c[i] );
-        //ITTAHIBA //TODO //CICA
         dxsi[i]= sqrt(
                     pow(dDmean * (pow (a[i],3) * D / xsi[i] - xsi[i] * a[i] * a[i] * b[i] * D) / (a[i] * b[i] + a[i] * a[i] * b[i] * D2 -c[i] * c[i]),2)
                     + pow(da1* (1.5 * D2 * a[i] * a[i] / xsi[i] - xsi[i] * 0.5 * (b[i] + 2 * a[i] * b[i] * D2) / (a[i] * b[i] + a[i] * a[i] *b[i] * D2 - c[i] * c[i])),2)
@@ -1413,8 +1412,13 @@ std::cout << "R : " << R << std::endl;
               << "D: "<< D *0.0748  << " mm" << std::endl
               << "R: " << R << " mm " << std::endl;
 
+/*****************************************************************
 
 
+                        WU METHOD
+
+
+******************************************************************/
 //Wu method::::
 
     std::cout << std::endl << "Omg here is Wu method" << std::endl;
@@ -1423,23 +1427,261 @@ std::cout << "R : " << R << std::endl;
     geomcorr.dAndVWithWu( a,  b, v, &D_wu, &v0_wu );
 
     std::cout << " Wu method:" << std::endl
-              << "D: " << D_wu << " that is " << D_wu / 0.0748 << " mm"<< std::endl
+              << "D: " << D_wu << " pixel that is " << D_wu * 0.0748 << " mm"<< std::endl
               << " V0: " << v0_wu << std::endl;
 
 
-    long double u0_wu = 0.0;
-    int ellipses  =0;
+    //Calculating with error:
+//See http://fizipedia.bme.hu/images/9/92/Hibaszamitas.pdf for details
+
+    long double S = 0.0;
+    long double Sx = 0.0;
+    long double Sy = 0.0;
+    long double Sxx = 0.0;
+    long double Sxy = 0.0;
+    long double delta = 0.0;
+
+
+    for(int i=0; i<n; i++)
+    {
+
+        if(! validEllipse[i])
+        {
+            continue;
+        }
+
+
+        for(int j=0; j<n; j++)
+        {
+            if(! validEllipse[j])
+            {
+                continue;
+            }
+
+
+            if( j <=i)
+            {
+                continue;
+            }
+
+
+            if( a[i] != a[i] || b[i] != b[i] || c[i] != c[i] ||
+                    a[j] != a[j] || b[j] != b[j] || c[j] != c[j] ) // either is not a number
+            {
+                continue;
+            }
+
+            long double y = 0.5 * (v[i] + v[j] ) - 0.5 /(v[i] - v[j] ) * (1/b[i] - 1/b[j]);
+
+            long double dv1 = error[i*5 + 1];
+            long double dv2 = error[j*5 +1];
+            long double db1 = error[i*5 + 3];
+            long double db2 = error[j*5 + 3];
+
+            long double dy2 =
+                        pow(dv1 * (0.5 - 0.5  *(1/b[i] - 1/b[j]) /(v[i] - v[j] )) ,2)+
+                        pow(dv2 * (0.5 - 0.5  *(1/b[i] - 1/b[j]) /(v[i] - v[j] )) ,2)+
+                        pow( db1 * 0.5 * (v[i] + v[j] ) - 0.5 /(v[i] - v[j] ) * (1/b[i] / b[i] ),2 )+
+                        pow( db2 * 0.5 * (v[i] + v[j] ) - 0.5 /(v[i] - v[j] ) * (1/b[j] / b[j] ),2 )
+                        ;
+            long double x = 0.5 / (v[i] - v[j]) * (a[i] / b[i] - a[j] / b[j]);
+
+            S += 1 / dy2;
+            Sx += x / dy2;
+            Sy += y / dy2;
+            Sxx += x * x / dy2;
+            Sxy += x *y /dy2;
+        }
+    }
+    delta = S *  Sxx - Sx * Sx;
+
+    long double v0_wu_witherror = (Sxx * Sy - Sx * Sxy) / delta;
+    long double D2_wu_witherror =( S * Sxy - Sx * Sy ) / delta;
+
+    long double dv0_wu =  sqrt ( Sxx / delta);
+    long double dD2_wu = sqrt( S / delta);
+
+    long double D_wu_witherror = sqrt ( D2_wu_witherror);
+    long double dD_wu = 0.5  / D_wu_witherror *  dD2_wu;
+
+    std::cout << " Fitting with error:" << std::endl;
+    std:: cout << " D = " << D_wu_witherror << " pixel with error of " << dD_wu << " that is " << 100.0 * dD_wu / D_wu_witherror << " percent. " << std::endl;
+    std::cout << " D in mm = " <<D_wu_witherror * 0.0748 << " with error of " << dD_wu  * 0.0748 << " mm." << std::endl;
+    std::cout << " v0 = " << v0_wu_witherror << " with error of " << dv0_wu << " that is " << 100.0 * dv0_wu / v0_wu_witherror << " percent. " << std::endl;
+
+
+    long double u0_wu_mean = 0.0;
+    long double u0_wu_norm = 0.0;
+    long double u0_wu_error = 0.0;
     for(int i=0; i< n; i++)
     {
-        if( u[i] = u[i]) // valid number
+        long double du = error[i*5];
+
+        if( u[i] == u[i] && du == du) // valid number
         {
-            u0_wu+= u[i];
-            ellipses++;
+            u0_wu_mean+= u[i] / du / du;
+            u0_wu_norm += 1.0 / du / du;
+            u0_wu_error += 1.0 / du / du;
         }
     }
 
-    u0_wu/=ellipses;
-    std::cout<< " U0: " << u0_wu << std::endl;
+    long double u0_wu = u0_wu_mean / u0_wu_norm;
+    long double du0_wu = sqrt(u0_wu_error) / u0_wu_norm;
+
+
+    std::cout<< " U0: " << u0_wu << " with error of " << du0_wu << " that is " << 100.0 * du0_wu / u0_wu << " percent." << std::endl;
+
+    //Calculatin R:
+
+    long double RWuMean   =0.0;
+    long double RWuNorm   =0.0;
+    long double dRWuMean   =0.0;
+
+
+
+    for(int i=0; i<n; i++)
+    {
+
+        if(! validEllipse[i])
+        {
+            continue;
+        }
+
+
+        for(int j=0; j<n; j++)
+        {
+            if(! validEllipse[j])
+            {
+                continue;
+            }
+
+
+            if( j <=i)
+            {
+                continue;
+            }
+
+
+            if( a[i] != a[i] || b[i] != b[i] || c[i] != c[i] ||
+                    a[j] != a[j] || b[j] != b[j] || c[j] != c[j] ) // either is not a number
+            {
+                continue;
+            }
+
+            long double ro1 = 1.0 / (v[i]-v0_wu_witherror) / sqrt(b[i]);
+            long double ro2 = 1.0 / (v[j]-v0_wu_witherror) / sqrt(b[j]);
+
+            long double dv1 = error[i*5 + 1];
+            long double dv2 = error[j*5 +1];
+            long double db1 = error[i*5 + 3];
+            long double db2 = error[j*5 + 3];
+
+            //TODO: FILL v and D error...
+
+            long double dro1  = sqrt (
+                        pow (dv1  * ro1 / (v[i]-v0_wu_witherror) ,2) +
+                        pow(db1 * ro1 * 0.5 / b[i] ,2)+
+                        pow(dv0_wu  *ro1 / (v[i]-v0_wu_witherror),2 )
+                        )
+                    ;
+            long double dro2  = sqrt (
+                        pow (dv2  * ro2 / (v[j]-v0_wu_witherror) ,2) +
+                        pow(db2 * ro2 * 0.5 / b[j] ,2)+
+                        pow (dv0_wu  * ro2 / (v[j]-v0_wu_witherror) ,2)
+                        );
+
+            long double zeta1 = (v[i]-v0_wu_witherror) * (1-ro1 * ro1 ) / D_wu_witherror;
+            long double zeta2 = (v[j]-v0_wu_witherror) * (1-ro2 * ro2 ) / D_wu_witherror;
+
+            long double dzeta1 = sqrt(
+                        pow(dv1 * (1-ro1 * ro1 ) / D_wu_witherror,2 )+
+                        pow(dv0_wu * (1-ro1 * ro1 ) / D_wu_witherror,2 )+
+                        pow(dro1 *  (v[i]-v0_wu_witherror) * (- 2.0 * ro1 ) / D_wu_witherror,2)
+                        + pow (dD_wu * zeta1 /D_wu_witherror,2  )
+                        );
+
+            long double dzeta2 = sqrt(
+                        pow(dv2 * (1-ro2 * ro2 ) / D_wu,2 )+
+                        pow(dv0_wu * (1-ro2 * ro2 ) / D_wu,2 )+
+                        pow(dro2 *  (v[j]-v0_wu) * (- 2.0 * ro2 ) / D_wu,2)
+                        + pow (dD_wu * zeta2 /D_wu_witherror,2  )
+                        );
+            //Determining phase ( 1 or 180)
+
+           bool ball1Left =  geomcorr.isBallOnLeftSide(i,u0_wu);
+           bool ball2Left =  geomcorr.isBallOnLeftSide(j,u0_wu);
+           int cosDelta;
+           if(ball1Left && ball2Left || !ball1Left && !ball2Left )
+               cosDelta = 1;
+           else
+               cosDelta = -1;
+
+
+
+            long double dOverR2= pow(zeta1 - zeta2,2) + ro1 * ro1 + ro2 * ro2 - 2 *ro1 * ro2 * cosDelta;
+
+
+            long double ddOverR2 =
+                    sqrt(
+                            pow(dzeta1 *(2.0 * (zeta1 - zeta2)),2) +
+                            pow(dzeta2 *(2.0 * (zeta1 - zeta2)),2)+
+                            pow( dro1 * (2.0 * ro1 - 2.0 * ro2 * cosDelta  ),2)+
+                            pow( dro2 * (2.0 * ro2 - 2.0 * ro1 * cosDelta  ),2)
+                        );
+
+
+
+
+
+            //search for the i-t ball:
+
+            int ball1Index = 0;
+            int ball2Index = 0;
+
+            for(int b1 = 0; b1 < n ; b1 ++)
+            {
+                if(orderOfBalls[b1] = i)
+                {
+                    ball1Index = i;
+                    break;
+                }
+            }
+
+            for(int b2 = 0; b2 < n ; b2 ++)
+            {
+                if(orderOfBalls[b2] = j)
+                {
+                    ball2Index = j;
+                    break;
+                }
+            }
+
+            long double x1 = x_balls[ball1Index]  * 2   ; // distance of two holes is 2 mm.
+            long double x2 = x_balls[ball2Index]* 2 ;
+
+            long double y1 = y_balls[ball1Index]* 2 ;
+            long double y2 = y_balls[ball2Index]* 2 ;
+
+            long double d2 = pow(x1 - x2,2) + pow(y1 - y2,2);
+            long double d = sqrt(d2);
+
+            long double R = sqrt( 1.0 / dOverR2 * d2 );
+
+            long double dR = ddOverR2 * R * 0.5 / dOverR2;
+
+
+            std::cout << " WU: R IS " <<R << " with relative error " << 100.0 * dR / R << "% " << "from ellipse " << i << " and " <<  j << std::endl;
+
+            RWuMean += R / (dR * dR);
+            RWuNorm += 1.0  / (dR * dR);
+            dRWuMean += 1.0  / (dR * dR);
+        }
+    }
+
+    long double RWu = RWuMean / RWuNorm;
+    long double dRWu = sqrt(dRWuMean) / RWuNorm;
+
+    std::cout << "Averaged R with Wu method: " << RWu << " mm with error of " << dRWu << " mm that is  " << 100.0 * dR / R << " percent. " << std::endl;
 
 
 
