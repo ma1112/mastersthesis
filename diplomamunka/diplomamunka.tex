@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage[magyar]{babel}
 \usepackage[nottoc]{tocbibind}%hogy az irodalomjegyzék is benne legyen a tartalomjegyzékben
+\usepackage{pdfpages}
 
 \usepackage{commath} %abszolút érték jelhez.
 \usepackage{multirow}
@@ -31,44 +32,12 @@
 
 \pagenumbering{gobble}
 
- \begin{center} \includegraphics[width=80mm,keepaspectratio]{abrak/bmelogo.jpg}\\ \vspace{0.3cm}  \Large Diplomamunka \\[1.5cm] \vspace{0.5cm} { \large \textbf{ Cím}}\\[2.5cm] \vspace{0.2cm} \large Marinovszki Árpád\\[5cm] \begin{tabular}{ll} Témavezető: & Dr.\ Légrády Dávid \\ & egyetemi docens \\ & BME Nukleáris technika Intézet \\ \end{tabular} \vfill \large BME \\ \large 2016 \end{center} 
+ \begin{center} \includegraphics[width=80mm,keepaspectratio]{abrak/bmelogo.jpg}\\ \vspace{0.3cm}  \Large Diplomamunka \\[1.5cm] \vspace{0.5cm} { \large \textbf{ Mikro-CT készülék rekonstrukciós és kalibrációs környezetének létrehozása}}\\[2.5cm] \vspace{0.2cm} \large Marinovszki Árpád\\[5cm] \begin{tabular}{ll} Témavezető: & Dr.\ Légrády Dávid \\ & egyetemi docens \\ & BME Nukleáris technika Intézet \\ \end{tabular} \vfill \large BME \\ \large 2016 \end{center} 
  
  \clearpage \setcounter{page}{1}
  \pagenumbering{arabic}
  
-
-
-{\large A szakdolgozat kiírása}
-
-
-
-
-\begin{tabular}{ll}
-\multicolumn{2}{c} {Témavezető:} \\
-Neve:&Légrády Dávid\\
-Tanszéke:&NTI\\
-E-mail címe:&legrady@reak.bme.hu\\
-Telefonszáma:&1254 \\
-\end{tabular}
-
-\begin{tabular}{||p{0.25\textwidth}||p{0.64\textwidth}||}
-\hline
-\hline
-\multicolumn{2}{||l||}{Azonosító: Azomosító}\\
-\hline
-\hline
-Szakdolgozat címe:&G Cím\\
-\hline
-\hline
-Melyik szakiránynak ajánlott?&,Szakirány\\
-\hline
-\hline
-A jelentkezővel szemben támasztott elvárások:& Elvárások\\
-\hline
-\hline
-Leírása:&Leírás \\
-\hline
-\hline \end{tabular}
+   \includepdf[ pagecommand={}]{abrak/jelentkezes.pdf}
 
 \clearpage
 
@@ -76,8 +45,12 @@ Leírása:&Leírás \\
 \\[0.5cm]
 
 
-Nyilatkozat.\\[0.3cm]
 
+Alulírott Marinovszki Árpád a Budapesti Műszaki és Gazdaságtudományi Egyetem fizikus MSc szakos hallgatója kijelentem, hogy ezt a diplomamunkát meg nem engedett segédeszközök nélkül, önállóan, a témavezető irányításával készítettem, és csak a megadott forrásokat használtam fel. 
+
+
+Minden olyan részt, melyet szó szerint, vagy azonos értelemben, de átfogalmazva más forrásból vettem, a forrás megadásával jelöltem.
+\\[0.3cm]
 
 Budapest, 2016.\ június 6.
 
@@ -116,11 +89,11 @@ A fejezet elején megmutatom, hogy milyen hibákat eredményez a gain korrekció
 
 \subsection{A gain korrekció által javított artefaktumok bemutatása}
 
-A gain korrekció által kiszűrt hibák három részre oszthatóak. Egyrészt belátható, hogy a sík detektoron mérhető fluxus értéke nem egyenletes. Ha olyan felvételt tekintünk, ahol nincs leképezendő objektum, belátható, hogy a legnagyobb fluxus a detektor azon pixelét fogja érni, amely a legközelebb van a röntgenforrás fókuszpontjához. Az ettől távolabbi pixeleken mérhető intenzitás pusztán azért is kisebb lesz, mert a forrásponttól távolabb vannak, hiszen a mérhető intenzitás a fókuszponttól számított távolság négyzetének inverzével arányos. A jelenség következtében tehát a detektorpixelek intenzitása a szélek felé csökken, és a csökkenés mértéke az expozíciós beállításoktól -- úgy mint az expozíciós idő, valamint a röntgencső feszültsége és árama -- független. A kialakult képtorzulást \emph{flatness hibának} nevezzük.
+A gain korrekció által kiszűrt hibák három részre oszthatóak. Egyrészt belátható, hogy a sík detektoron mérhető fluxus értéke nem egyenletes. Ha olyan felvételt tekintünk, ahol nincs leképezendő objektum, belátható, hogy a legnagyobb fluxus a detektor azon pixelét fogja érni, amely a legközelebb van a röntgenforrás fókuszpontjához. Az ettől távolabbi pixeleken mérhető intenzitás pusztán azért is kisebb lesz, mert a forrásponttól távolabb vannak, hiszen a mérhető intenzitás a fókuszponttól számított távolság négyzetének inverzével arányos. A jelenség következtében tehát a detektorpixelek intenzitása a szélek felé csökken, és a csökkenés mértéke az expozíciós beállításoktól -- úgy mint az expozíciós idő, valamint a röntgencső feszültsége és árama -- független. A kialakult képtorzulást \emph{flatness hibának} nevezzük, utalva arra, hogy ez azért következik be, mert a detektorunk sík -- gömbfelületű detektornál ez a hiba nem lépne fel.
 
 Megállapítható továbbá, hogy a detektorpixelek eltérő érzékenysége miatt is fellépnek képhibák. Ezen hibákat két csoportra lehet bontani: \emph{offset hibára}, valamint \emph{gain hibára}. Az elnevezés igen szemléletes. Válasszunk ki a detektoron egy adott pixelt, és vizsgáljuk ennek a pixelnek az mért intenzitását, miközben változtatjuk az expozíciós időt! Az adott pixelen a mért intenzitás -- expozíciós idő függvényt ábrázolva olyan görbét kapunk, amely kezdetben igen jó közelítéssel egyenest mutat, mígnem az intenzitás egy adott értéket elérve nem nő tovább. Utóbbi esetet, azaz, amikor az intenzitásérték tovább nem nő, szaturációnak hívjuk. Az előbbihez hasonlóan, ha állandó expozíciós idő mellett a röntgencső áramerősségét változtatjuk, és így nem a felvétel idejét növeljük, hanem a detektorra eső nyalábintenzitást, szintén kezdetben lineáris, majd telítődő összefüggést kapunk a pixel által mért intenzitás -- alkalmazott áramerősség függvény tekintetében. Éppen ezért az expozíciós idő és a röntgencső áramerősségének szorzatának -- a továbbiakban \emph{expozíció} függvényében szokás vizsgálni az adott pixel intenzitását. Az így kapott görbe, azaz az intenzitás az expozíció függvényében, adja meg az adott pixel érzékenységét.
 
-Az érzékenység azonban pixelről pixelre változik. Különböző pixelek érzékenységét megvizsgálva észrevehetjük, hogy az egyes érzékenységi görbék lineáris szakaszának meredeksége és tengelymetszete is változik. Változik továbbá a szaturációs expozíció is, azaz az az expozíció érték, amelynél az adott detektor telítésbe megy. Ezt szemlélteti \aref{fig:gaingrafikon}.~ábra, amelyen négy különböző pixel által mért intenzitást ábrázoltam, az expozíció függvényében. Az ábrán jól látszódik, hogy a különböző pixelek érzékenysége eltérő meredekségű és tengelymetszetű egyenessel jellemezhető, valamint a szaturációs expozíciójuk is eltérő. Az offset és gain korrekciók a detektorpixelek ezen érzékenységbeli különbségeit korrigálják. Az \emph{offset hibák} javítása jelenti a lineáris szakaszok eltérő tengelymetszetőből származó eltérések kiküszöbölését. Az offset  hibák nagysága nem függ tehát az expozíciótól, de függ az expozíciós időtől. Ugyanis kikapcsolt röntgenforrás mellett is detektálunk valamekkora háttérsugárzást, illetve a detektorok zaja is mérhető intenzitást fog eredményezni a felvételen. A teljes, röntgenforrás nélkül mért jel tehát arányos lesz az expozíciós idővel.  A \emph{gain hibák} javítása jelenti az érzékenységek lineáris szakaszainak eltérő meredekségéből, valamint az eltérő szaturációs expozíciókból származó hibák javítását. Ezek tehát az expozíciós beállításoktól függő hibák.
+Ez az érzékenység azonban pixelről pixelre változik. Különböző pixelek érzékenységét megvizsgálva észrevehetjük, hogy az egyes érzékenységi görbék lineáris szakaszának meredeksége és tengelymetszete is változik. Változik továbbá a szaturációs expozíció is, azaz az az expozíció érték, amelynél az adott detektor telítésbe megy. Ezt szemlélteti \aref{fig:gaingrafikon}.~ábra, amelyen négy különböző pixel által mért intenzitást ábrázoltam, az expozíció függvényében. Az ábrán jól látszódik, hogy a különböző pixelek érzékenysége eltérő meredekségű és tengelymetszetű egyenessel jellemezhető, valamint a szaturációs expozíciójuk is eltérő. Az offset és gain korrekciók a detektorpixelek ezen érzékenységbeli különbségeit korrigálják. Az \emph{offset hibák} javítása jelenti a lineáris szakaszok eltérő tengelymetszetőből származó eltérések kiküszöbölését. Az offset  hibák nagysága nem függ tehát az expozíciótól, de függ az expozíciós időtől. Ugyanis kikapcsolt röntgenforrás mellett is detektálunk valamekkora háttérsugárzást, illetve a detektorok zaja is mérhető intenzitást fog eredményezni a felvételen. A teljes, röntgenforrás nélkül mért jel tehát arányos lesz az expozíciós idővel és függeni fog a pixelek érzékenységétől is.  A \emph{gain hibák} javítása jelenti az érzékenységek lineáris szakaszainak eltérő meredekségéből, valamint az eltérő szaturációs expozíciókból származó hibák javítását. Ezek tehát az expozíciós beállításoktól függő hibák.
 
 
 
@@ -135,16 +108,91 @@ Az érzékenység azonban pixelről pixelre változik. Különböző pixelek ér
 
 
 
-A felvételek készítésekor rögtön szembetűnik ugyanis, hogy a kapott kép a homogénnek várt területeken sem teljesen homogén, illetve a detektorpanel struktúlátsága artefaktumokok, azaz képhibák megjelenését okozza a felvételen. Ezt szemlélteti \aref{fig:gainnelkul}.~ábrán látható felvétel, amely egy gain korrigálás nélküli felvétel. A felvétel készítésekor a röntgensugár útjába nem helyeztünk tárgyat.
 
-Egy ilyen felvételtől azt várjuk, hogy ,,fehér'' képet adjon, avagy a képen a pixelek intenzitása mindenhol megegyezzen, és lehetőleg a röntgencső beállításától függetlenül mind maximumot adjon -- hiszen nincs leképezendő objektum a forrás és a detektor között. Az ábrán azonban szembetűnően látszik, hogy az első elvárásunk, amely szerint a kép homogén legyen, messze nem teljesül. A továbbiakban bemutatom az röntgencső adott beállításai mellett készült felvétel hibáit. Ez után pedig kitérek a második kritériumnak való megfeleltetés kérdésére, azaz hogy a különböző expozíciós beállításokkal készült felvételek 
+Az egyes hibák hatását az elkészült felvételeken \aref{fig:gainnelkul}.~ábrán szemléltetem. Az ábrán egy olyan felvétel látható, amely készítésekor a detektor és a forrás között leképezendő objektum nem volt, továbbá a felvétel mindenféle korrekciótól mentes, azaz a mérőszoftver ezt a képet olvasta ki a detektorból. Az ábrán látható, hogy a leképezendő objektum hiányában homogénnek várt kép közel sem homogén. Általánosan megfigyelhető, hogy az egyes pixelek értékei jócskán szórnak, továbbá látható, hogy a képen négyzetrácsos struktúra rajzolódik ki, amelynek oka valószínűleg az detektorpanelek határainál megváltozik a pixelek érzékenysége. Különösen határozott ez az eltérés a képen látható hat függőleges egyenes mentén. Ezen pixelek az összes felvételen alacsonyabb intenzitással rendelkeznek társaiknál és értékük is kevésbé változik az expozíció növelésével, mint a többi pixel. Megfigyelhető továbbá, hogy a kép egyre sötétebb a sarkok felé, amely a flatness hibáak tudható be.
 
 \begin{figure}[htbp]
 \center
-\includegraphics[width=0.8\textwidth]{abrak/gainnelkul}
+\includegraphics[width=1.0\textwidth]{abrak/gainnelkul}
 \caption{Tárgy nélkül készített felvétel, gain korrigálás nélkül.}
 \label{fig:gainnelkul}
 \end{figure}
+
+A gain korrekció során tehát ezen hibákat távolítjuk el a képről. Gain korrekció után a fenti képből \aref{fig:gainnel}.~ábrán látható képet kapjuk. Megfigyelhetjük, hogy itt nem látszódnak az előbb jelölt artefaktumok. Bár a kép továbbra sem teljesen homogén -- ezt nem is várjuk el, valamekkora zaj mindenképp terhelni fogja a méréseinket --, a pixelek intenzitásának szórása jóval lecsökkent, megszűnt a gain korrekció nélküli képet átható négyzetes struktúra, és a kevésbé érzékeny pixelek sem lógnak ki a többi közül. A következőkben a gain korrekcióhoz szükséges algoritmusokat ismertetem.
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=1.0\textwidth]{abrak/gainnel}
+\caption{Tárgy nélkül készített felvétel, gain korrigálás után.}
+\label{fig:gainnel}
+\end{figure}
+
+\subsection{A gain korrekció algoritmusai}
+
+A felvételek gain korrigálásához először is meg kell határozni az egyes detektorpixelekhez tartozó érzékenységeket, azaz azt, hogy az expozíció növelésével milyen gyorsan változik a pixel intenzitása, valamint azt, hogy az adott pixel milyen expozíció melett telítődik. ezen kívül meg kell határozni, hogy megvilágítás nélkül hogyan változik az adott pixel intenzitása az expozíciós idő függvényében. Ehhez először kalibráló képsorokat kell készíteni. Az offset hibák javításához a röntgenforrás bekapcsolása nélkül, különböző expozíciós időkkel, a gain és flatness hibák javításához bekapcsolt forrással, különböző expozíció értékek mellett. 
+
+A képeket először az offset hibáktól kell megszabadítani. Az ehhez szükséges korrekciós faktorok meghatározásához tehát különböző expozíciós időkkel, kikapcsolt forrással készítünk képeket. Az egyes pixelek értékét az expozíció idő függvényében ábrázolva olyan görbét kapunk, amelyre jól illeszthető egyenes. Ez alapján az $i$. pixel által, forrás nélkül mért $ I_i^{\text{offset}}$ intenzitás \aref({eq:offset}) képlettel írható le, ahol $a_i^{\text{offset}} $ és $b_i^{\text{offset}}$ a fenti módon előállított képsorozatból, egyenes illesztéssel megkapható és pixelenként változó.
+
+\begin{equation}
+\label{eq:offset}
+I_i^{\text{offset}} =  a_i^{\text{offset}} \cdot t_{\text{exp}} + b_i^{\text{offset}}
+\end{equation}
+
+Minthogy ezek az intenzitásértékek a detektort érő hasznos jeltől függetlenül megjelennek, először ezen értékeket kell levonni az elkészült képekből. 
+
+Az offset hibák korrigálása után tehát az $i$. pixel intenzitása \aref({eq:offsetkorr})~ képlet szerint alakul, ahol $I_i^{\text{mért}}$ az $i.$ pixel eredeti, korrekció nélküli intenzitása, $I_i^{\text{offsetkorrigált}}$ pedig az offset hibától mentes érték.
+
+\begin{equation}
+\label{eq:offsetkorr}
+\begin{split}
+I_i^{\text{offsetkorrigált}}  &=  I_i^{\text{mért}} - I_i^{\text{offset}} \\&=  I_i^{\text{mért}} - \left( a_i^{\text{offset}} \cdot t_{\text{exp}} + b_i^{\text{offset}} \right)
+\end{split}
+\end{equation}
+
+
+Ez után javíthatjuk ki a gain és flatness hibákat. A két hiba valójában egy algoritmussal javítható, hiszen a flatness hiba felfogható úgy, mintha a detektor pixeleinek érzékenysége lenne más a detektor más--más területein. A szükséges korrekciós faktorok meghatározásához olyan kalibráló képsorokat kell készítenünk, amelyek különböző expozícióval készülnek. \Aref{fig:gaingrafikon}.~ábrán látottak alapján megállapítható, hogy az egyes detektorpixelek intenzitása kezdetben az expozícióval lineárisan változik, vagyis egyenest tudunk rá illeszteni. Amennyiben tehát nincs tárgy a detektor és a forrás között, az $i$. pixel által, a detektort érő sugárzás, mint hasznos jel által okozott ( tehát offset hibától mentes) $ I_i^{\text{offsetkorrigált}}$  intenzitás értéke \aref({eq:gain})~egyenlet szerint számolható az expozícióból. Itt $a_i^{\text{gain}}  $ és $b_i^{\text{gain}}$ jelöli a különböző expozíciós értékek mentén felvett intenzitásértékekre illesztett egyenes paramétereit, $E$ pedig az expozíció értékét, amely a fent leírtak alapján az expozíciós idő és a röntgencső áramának szorzata.
+
+\begin{equation}
+\label{eq:gain}
+\begin{split}
+I_i^{\text{offsetkorrigált}}  &=  I_i^{\text{mért}} - I_i^{\text{offset}} \\&=  a_i^{\text{gain}} \cdot E + b_i^{\text{gain}}
+\end{split}
+\end{equation}
+
+Egy olyan felvételen, amely készítésekor valamilyen tárgyat helyezünk a detektor és a forrás közé, a mért intenzitásértékek nyilván el fognak térni a detektor különböző részein, ahogy a leképezni kívánt tárgy lineáris gyengítési együtthatója is eltér a különböző térfogatokban. Ezt úgy vehetjük figyelembe, hogy  \aref({eq:gain})~képletben az $E$ expozíció érték helyére egy helyfüggő, $E_i^{\text{virt}}$ virtuális expozíciót vezetünk be. Ezen érték úgy módosul az eredeti $E$ expozícióhoz képest, hogy figyelembe veszi a röntgen nyaláb gyengülését, miközben az áthalad a leképezni kívánt tárgyon. Vagyis egy adott mérés során az $E_i^{\text{virt}}$ virtuális expozíció nem lesz más, mint az a (valós) expozíció érték, amely esetén ugyan akkor intenzitást mértünk volna tárgy nélküli elrendezésben, mint jelen esetben a leképezendő tárggyal. Ezzel a jelöléssel kapjuk \aref({eq:gain_virtual}) egyenletet, amely immáron általánosan igaz, egy tetszőleges felvételre -- míg \aref({eq:gain})~egyenlet csak arra az esetre érvényes, amikor nincs semmi a detektor és a forrás között.
+
+\begin{equation}
+\label{eq:gain_virtual}
+\begin{split}
+I_i^{\text{offsetkorrigált}}  &=  I_i^{\text{mért}} - I_i^{\text{offset}} \\&=  a_i^{\text{gain}} \cdot E_i^{\text{virt}} + b_i^{\text{gain}}
+\end{split}
+\end{equation}
+
+
+A gain hibák javítása során azt szeretnénk elérni, hogy az egyes pixelek intenzitása ne függjön az adott pixel érzékenységétől, azaz az $a_i^{\text{gain}}  $ és $b_i^{\text{gain}}$  együtthatóktól, csak az adott pixelt ért -- virtuális -- expozíciótól. Vagyis azt, hogy ha két detektorpixelt egy felvétel során ugyanolyan intenzitású sugárzás ér, és az expozíciós idő is megegyezik, akkor a két pixel intenzitása az elkészült képen is azonos legyen. 
+Ezt úgy végezzük el, hogy először meghatározzuk az egyes detektorpixelek virtuális expozícióját, majd ezekből úgy alakítjuk ki a gain korrigált intenzitásértéket, mintha minden pixel érzékenysége megegyezne.
+
+Először tehát kiszámoljuk az adott offset korrigált intenzitáshoz tartozó virtuális expozíció értékét \aref({eq:gain_virtual})~egyenlet segítségével. Egyszerű átrendezéssel kapjuk a virtuális expozícióra  \aref({eq:virtual_expozicio})~egyenletet. 
+
+\begin{equation}
+\label{eq:virtual_expozicio}
+\begin{split}
+ E_i^{\text{virt}} &= \frac{I_i^{\text{offsetkorrigált}} -  b_i^{\text{gain}}}{  a_i^{\text{gain}}}
+ \end{split}
+\end{equation}
+
+
+
+ A virtuális expozíció tehát azzal van összefüggésben, hogy mekkora valós fluxus érte az adott pixelt, és mentes az adott pixel érzékenységek torzító hatásától. Ebből úgy határozzuk meg a gain korrigált intenzitás értéket, mintha minden pixel érzékenysége, azaz intenzitás -- virtuális expozíció függvénye egy origón átmenő egyenes lenne, mindnek azonos meredekséggel. A szóban forgó meredekséget pedig úgy határozzuk meg, hogy éppen annál az expozíciós értéknél telítődjön, amelynél a legérzékenyebb pixel már telítődik. Azaz meg kell vizsgálni, hogy az expozíciót növelve mikor kapunk olyan képet, amin már van szaturált pixel. Ezen expozíciót hívjuk szaturációs expozíciónak ($E^\text{szat}$). Ezen érték a kalibráló adatsorból szintén meghatározható paraméter. Ezen paraméter ismeretében a gain korrigált $ I_i^{\text{gainkorrigalt}}$ pixelintenzitás \aref({eq:gainkorrigalt})~egyenlettel számolható, ahol $\left(2^{14} -1\right)$ a detektor maximális intenzitásértéke.
+
+
+
+\begin{equation}
+\label{eq:gainkorrigalt}
+\begin{split}
+ I_i^{\text{gainkorrigalt}} &= E_i^{\text{virt}}  \cdot \frac{2^{14} -1}{E^\text{szat}}
+ \end{split}
+\end{equation}
 
 
 \clearpage
