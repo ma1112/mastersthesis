@@ -44,11 +44,14 @@ private slots:
 
     void on_pushButton_9_clicked();
 
+    void on_pushButton_export_clicked();
+
 private:
     Ui::MainWindow *ui;
     Image image;
     std::vector<Image> images_temp, images;
     Gaincorr gc;
+    void resetGui();
 
 
 };

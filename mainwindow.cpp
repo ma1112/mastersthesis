@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->pushButton_export->setVisible(false);
 
 
 
@@ -25,6 +26,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resetGui()
+{
+    ui->pushButton_export->setVisible(false);
 }
 
 
@@ -44,6 +50,8 @@ void MainWindow::on_button_choosefile_clicked()
                  "min on GPU: " << image.getmin() <<std::endl;
 
     std::cout <<"correlating with itsetlf : " << image.correlateWith(image) << std::endl;
+    ui->pushButton_export->setVisible(true);
+
 
 
 
@@ -51,16 +59,14 @@ void MainWindow::on_button_choosefile_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
+    resetGui();
     gc.readAndCalculateGain();
-
-
-
 }
 // end of pushbutton_clicked
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    //gc.readgianfactors();
+    resetGui();
     gc.readgainfactors();
 
 
@@ -68,6 +74,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    resetGui();
     image.clear();
     QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
     if(filename.endsWith(QChar('f')))
@@ -99,16 +106,19 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
+    resetGui();
     gc.readAndCalculateOffset();
 }
 
 void MainWindow::on_pushButton_5_clicked()
 {
+    resetGui();
     gc.readoffsetfactors();
 }
 
 void MainWindow::on_pushButton_6_clicked()
 {
+    resetGui();
     image.clear();
     QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
     if(filename.endsWith(QChar('f')))
@@ -126,7 +136,7 @@ void MainWindow::on_pushButton_6_clicked()
 
 void MainWindow::on_pushButton_7_clicked()
 {
-
+    resetGui();
     Geomcorr geomcor;
 
     geomcor.readAndCalculateGeom();
@@ -142,13 +152,14 @@ void MainWindow::on_pushButton_7_clicked()
 
 void MainWindow::on_pushButton_8_clicked()
 {
+    resetGui();
     DirectoryStructureConverter dSC;
     dSC.copyDirAsImage();
 }
 
 void MainWindow::on_pushButton_9_clicked()
 {
-
+    resetGui();
     Gaincorr gaincorr;
     gaincorr.readgainfactors();
     gaincorr.readoffsetfactors();
@@ -189,4 +200,10 @@ void MainWindow::on_pushButton_9_clicked()
     }
 
 
+}
+
+void MainWindow::on_pushButton_export_clicked()
+{
+    QString outputDir = QFileDialog::getSaveFileName(0,"Save image as...", "C:\\",".jpg");
+    image.saveAsJPEG(outputDir.toStdString());
 }
