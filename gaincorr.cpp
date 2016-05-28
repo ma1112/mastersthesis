@@ -155,7 +155,7 @@ void Gaincorr::readAndCalculateOffset()
         gc_im_container  im_container;
 
 
-        im_container.inicialize(goodFolderList.size());
+        //im_container.inicialize(goodFolderList.size());
 
         for(int i=0; i< goodFolderList.size();i++)
         {
@@ -332,7 +332,7 @@ void Gaincorr::readAndCalculateOffset()
 
 //! The functions asks for an input folder and an output folder. In the input folder,
 //! images sould be in subfolders.
-//! Every subfolder sould contain one ore more image with the same settings
+//! Every subfolder sould contain one or more image with the same settings
 //! (Voltage, Exp time, amperage), with an info file.
 //! Images are only loaded from the subfolders of the user given directory.
 //! Images are stored in the gc_im_container class, then gain correction data are calculated
@@ -719,21 +719,8 @@ void Gaincorr::readAndCalculateGain()
 
      } // end of for(every subdir at given voltage
 
-     int valids = 0;
 
-     for(size_t i=0; i<imagesFromSubdirs.size();i++)
-     {
-         if(imagesFromSubdirs.at(i).getexptime() *
-                 imagesFromSubdirs.at(i).getamperage() > saturation[iter->first])
-         {
-             std::cout << "Subdir with amperage " <<  imagesFromSubdirs.at(i).getamperage()
-                       << " and exptime " <<  imagesFromSubdirs.at(i).getexptime()
-                       <<" was saturated and thus ignored." << std::endl;
-             continue;
-         }
-         valids++;
-     }
-     im_container.inicialize(valids);
+     //im_container.inicialize(valids);
      for(size_t i=0; i<imagesFromSubdirs.size();i++)
      {
          if(imagesFromSubdirs.at(i).getexptime() *
@@ -743,8 +730,10 @@ void Gaincorr::readAndCalculateGain()
          }
        im_container.add(imagesFromSubdirs.at(i));
      }
-     imagesFromSubdirs.clear();
 
+     std::cout << "clear jon" << std::endl;
+     imagesFromSubdirs.clear();
+    std::cout << "clear lement. " <<std::endl;
 
 
 

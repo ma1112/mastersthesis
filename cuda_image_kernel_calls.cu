@@ -125,7 +125,7 @@ void Image_cuda_compatible::remove_from_GPU()
 {
     if(gpu_im != NULL)
         {
-      //  std::cout << "removing image" << filename<<" from @" << gpu_im <<std::endl;
+       std::cout << "removing image" << filename<<" from @" << gpu_im <<std::endl;
        HANDLE_ERROR ( cudaFree(gpu_im));
         gpu_im = NULL;
     }
@@ -212,6 +212,7 @@ float* Image_cuda_compatible::reserve_on_GPU()
        // std::cout << "Reserving memory on GPU for image "
        //            <<id << "at address @" << gpu_im <<std::endl;
        HANDLE_ERROR( cudaMemset(gpu_im,0,size*sizeof(float)));
+       std::cout << "reserved memory @" << gpu_im << std::endl;
     }
 
     return gpu_im;

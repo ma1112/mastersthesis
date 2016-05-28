@@ -84,6 +84,10 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
               reserve_on_GPU();
               copy_GPU_image(other.gpu_im);
           }
+          else
+          {
+              gpu_im = NULL;
+          }
 
      }
     return *this;

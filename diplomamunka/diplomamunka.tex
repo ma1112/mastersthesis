@@ -186,6 +186,13 @@ Először tehát kiszámoljuk az adott offset korrigált intenzitáshoz tartozó
  A virtuális expozíció tehát azzal van összefüggésben, hogy mekkora valós fluxus érte az adott pixelt, és mentes az adott pixel érzékenységek torzító hatásától. Ebből úgy határozzuk meg a gain korrigált intenzitás értéket, mintha minden pixel érzékenysége, azaz intenzitás -- virtuális expozíció függvénye egy origón átmenő egyenes lenne, mindnek azonos meredekséggel. A szóban forgó meredekséget pedig úgy határozzuk meg, hogy éppen annál az expozíciós értéknél telítődjön, amelynél a legérzékenyebb pixel már telítődik. Azaz meg kell vizsgálni, hogy az expozíciót növelve mikor kapunk olyan képet, amin már van szaturált pixel. Ezen expozíciót hívjuk szaturációs expozíciónak ($E^\text{szat}$). Ezen érték a kalibráló adatsorból szintén meghatározható paraméter. Ezen paraméter ismeretében a gain korrigált $ I_i^{\text{gainkorrigalt}}$ pixelintenzitás \aref({eq:gainkorrigalt})~egyenlettel számolható, ahol $\left(2^{14} -1\right)$ a detektor maximális intenzitásértéke.
 
 
+A módszer hatékonyságát a kísérleti algoritmus létrehozása során Botond részletes tesztekkel vizsgálta, ezért én ettől eltekintek. A továbbiakban azt mutatom be, hogy ezeket az algoritmusokat hogyan építettem bele az elkészült szoftverbe.
+
+
+\subsection{A gain korrekció implementálása}
+
+Minthogy a kalibrációs szoftver létrehozásakor szempont volt, hogy annak sebessége gyors legyen, 
+
 
 \begin{equation}
 \label{eq:gainkorrigalt}

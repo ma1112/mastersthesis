@@ -5,6 +5,76 @@
 #include"book.cuh"
 
 
+
+
+__global__ void kernel_gaincorr_calculator(float x, float denominator, float* d_xy, float* d_y, float* d_slope, float* d_intercept)
+{
+
+
+    unsigned int tid = threadIdx.x;
+    unsigned int pixel = blockIdx.x*blockDim.x + tid; //thread is computing pixel-th pixel slope and intercept.
+
+
+
+    d_slope[pixel] = (d_xy[pixel] - x*d_y[pixel]) / denominator;
+    d_intercept[pixel] = d_y[pixel] - d_slope[pixel] * x;
+
+
+    return;
+}
+
+
+__global__ void kernel_add_xy(float x,  float* d_xy, float* d_y)
+{
+    unsigned int tid = threadIdx.x;
+    unsigned int pixel = blockIdx.x*blockDim.x + tid; //thread is computing pixel-th pixel slope and intercept.
+
+    d_xy[pixel] += d_y[pixel] * x;
+    return;
+}
+
+
+
+
+
+
+
+void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)
+{
+    xy /= images;
+    y /=images;
+    x /= images;
+    x2 /=images;
+    float denominator = x2 - x*x;
+kernel_gaincorr_calculator<<<2592,512>>>(x, denominator, xy.gpu_im, y.gpu_im, slope.gpu_im, intercept.gpu_im);
+
+            slope.calculate_meanvalue_on_GPU();
+            intercept.calculate_meanvalue_on_GPU();
+            std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
+            std::cout << "intercept mean : " << intercept.getmean() << std::endl;
+
+
+
+    return;
+}
+
+void gc_im_container::add(Image_cuda_compatible &im)
+{
+    if(im.getmax() > 16382)
+    {
+        std::cout << " Warning: tried to add saturated image to linear fit." << std::endl;
+        return;
+    }
+    y +=im;
+    float x_now = im.getexptime() * im.getamperage();
+    kernel_add_xy<<<2592,512>>>(x_now,  xy.gpu_im, y.gpu_im);
+    images++;
+    x += x_now,
+    x2 += x_now*x_now;
+}
+
+
+/*
 //! Kernel for calculating gain correction factors. (Linear fit on pixels). Launch with <<<x,32>>>
 
 //! d_images should be formatted as gc_im_container formats it: First n values belong to the
@@ -40,29 +110,7 @@ __global__ void kernel_gaincorr_calculator(float* d_images, float* d_settings, f
 
     return;
 }
-
-void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)
-{
-
-            float xmean = calculateXmean();
-            float x2mean = calculateX2mean();
-            float denominator = x2mean - (xmean * xmean);
-            slope.reserve_on_GPU();
-            intercept.reserve_on_GPU();
-
-            kernel_gaincorr_calculator<<<41472,32>>>(d_images, d_settings, slope.gpu_im, intercept.gpu_im, images, size, xmean, denominator);  //41472 * 32  = 1327104
-
-
-
-            slope.calculate_meanvalue_on_GPU();
-            intercept.calculate_meanvalue_on_GPU();
-            std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
-            std::cout << "intercept mean : " << intercept.getmean() << std::endl;
-
-
-
-    return;
-}
+*/
 
 
 
@@ -78,6 +126,7 @@ void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compati
 
 
 
+/*
 
 
 __global__ void kernel_gc_im_add(float* d_images,  float* d_other, int size, int images)
@@ -134,6 +183,7 @@ __global__ void kernel_calculate_x2mean_atomic(float* d_settings, int images, fl
 
 }
 
+
 float gc_im_container::calculateXmean()
 {
     float* d_xmean;
@@ -157,6 +207,33 @@ float gc_im_container::calculateX2mean()
     return h_x2mean;
 }
 
+*/
+
+
+
+/*
+void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)
+{
+
+            float xmean = calculateXmean();
+            float x2mean = calculateX2mean();
+            float denominator = x2mean - (xmean * xmean);
+            slope.reserve_on_GPU();
+            intercept.reserve_on_GPU();
+
+            kernel_gaincorr_calculator<<<41472,32>>>(d_images, d_settings, slope.gpu_im, intercept.gpu_im, images, size, xmean, denominator);  //41472 * 32  = 1327104
+
+
+
+            slope.calculate_meanvalue_on_GPU();
+            intercept.calculate_meanvalue_on_GPU();
+            std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
+            std::cout << "intercept mean : " << intercept.getmean() << std::endl;
+
+
+
+    return;
+}
 
 
 void gc_im_container::add(Image_cuda_compatible &im)
@@ -174,6 +251,8 @@ void gc_im_container::add(Image_cuda_compatible &im)
 
 
 }
+*/
+/*
 
 gc_im_container::~gc_im_container()
 {
@@ -213,7 +292,7 @@ void gc_im_container::clear()
     size =0;
 }
 
-
+*/
 
 
 
