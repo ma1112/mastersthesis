@@ -2,4 +2,7 @@
 \select@language {magyar} \contentsline {section}{\numberline {2}Gain korrekci\IeC {\'o}}{4}
 \select@language {magyar} \contentsline {subsection}{\numberline {2.1}A gain korrekci\IeC {\'o} \IeC {\'a}ltal jav\IeC {\'\i }tott artefaktumok bemutat\IeC {\'a}sa}{4}
 \select@language {magyar} \contentsline {subsection}{\numberline {2.2}A gain korrekci\IeC {\'o} algoritmusai}{6}
-\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{10}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.3}A gain kalibr\IeC {\'a}ci\IeC {\'o} implement\IeC {\'a}l\IeC {\'a}sa }{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4}A gain korrekci\IeC {\'o} implement\IeC {\'a}l\IeC {\'a}sa}{12}
+\select@language {magyar} \contentsline {section}{\numberline {3}A geometria kalibr\IeC {\'a}ci\IeC {\'o}}{13}
+\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{14}

@@ -185,15 +185,6 @@ Először tehát kiszámoljuk az adott offset korrigált intenzitáshoz tartozó
 
  A virtuális expozíció tehát azzal van összefüggésben, hogy mekkora valós fluxus érte az adott pixelt, és mentes az adott pixel érzékenységek torzító hatásától. Ebből úgy határozzuk meg a gain korrigált intenzitás értéket, mintha minden pixel érzékenysége, azaz intenzitás -- virtuális expozíció függvénye egy origón átmenő egyenes lenne, mindnek azonos meredekséggel. A szóban forgó meredekséget pedig úgy határozzuk meg, hogy éppen annál az expozíciós értéknél telítődjön, amelynél a legérzékenyebb pixel már telítődik. Azaz meg kell vizsgálni, hogy az expozíciót növelve mikor kapunk olyan képet, amin már van szaturált pixel. Ezen expozíciót hívjuk szaturációs expozíciónak ($E^\text{szat}$). Ezen érték a kalibráló adatsorból szintén meghatározható paraméter. Ezen paraméter ismeretében a gain korrigált $ I_i^{\text{gainkorrigalt}}$ pixelintenzitás \aref({eq:gainkorrigalt})~egyenlettel számolható, ahol $\left(2^{14} -1\right)$ a detektor maximális intenzitásértéke.
 
-
-A módszer hatékonyságát a kísérleti algoritmus létrehozása során Botond részletes tesztekkel vizsgálta, ezért én ettől eltekintek. A továbbiakban azt mutatom be, hogy ezeket az algoritmusokat hogyan építettem bele az elkészült szoftverbe.
-
-
-\subsection{A gain korrekció implementálása}
-
-Minthogy a kalibrációs szoftver létrehozásakor szempont volt, hogy annak sebessége gyors legyen, 
-
-
 \begin{equation}
 \label{eq:gainkorrigalt}
 \begin{split}
@@ -202,9 +193,63 @@ Minthogy a kalibrációs szoftver létrehozásakor szempont volt, hogy annak seb
 \end{equation}
 
 
+A módszer hatékonyságát a kísérleti algoritmus létrehozása során Botond részletes tesztekkel vizsgálta, ezért én ettől eltekintek. A továbbiakban azt mutatom be, hogy ezeket az algoritmusokat hogyan építettem bele az elkészült szoftverbe, illetve milyen mérési utasítást ajánlok a korrekciók elkészítéséhez.
+
+
+\subsection{A gain kalibráció implementálása }
+
+
+Mint ahogy már említettem  %TODO : említd is, a beveztésben
+ a kalibrációs szoftver létrehozásakor szempont volt, hogy annak sebessége gyors, kezelése egyszerű legyen, így létrehoztam egy grafikus felülettel rendelkező programot, amelyben a felhasználó nyomógombokkal tud választani az elérhető funkciók között. Az első ilyen megvalósított funkció az offset és gain hibák korrigálására szolgáló együtthatók meghatározása. Ezt a funkciót választva a szoftver egy új ablakban kéri a felhasználót, hogy  válassza ki az elkészített kalibrációs mérések mappáját, valamint azt a mappát, ahova a kimeneti fájlokat menteni szeretné. Ez után a korrekciós faktorok számolása automatikusan megtörténik, illetve az esetleges hibákról a felhasználó értesítést kap a konzolon.
+ 
+ 
+A bemeneti fájlok elkészítéséhez, azaz a mérési utasításhoz szükséges megjegyeznem, hogy a mérések során észrevehető volt, hogy a detektor által készített képek egy része valamiért jóval sötétebb, mint az azonos körülmények között készült egyéb képek. Ez a hiba a képek kb.\ 5\%-át érinti, és okát nem sikerült felderíteni. Más felhasználók is panaszkodtak hasonló hibára ennél a detektortípusnál. A korrekciós faktorok számításánál azonban kimondottan fontos, hogy ilyen képeket ne használjunk fel a számításokhoz -- továbbá az ilyen képek kezelése egyéb helyzetekben is szükségszerűnek tűnik. Ennek érdekében a gain kalibrációhoz szükséges méréseket úgy végeztük el, hogy egy adott beállítással több képet készítettünk ( 10--20 képet beállításonként). Az azonos beállításokkal készült képeket külön mappákba mentettük, így a szoftver is ilyen formában várja. Ez a megoldás azért szerencsés, mert egy mappán belül átlagolva a képek intenzitásértékét, könnyen és egyértelműen kiszűrhető, ha valamelyik kép jóval sötétebb, a fent említett hiba miatt. Továbbá az azonos mappákban lévő, tehát azonos beállításokkal készült képeket átlagolva a képeket terhelő zaj is csökken. Így amikor a korrekciós faktorokat számolom, mappánként átlagolom azokat a képeket, amelyek átlagos intenzitása nem tér el 10\%-nál jobban a mappában lévő képek átlagos intenzitásának átlagától. Az program  robusztusságát  tovább növelve, a képek beolvasásakor vizsgálom, hogy  azok milyen expozíciós beállításokkal készültek, és ez alapján is szelektálom a képeket, kiszűrve a mérés során elkövetett emberi hibákat. A mérésvezérlő szoftverről ugyanis tudni érdemes, hogy a felvételek készítésének elindítása a röntgen forrás bekapcsolásától függetlenül elindítható, és az indítás után sorozatosan készít képeket, amíg le nem állítják. Mérés közben a forrás feszültsége és áramerőssége szabadon változtatható, illetve a forrás ki- és bekapcsolható. A röntgencső független kezelése részben biztonságvédelmi célokat szolgál, azonban lehetőséget ad a felhasználónak, hogy a képek sorozatos kimentését elindítsa úgy, hogy a forrás nincs bekapcsolva, vagy a beállított paraméterei nem megfelelők. Ekkor gyakran előfordul, hogy a felhasználó a paramétereket menet közben állítja, és az addigi eredményeket nem törli ki. Ezt kiküszöbölendő, a gain korrekcióhoz készített kalibrációs képek feldolgozása során a képek átlagos intenzitásán kívül a program vizsgálja az átlagos áramerősség, feszültség és exponálási idő paramétereket is, és a kilógó értékkel készült képeket figyelmen kívül hagyja. Továbbá figyelembe veszi azt is, hogy offset korrekcióhoz készült kalibráló képek között ne legyen olyan, ahol a forrás be volt kapcsolva -- vagy ha van, akkor hagyja azt is figyelmen kívül. Hasonlóan a gain és flattness hibák korrigálásához készült képeknél ignorálja az algoritmus azokat a képeket, ahol a forrás ki volt kapcsolva. Amennyiben egy mappában kevés kép van, amely a fenti szűröknek megfelel ( 5nél nem több), akkor a mappa tartalmát a szoftver nem használja fel a korrekciós faktorok meghatározásához. Továbbá, amennyiben túl kevés mappát talál a szoftver, tehát túl kevés a különböző expozíciós beállítások száma a korrekciós faktorok meghatározásához -- akár összesen, akár túl kevés megy át a fenti szűrükön--, a kalibrációs  faktorok nem kerülnek meghatározásra. Így elkerülhető, hogy túl kevés pontra illesszünk egyenest, és ezért hibás eredményeket kapjunk, vagyis a képkészlet ellenőrzése szintén a szoftver robusztusságát növeli. A felvételek elkészítésekor alkalmazott feszültségértékeket az program szintén a képek beolvasásakor határozza meg, így azt külön megadni nem szükséges, mint ahogy a képeket feszültség szerint sem kell szétválogatni -- ellentétben a kísérleti algoritmussal.
+
+A képek beolvasása és mappánkénti  átlagolása után a pixelenkénti egyenes illesztést a szokásos, egyenes illesztésére vonatkozó (\ref{eq:linearfit}) képleteket felhasználva oldottam meg, ahol az $x$ és $y$ mérési pontokra illesztjük az $\alpha$ és $\beta$ paraméterekkel jellemzett egyenest.  A képletben a felülvonás az átlagolást jelenti.
+
+\begin{equation}
+\label{eq:linearfit}
+\begin{split}
+\beta &= \frac{ \overline{xy} - \overline x \cdot \overline y }{\overline{x^2} - {\overline{x}}^2}\\
+\alpha &= \overline y -\beta \cdot \overline x
+\end{split}
+\end{equation}
+
+
+Jelen esetben $x$ értéke az expozíciós idő (offset hibáknál), vagy az expozíció (gain és flatness hibáknál), y pedig az adott pixel intenzitása. Az egyenes illesztésére egyszerű és gyors megoldásnak találtam, hogy az illeszteni kívánt képeket pixelemként összeadom, valamint ugyanezt megteszem az adott expozícióval -- vagy expozíciós idővel -- megszorozva is, majd ezeket a képeket pixelenként elosztom az összeadott képek számával. Így az $\overline x$ és $\overline{xy}$ értékek pixelenként előállnak, mint egy--egy kép. Ez után a kettő különbségét -- mint képet -- leosztva a $\overline{x^2} - {\overline{x}}^2$ skalárral, közvetlenül előáll a pixelekre illesztett egyenes meredeksége, és a tengelymetszet további képkivonással kapható. Mivel a szükséges képműveletek -- összeadás, skalárral szorzás, kivonás -- könnyen párhuzamosíthatóak, gyakorlatilag az egyenes illesztése is párhuzamosan történik, így jelentősen lerövidítve a számoláshoz szükséges időt. 
+%15 perc helyett 2 és fél perc. Az enyém átlagol mappánként, az övé nem.
+ A módszer egyébként a memóriával is takarékosabban bánik, mint a kísérleti algoritmus, amely először beolvassa az összes képet a memóriába, majd pixelenként illeszt egyenest. Az ottani megoldással ellentétben, ahol a szükséges memória lineárisan nő a képek számával, nálam a szükséges memória a képek számától független és alacsony.
+
+
+A fenti megoldáshoz a grafikus felületet és a mappakezelést a Qt biztosítja, míg a gyors képműveletek CUDA kód alkalmazásával valósulnak meg. A képfeldolgozáshoz létrehoztam olyan kép osztályt, amely képes magát fájlból a GPU memóriájába olvasni, és alkalmas a képeken végzett műveletek gyors végrehajtására a grafikus kártyán. A pixelenkénti összeadás, kivonás, skalárral szorzás megoldása viszonylag triviális, itt egy szál egy pixel értékét számolja. Ezzel ellenben a maximum, minimum, átlag, és szórás -- utóbbit a gain korrekcióhoz nem használtam fel, de technikailag itt kell megemlítenem -- számolása első ránézésre nem triviális, ezért néhány mondatban bemutatom. 
+
+Az előbb felsorolt műveletek, amelyek eredménye előáll a kép pixeleiből úgy, hogy minden egyes pixel értékét egyszer használjuk fel, egy kommutatív, asszociatív, két elem között ható -- programozási értelemben vett -- operátorral, az angol irodalom  \emph{reduce} műveletnek hívja. Ilyen az előbb említett összeadás, minimum és maximum számítás is. Például három elem, $a,b$ és $c$ összegét megkapjuk, ha $a$ és $b$ összegéhez hozzáadjuk $c$-t: $\text{sum} = (a+b)+c$. Az összeadást kicserélhetjük maximum számításra is, az algoritmus ekkor csak a számok közé rakott operátorban tér el: $\text{maximum} = \text{max} ( \text{max}(a,b),c))$.  Az ilyen, \emph{reduce} típusú műveletek optimális használatát az összeadás példáján keresztül írom le, de a fentiek értelmében a minimum és a maximum számolás is hasonlóan kivitelezhető.
+
+Az alkalmazásomban is használt reduce műveletet  a CUDA dokumentációjához mellékelt példa\acite{reduce} alapján állítottam össze. Az ilyen műveletek általános megoldása -- az összeadás példáján --, hogy a képet két részre osztjuk, majd az egyik részt hozzáadjuk a másikhoz. A műveletet folytatjuk, mindig felezve a fennmaradó képrészletet, míg végül a kép egyik pixelében előáll az összes pixel összege. A már említett példa ezen túl olyan technikákat is ajánl, mint a \emph{shared memory}, azaz az összes szál által hozzáférhető ( de kívülről nem hozzáférhető), gyors elérésű memória használata -- a lassú elérésű, globális memória helyett, ahol a képek eleve tárolva vannak. Továbbá figyelembe veszi, hogy a párhuzamos futtatás során a szálak 32 darabos ,,csomagokban'',  úgynevezett \emph{warpokban} futnak, ezzel tovább optimalizálva az algoritmust. Míg ha több, mint 32 szálat futtatunk egyszerre, semmi nem garantálja, hogy azok egyszerre fognak futni. Ilyenkor szakaszonként be kell várnia a szálaknak egymást. Például ha a kép egyik felét hozzáadjuk a másikhoz, csak akkor felezhetjük tovább az elkészült képet, ha minden összeadás megtörtént. Amikor már 32-nél kevesebb szálat használunk, akkor a szálaknak nem kell egymást bevárni, hiszen biztosan nem fut több. Továbbá a példa alapján az összeadáshoz vonatkozó kerneleket C++ template-ekkel írtam meg, amely segítségével már fordítási időben tudja a kernel, hogy adott méretű kép esetén hogyan kell felosztani a képet -- nem pedig futási időben kell vizsgálnia, hogy a kép mekkora méretű. 
+
+
+\subsection{A gain korrekció implementálása}
+
+A korrekciós faktorok meghatározása után, amelyek tehát szintén képként kerülnek mentésre, a felhasználónak lehetősége nyílik az elkészített projekcióit offset és gain korrigálni, az erre vonatkozó (\ref{eq:offsetkorr}) és (\ref{eq:gainkorrigalt}) képleteket felhasználva. Ezek újabb képösszeadásokat és skalárral való szorzást,osztást jelentenek, így az eddig bemutatott függvényekkel gyorsan elvégezhetőek. A felhasználónak ennél a funkciónál is grafikus felületen van lehetősége kijelölni a korrigálni kívánt mappát, amelyből a program az összes képet gain korrigálja és elmenti egy kívánt, kijelölt mappába -- akár ugyan abba. 
+
+%TODO A véletlenszerűen elsötétülő képeket itt is külön korrigálja a program: ha egy kép intenzitása jelentősen eltér a sorrendben mellette lévő képek átlagától, úgy az szoftvera képet a szomszédjainak átlagával helyettesíti a gain korigálás előtt.
+
+\section{A geometria kalibráció}
+
+A diplomaunkám során a másik tárgyalt kalibráció az úgynevezett \emph{geometria kalibráció}, amely a CT-vel elkészített képek alapján állapítja meg, hogy milyen távol van egymástól a detektor, a forgatható asztal forgástengelye és a röntgencső fókuszpontja. A geometriai adatokhoz igen pontosan szükség van, amikor az elkészült projekciók alapján meghatározzuk a felvett tárgy 3 dimenziós képét, vagyis a visszavetítéskor. Ugyanakkor a geometriai paramétereket kézzel nem tudjuk igen pontosan lemérni, már csak azért sem, mert a röntgencső fókuszpontjának a helye nem hozzáférhető és nem ismert, továbbá a mérési pontatlanság is viszonylag nagy lenne. Ezért alkalmazzuk azt a módszert, hogy az elkészült képek alapján határozzuk meg a szóban forgó paramétereket. 
+
+
+
 \clearpage
 
 \begin{thebibliography}{9}
+
+\bibitem{reduce}
+Mark Harris,
+{\it Optimizing Parallel Reduction in CUDA},
+{\tt online: http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf},
+Utolsó hozzáférés: 2016.05.28. 14:00
+%(\tt online, }
 
 
 %\bibitem{url}

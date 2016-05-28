@@ -221,7 +221,7 @@ void Gaincorr::readAndCalculateOffset()
 
                }
            } //end of for( every image in current subfolder)
-           //images_temp.pop_back(); // last one is always empty.
+           images_temp.pop_back(); // last one is always empty.
 
 
 
@@ -254,7 +254,7 @@ void Gaincorr::readAndCalculateOffset()
                            )
                    { //if the image is corrupted, ignore it. Also put som info to the console.
                        std::cout << "Bad image: " << subdirectory.absolutePath().toStdString()
-                                 <<"id:" << images_temp.at(k).getid() <<std::endl;
+                                 <<" id:" << images_temp.at(k).getid() <<std::endl;
                        std::cout << "meanIntenstiy = " << meanIntensity << "getmean =" <<images_temp.at(k).getmean()
                                  << " getvoltage =" <<images_temp.at(k).getvoltage()
                                  << "getamperage = " << images_temp.at(k).getamperage()
