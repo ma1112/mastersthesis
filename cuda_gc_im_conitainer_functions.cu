@@ -53,8 +53,6 @@ kernel_gaincorr_calculator<<<2592,512>>>(x, denominator, xy.gpu_im, y.gpu_im, sl
             std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
             std::cout << "intercept mean : " << intercept.getmean() << std::endl;
 
-
-
     return;
 }
 

@@ -712,8 +712,8 @@ bool Geomcorr::exportText(std::string filename)
 {
     int *coordinates = new int[2*n*size];
     int* addedCoordinates = new int[n];
-    cudaMemcpy(coordinates,d_coordinates,n*2*size*sizeof(int),cudaMemcpyDeviceToHost);
-    cudaMemcpy(addedCoordinates,d_addedCoordinates,n*sizeof(int),cudaMemcpyDeviceToHost);
+    HANDLE_ERROR(cudaMemcpy(coordinates,d_coordinates,n*2*size*sizeof(int),cudaMemcpyDeviceToHost));
+    HANDLE_ERROR(cudaMemcpy(addedCoordinates,d_addedCoordinates,n*sizeof(int),cudaMemcpyDeviceToHost));
 
     std::ofstream file;
     file.open(filename.c_str());
@@ -1026,10 +1026,10 @@ void Geomcorr::calculateEta()
 
     cusolverSpDestroy(handle);
 
-    cudaFree(d_csrValA);
-    cudaFree(d_vector);
-    cudaFree(d_csrColIndA);
-    cudaFree(d_csrRowPtrA);
+    HANDLE_ERROR(cudaFree(d_csrValA));
+    HANDLE_ERROR(cudaFree(d_vector));
+    HANDLE_ERROR(cudaFree(d_csrColIndA));
+    HANDLE_ERROR(cudaFree(d_csrRowPtrA));
 
 
     delete[] vhat;
@@ -1245,10 +1245,10 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
 
     cusolverSpDestroy(handle);
 
-    cudaFree(d_csrValA);
-    cudaFree(d_vector);
-    cudaFree(d_csrColIndA);
-    cudaFree(d_csrRowPtrA);
+   HANDLE_ERROR( cudaFree(d_csrValA));
+    HANDLE_ERROR(cudaFree(d_vector));
+    HANDLE_ERROR(cudaFree(d_csrColIndA));
+    HANDLE_ERROR(cudaFree(d_csrRowPtrA));
     free( x);
     free(p);
     free(csrValA);

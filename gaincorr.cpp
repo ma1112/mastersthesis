@@ -159,17 +159,19 @@ void Gaincorr::readAndCalculateOffset()
 
         for(int i=0; i< goodFolderList.size();i++)
         {
-            std::cout << "Loading files from " << goodFolderList.at(i).toStdString() << std::endl;
-
-
             //Looking for .bin files
            QStringList nameFilter("*.bin"); //name filter.
            QDir subdirectory(directory.absoluteFilePath(goodFolderList.at(i))); //Qdir for storing actual subdirectory.
 
-           QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
+            QStringList filelist = subdirectory.entryList(nameFilter); //File list of .bin files in the actual subdirectory.
+
+            std::cout << "Loading files from folder " << goodFolderList.at(i).toStdString() << "that has " << filelist.size() << " number of files." << std::endl;
+
+
+
            images_temp.clear();
-           images_temp.reserve(filelist.size()); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
-           images_temp.push_back(Image_cuda_compatible());
+           images_temp.reserve(filelist.size() + 1); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
+          // images_temp.push_back(Image_cuda_compatible());
 
            if(filelist.size() == 0)
            {
@@ -187,34 +189,42 @@ void Gaincorr::readAndCalculateOffset()
            for(int j=0;j<filelist.length();j++)
            //Note: subdirectory is indexed by i, files are indexed by j.
            {
-               //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
+               std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
                //image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-               images_temp.back().readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-              // image.calculate_meanvalue_on_GPU();
+               image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
 
-               images_temp.back().calculate_meanvalue_on_GPU();
+               //images_temp.back().readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+              // image.calculate_meanvalue_on_GPU();
+               std::cout << "file loaded" << std::endl;
+
+               image.calculate_meanvalue_on_GPU();
 
 
      //Note: images with 0 voltage or amperage (or other parameters) are kept.
                if      (
-                       ((!(images_temp.back().getvoltage() > 0) && !(images_temp.back().getvoltage() <0))
-                       || (!(images_temp.back().getamperage() > 0) && !(images_temp.back().getamperage() <0 ) ) )
-                       && images_temp.back().getexptime() > 1 &&  images_temp.back().getmean() > 1
+                       ((!(image.getvoltage() > 0) && !(image.getvoltage() <0))
+                       || (!(image.getamperage() > 0) && !(image.getamperage() <0 ) ) )
+                       && image.getexptime() > 1 &&  image.getmean() > 1
                        )
                    {
 
-                //   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
+                   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
 
-                   meanExptime += ((images_temp.back().getexptime()));
-                   meanIntensity += ((images_temp.back().getmean()) );
-                   images_temp.push_back(Image_cuda_compatible());
+                   meanExptime += ((image.getexptime()));
+                   meanIntensity += ((image.getmean()) );
+                  // std::cout << "pushing empty image " << std::endl;
+                  // images_temp.push_back(Image_cuda_compatible());
+                 //  std::cout << "empty image pushed." << std::endl;
                    }
                else
                {
 
                }
            } //end of for( every image in current subfolder)
-           images_temp.pop_back(); // last one is always empty.
+           //images_temp.pop_back(); // last one is always empty.
+
+
+
 
            //if there is any non-blank images, calculate mean values!
            if(images_temp.size() > 0)
@@ -228,6 +238,7 @@ void Gaincorr::readAndCalculateOffset()
                continue;
            }
 
+           std::cout <<  "clearing image. " <<std::endl;
            image.clear(); // I'll sum the good images to this variable.
            int count = 0; //counts good images in a subfolder.
 
@@ -255,10 +266,18 @@ void Gaincorr::readAndCalculateOffset()
                        {
 
                        count +=1;
+                       std::cout << "Clearing now " << std::endl;
+
+                       images_temp.at(k).clear();
+
+                       std::cout << "Cleared " << std::endl;
+
+
 
                         image+=images_temp.at(k); //Summing images at the image variable.
 
                        }
+
                }
 
 
@@ -272,19 +291,7 @@ void Gaincorr::readAndCalculateOffset()
                    image/=count;
                    image.setamperage(1.0f);
 
-
-
-
-
-
-
-
                        im_container.add(image);
-
-
-
-
-
 
                    std::cout <<"Images loaded from directory " << subdirectory.absolutePath().toStdString()
                             <<"With mean: " << image.getmean()
@@ -297,6 +304,7 @@ void Gaincorr::readAndCalculateOffset()
                    std::cout <<"Not enough good images in directory" <<subdirectory.absolutePath().toStdString()<<std::endl;
                    std::cout << "meanIntensity = "<< meanIntensity <<std::endl;
                }
+               images_temp.clear();
                } // end of loading files.
 
 

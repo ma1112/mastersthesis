@@ -139,17 +139,18 @@ void Image_cuda_compatible::remove_from_GPU()
 //! Copies image to the GPU and calculates the mean intensity on the GPU.
 void Image_cuda_compatible::calculate_meanvalue_on_GPU()
 {
+    mean = 0.0f;
+    max = 1e30f;
+    min =0.0f;
+    stdev = 0.0f;
+
     if(gpu_im == NULL)
     {
         std::cout <<"ERROR: When calculating mean on image " << id
-                 <<std::endl << "Image is empty." << std::endl;
-        mean = 0.0f;
-        max = 1e30f;
-        min =0.0f;
-        stdev = 0.0f;
+                 <<std::endl << "Image is empty. ( NULL)" << std::endl;
+
         return;
     }
-
 
   float* d_data;
   HANDLE_ERROR (cudaMalloc( (void**)&d_data, 3*sizeof(float) * 1024));
@@ -304,7 +305,7 @@ void Image_cuda_compatible::clearwitinradius(int x, int y, int r)
             int pixel2 = x + dx + (y+ dy)*width;
             if(x + dx >=0 && x + dx < width && y+ dy >=0 && y+ dy < height )
             {
-             cudaMemset(gpu_im + pixel2,0,sizeof(float) );
+            HANDLE_ERROR( cudaMemset(gpu_im + pixel2,0,sizeof(float) ));
             }
         }
 

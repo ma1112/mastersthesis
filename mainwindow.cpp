@@ -52,9 +52,6 @@ void MainWindow::on_button_choosefile_clicked()
     std::cout <<"correlating with itsetlf : " << image.correlateWith(image) << std::endl;
     ui->pushButton_export->setVisible(true);
 
-
-
-
 }
 
 void MainWindow::on_pushButton_clicked()

@@ -99,10 +99,14 @@ Image_cuda_compatible& Image_cuda_compatible::operator=(const Image_cuda_compati
 //! Adds another image's attributes to this. Also adds pixel values on the GPU.
  Image_cuda_compatible&  Image_cuda_compatible::operator+=(Image_cuda_compatible &other)
  {
+     reserve_on_GPU();
+     if(other.gpu_im == NULL)
+     {
+         std::cout << "Warning: adding empty image " << other.getfilename() << " to image " << this->getfilename() << std::endl;
+         return *this;
+     }
 
-
-
-    mean+=other.mean;
+    mean+=0.0f;
     stdev = 0.0f;
     voltage +=other.voltage;
     amperage +=other.amperage;
@@ -194,16 +198,7 @@ void Image_cuda_compatible::initialize()
 void Image_cuda_compatible::clear()
 {
     remove_from_GPU();
-    reserve_on_GPU();
-    filename="";
-    directory="";
-    mean=0;
-    stdev = 0.0f;
-    voltage =0;
-    amperage=0;
-    exptime = 0;
-    min = 0.0f;
-    max = 1e30f;
+    initialize();
 }
 
 
