@@ -125,7 +125,7 @@ void Image_cuda_compatible::remove_from_GPU()
 {
     if(gpu_im != NULL)
         {
-       std::cout << "removing image" << filename<<" from @" << gpu_im <<std::endl;
+      // std::cout << "removing image" << filename<<" from @" << gpu_im <<std::endl;
        HANDLE_ERROR ( cudaFree(gpu_im));
         gpu_im = NULL;
     }
@@ -213,7 +213,7 @@ float* Image_cuda_compatible::reserve_on_GPU()
        // std::cout << "Reserving memory on GPU for image "
        //            <<id << "at address @" << gpu_im <<std::endl;
        HANDLE_ERROR( cudaMemset(gpu_im,0,size*sizeof(float)));
-       std::cout << "reserved memory @" << gpu_im << std::endl;
+       //std::cout << "reserved memory @" << gpu_im << std::endl;
     }
 
     return gpu_im;
@@ -375,6 +375,10 @@ void Image_cuda_compatible::cudaGetShortArrayToHost(unsigned short *h_sImage)
 //! Used when saving image as a float binary file.
 void Image_cuda_compatible::cudaGetArrayToHost(float *h_image)
 {
+    if(gpu_im == NULL)
+    {
+        std::cout<< "ERROR: trying to copy empty (NULL) image to host" << filename << std::endl;
+    }
     HANDLE_ERROR(cudaMemcpy(h_image, gpu_im,sizeof(float) * size, cudaMemcpyDeviceToHost));
     return;
 }

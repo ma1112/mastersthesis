@@ -32,7 +32,8 @@ private:
     long double x;
     long double x2;
 
-    Image_cuda_compatible slope, intercept, xy, y;
+  //  Image_cuda_compatible slope, intercept;
+    Image_cuda_compatible xy, y;
 };
 
 #endif // GC_IM_CONTAINER_H

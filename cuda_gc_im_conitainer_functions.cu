@@ -7,7 +7,7 @@
 
 
 
-__global__ void kernel_gaincorr_calculator(float x, float denominator, float* d_xy, float* d_y, float* d_slope, float* d_intercept)
+__global__ void kernel_gaincorr_calculator(float* d_x, float* d_denominator, float* d_xy, float* d_y, float* d_slope, float* d_intercept)
 {
 
 
@@ -16,8 +16,8 @@ __global__ void kernel_gaincorr_calculator(float x, float denominator, float* d_
 
 
 
-    d_slope[pixel] = (d_xy[pixel] - x*d_y[pixel]) / denominator;
-    d_intercept[pixel] = d_y[pixel] - d_slope[pixel] * x;
+    d_slope[pixel] = (d_xy[pixel] - (*d_x)*d_y[pixel]) / (*d_denominator);
+    d_intercept[pixel] = d_y[pixel] - d_slope[pixel] * (*d_x);
 
 
     return;
@@ -41,16 +41,28 @@ __global__ void kernel_add_xy(float x,  float* d_xy, float* d_y)
 
 void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)
 {
+    slope.reserve_on_GPU();
+    intercept.reserve_on_GPU();
+    slope.clear();
+    intercept.clear();
     xy /= images;
     y /=images;
     x /= images;
     x2 /=images;
     float denominator = x2 - x*x;
-kernel_gaincorr_calculator<<<2592,512>>>(x, denominator, xy.gpu_im, y.gpu_im, slope.gpu_im, intercept.gpu_im);
+    float xfloat = x;
+    float* d_x;
+    float* d_denominator;
+    HANDLE_ERROR( cudaMalloc((void**) &d_x , sizeof(float) ) );
+    HANDLE_ERROR (cudaMemcpy(d_x,&xfloat, sizeof(float),cudaMemcpyHostToDevice));
+    HANDLE_ERROR( cudaMalloc((void**) &d_denominator , sizeof(float) ) );
+    HANDLE_ERROR (cudaMemcpy(d_denominator,&denominator, sizeof(float),cudaMemcpyHostToDevice));
+
+kernel_gaincorr_calculator<<<2592,512>>>(d_x, d_denominator, xy.reserve_on_GPU(), y.reserve_on_GPU(), slope.reserve_on_GPU(), intercept.reserve_on_GPU());
 
             slope.calculate_meanvalue_on_GPU();
-            intercept.calculate_meanvalue_on_GPU();
             std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
+            intercept.calculate_meanvalue_on_GPU();
             std::cout << "intercept mean : " << intercept.getmean() << std::endl;
 
     return;
@@ -65,7 +77,7 @@ void gc_im_container::add(Image_cuda_compatible &im)
     }
     y +=im;
     float x_now = im.getexptime() * im.getamperage();
-    kernel_add_xy<<<2592,512>>>(x_now,  xy.gpu_im, y.gpu_im);
+    kernel_add_xy<<<2592,512>>>(x_now,  xy.gpu_im, im.gpu_im);
     images++;
     x += x_now,
     x2 += x_now*x_now;

@@ -171,7 +171,7 @@ void Gaincorr::readAndCalculateOffset()
 
            images_temp.clear();
            images_temp.reserve(filelist.size() + 1); //images_temp for reading images from one file. MAY NOT BE USED IN THE FUTURE.
-          // images_temp.push_back(Image_cuda_compatible());
+           images_temp.push_back(Image_cuda_compatible());
 
            if(filelist.size() == 0)
            {
@@ -189,31 +189,31 @@ void Gaincorr::readAndCalculateOffset()
            for(int j=0;j<filelist.length();j++)
            //Note: subdirectory is indexed by i, files are indexed by j.
            {
-               std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
+               //std::cout << "Processing file " << subdirectory.absoluteFilePath(filelist.at(j)).toStdString() << std::endl;
                //image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
-               image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+               //image.readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
 
-               //images_temp.back().readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
+               images_temp.back().readfromfile(subdirectory.absoluteFilePath(filelist.at(j)).toStdString());
               // image.calculate_meanvalue_on_GPU();
-               std::cout << "file loaded" << std::endl;
+               //std::cout << "file loaded" << std::endl;
 
-               image.calculate_meanvalue_on_GPU();
+                images_temp.back().calculate_meanvalue_on_GPU();
 
 
      //Note: images with 0 voltage or amperage (or other parameters) are kept.
                if      (
-                       ((!(image.getvoltage() > 0) && !(image.getvoltage() <0))
-                       || (!(image.getamperage() > 0) && !(image.getamperage() <0 ) ) )
-                       && image.getexptime() > 1 &&  image.getmean() > 1
+                       ((!( images_temp.back().getvoltage() > 0) && !( images_temp.back().getvoltage() <0))
+                       || (!( images_temp.back().getamperage() > 0) && !( images_temp.back().getamperage() <0 ) ) )
+                       &&  images_temp.back().getexptime() > 1 &&   images_temp.back().getmean() > 1
                        )
                    {
 
-                   images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
+                   //images_temp.push_back(image); //loading images from one subdir to images_temp vecor.
 
-                   meanExptime += ((image.getexptime()));
-                   meanIntensity += ((image.getmean()) );
+                   meanExptime += (( images_temp.back().getexptime()));
+                   meanIntensity += (( images_temp.back().getmean()) );
                   // std::cout << "pushing empty image " << std::endl;
-                  // images_temp.push_back(Image_cuda_compatible());
+                   images_temp.push_back(Image_cuda_compatible());
                  //  std::cout << "empty image pushed." << std::endl;
                    }
                else
@@ -238,7 +238,7 @@ void Gaincorr::readAndCalculateOffset()
                continue;
            }
 
-           std::cout <<  "clearing image. " <<std::endl;
+          // std::cout <<  "clearing image. " <<std::endl;
            image.clear(); // I'll sum the good images to this variable.
            int count = 0; //counts good images in a subfolder.
 
@@ -266,11 +266,10 @@ void Gaincorr::readAndCalculateOffset()
                        {
 
                        count +=1;
-                       std::cout << "Clearing now " << std::endl;
+                      // std::cout << "Clearing now " << std::endl;
 
-                       images_temp.at(k).clear();
 
-                       std::cout << "Cleared " << std::endl;
+                     //  std::cout << "Cleared " << std::endl;
 
 
 
