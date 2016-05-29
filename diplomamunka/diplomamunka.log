@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  29 MAY 2016 16:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  29 MAY 2016 21:42
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -645,54 +645,99 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--54
 File: abrak/gaingrafikon.jpg Graphic file (type jpg)
 
 <use abrak/gaingrafikon.jpg>
-Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 104.
+Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 109.
 (pdftex.def)             Requested size: 352.81552pt x 164.71652pt.
- [5 <./abrak/gaingrafikon.jpg>]
+
+Underfull \vbox (badness 6675) has occurred while \output is active []
+
+ [5]
 <abrak/gainnelkul.png, id=54, 1541.76pt x 867.24pt>
 File: abrak/gainnelkul.png Graphic file (type png)
  <use abrak/gainnelkul.png>
-Package pdftex.def Info: abrak/gainnelkul.png used on input line 116.
+Package pdftex.def Info: abrak/gainnelkul.png used on input line 121.
 (pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
 
-<abrak/gainnel.png, id=56, 1541.76pt x 867.24pt>
+[6 <./abrak/gaingrafikon.jpg> <./abrak/gainnelkul.png>]
+<abrak/gainnel.png, id=61, 1541.76pt x 867.24pt>
 File: abrak/gainnel.png Graphic file (type png)
  <use abrak/gainnel.png>
-Package pdftex.def Info: abrak/gainnel.png used on input line 125.
+Package pdftex.def Info: abrak/gainnel.png used on input line 130.
 (pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
 
-[6 <./abrak/gainnelkul.png>] [7 <./abrak/gainnel.png (PNG copy)>] [8] [9]
+[7 <./abrak/gainnel.png (PNG copy)>] [8] [9]
+<abrak/offsetslope.jpg, id=78, 1541.76pt x 867.24pt>
+File: abrak/offsetslope.jpg Graphic file (type jpg)
+
+<use abrak/offsetslope.jpg>
+Package pdftex.def Info: abrak/offsetslope.jpg used on input line 220.
+(pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
+
+<abrak/offsetintercept.jpg, id=79, 1541.76pt x 867.24pt>
+File: abrak/offsetintercept.jpg Graphic file (type jpg)
+
+<use abrak/offsetintercept.jpg>
+Package pdftex.def Info: abrak/offsetintercept.jpg used on input line 221.
+(pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
+
+<abrak/slope50.jpg, id=80, 1541.76pt x 867.24pt>
+File: abrak/slope50.jpg Graphic file (type jpg)
+ <use abrak/slope50.jpg>
+Package pdftex.def Info: abrak/slope50.jpg used on input line 230.
+(pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
+
+<abrak/intercept50.jpg, id=81, 1541.76pt x 867.24pt>
+File: abrak/intercept50.jpg Graphic file (type jpg)
+
+<use abrak/intercept50.jpg>
+Package pdftex.def Info: abrak/intercept50.jpg used on input line 231.
+(pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [10]
-[11] [12] <abrak/geom1.jpg, id=88, 918.43124pt x 591.20876pt>
+[11 <./abrak/offsetslope.jpg> <./abrak/offsetintercept.jpg> <./abrak/slope50.jp
+g> <./abrak/intercept50.jpg>] [12]
+Underfull \vbox (badness 6675) has occurred while \output is active []
+
+ [13]
+[14] <abrak/geom1.jpg, id=99, 918.43124pt x 591.20876pt>
 File: abrak/geom1.jpg Graphic file (type jpg)
-
-<use abrak/geom1.jpg>
-Package pdftex.def Info: abrak/geom1.jpg used on input line 251.
+ <use abrak/geom1.jpg>
+Package pdftex.def Info: abrak/geom1.jpg used on input line 289.
 (pdftex.def)             Requested size: 220.50887pt x 141.9381pt.
- <abrak/geom2.jpg, id=89, 917.4275pt x 501.875pt>
-File: abrak/geom2.jpg Graphic file (type jpg)
 
-<use abrak/geom2.jpg>
-Package pdftex.def Info: abrak/geom2.jpg used on input line 265.
+<abrak/geom2.jpg, id=100, 917.4275pt x 501.875pt>
+File: abrak/geom2.jpg Graphic file (type jpg)
+ <use abrak/geom2.jpg>
+Package pdftex.def Info: abrak/geom2.jpg used on input line 303.
 (pdftex.def)             Requested size: 220.50887pt x 120.62859pt.
- [13] [14 <./abrak/geom1.jpg> <./abrak/geom2.jpg>]
-<abrak/etameghat.jpg, id=96, 722.7pt x 591.20876pt>
+
+[15 <./abrak/geom1.jpg>] [16 <./abrak/geom2.jpg>]
+<abrak/etameghat.jpg, id=107, 722.7pt x 591.20876pt>
 File: abrak/etameghat.jpg Graphic file (type jpg)
  <use abrak/etameghat.jpg>
-Package pdftex.def Info: abrak/etameghat.jpg used on input line 293.
+Package pdftex.def Info: abrak/etameghat.jpg used on input line 330.
 (pdftex.def)             Requested size: 220.50887pt x 180.38606pt.
 
-[15] [16 <./abrak/etameghat.jpg>]
+[17 <./abrak/etameghat.jpg>]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 350.
+(amsmath)                trying to recover with `aligned' on input line 387.
 
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 365.
+(amsmath)                trying to recover with `aligned' on input line 402.
 
-[17] [18] [19] (diplomamunka.bbl
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [18]
+[19]
+
+Package amsmath Warning: Cannot use `split' here;
+(amsmath)                trying to recover with `aligned' on input line 466.
+
+[20] [21] (diplomamunka.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 4--9
 []\T1/cmr/m/n/12 M. Har-ris.  Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
@@ -703,17 +748,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 4--9
 uction.pdf.
  []
 
-) [20
+) [22
 
 ] (diplomamunka.aux) ) 
 Here is how much of TeX's memory you used:
- 6547 strings out of 493673
- 98219 string characters out of 3143954
- 198154 words of memory out of 3000000
- 9784 multiletter control sequences out of 15000+200000
+ 6571 strings out of 493673
+ 98793 string characters out of 3143954
+ 198172 words of memory out of 3000000
+ 9804 multiletter control sequences out of 15000+200000
  15256 words of font info for 40 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 42i,19n,40p,4227b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfo
 ur\jknappen\ec\dpi600\ecrm0800.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\f
 onts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk> <C:\Users\Árpád\AppData\Local\
@@ -731,9 +776,9 @@ amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
 rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program F
 iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (21 pages, 4347586 bytes).
+Output written on diplomamunka.pdf (23 pages, 6944363 bytes).
 PDF statistics:
- 481 PDF objects out of 1000 (max. 8388607)
+ 490 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 56 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 76 words of extra memory for PDF output out of 10000 (max. 10000000)
 

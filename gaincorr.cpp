@@ -128,7 +128,7 @@ void Gaincorr::readAndCalculateOffset()
         myfile.close();
 
 
-            if(count > 2)
+            if(count > 5)
             {
                 goodFolderList << subdirs.at(i);
             }
@@ -138,7 +138,7 @@ void Gaincorr::readAndCalculateOffset()
 
 
 
-        if (goodFolderList.size() < 3)
+        if (goodFolderList.size() <= 5)
         {
             goodFolderList.clear();
             std::cout << "ERROR Too few directories for offset correction. " <<std::endl;
