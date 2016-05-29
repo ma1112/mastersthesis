@@ -238,20 +238,226 @@ A korrekciós faktorok meghatározása után, amelyek tehát szintén képként 
 
 A diplomaunkám során a másik tárgyalt kalibráció az úgynevezett \emph{geometria kalibráció}, amely a CT-vel elkészített képek alapján állapítja meg, hogy milyen távol van egymástól a detektor, a forgatható asztal forgástengelye és a röntgencső fókuszpontja. A geometriai adatokhoz igen pontosan szükség van, amikor az elkészült projekciók alapján meghatározzuk a felvett tárgy 3 dimenziós képét, vagyis a visszavetítéskor. Ugyanakkor a geometriai paramétereket kézzel nem tudjuk igen pontosan lemérni, már csak azért sem, mert a röntgencső fókuszpontjának a helye nem hozzáférhető és nem ismert, továbbá a mérési pontatlanság is viszonylag nagy lenne. Ezért alkalmazzuk azt a módszert, hogy az elkészült képek alapján határozzuk meg a szóban forgó paramétereket. 
 
+A kalibrációt a kísérleti algoritmus által is használt cikkek alapján kiviteleztem. Mind Noo cikke \cite{noo}, mind Wu cikke \cite{wu} hasonló módszerekkel határozza meg a keresett paramétereket, azonban utóbbi egy egyszerűsített esete az előbbinek. A továbbiakban bemutatom a geometriai kalibráció meghatározásának elméletét a cikkek alapján, majd bemutatom, hogy a geometriai adatok meghatározásához milyen módszereket használt a kísérleti algoritmus, valamint az én algoritmusaim, továbbá ismeretem az elért eredményeimet. 
+
+\subsection{A síkpaneles CBCT geometriája}
+
+Hogy a geometriai kalibráció során milyen adatok kerülnek meghatározásra, és milyen adatok kerülnek elhanyagolásra, azt jól szemlélteti \aref({fig:geom1}).\ és \aref({fig:geom2}).~ábra. 
+
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.5\textwidth]{abrak/geom1}
+\caption{A Cone-beam CT elrendezésének vázlata\cite{noo}. A $z$ tengellyel párhuzamos forgástengely $R$ távolságra van az $x$ irányban lévő forrásponttól. A detektor és a forrás közötti legrövidebb távolság $D$. A forrásoz legközelebb eső pontja a detektornak az $u_0,v_0$ koordinátával jellemzett pixel. }
+\label{fig:geom1}
+\end{figure}
+
+
+
+
+
+\Aref{fig:geom1}.~ábrán látható paraméterek jelentése a következő. A forgatható asztal forgástengelye és a röntgencső fókuszpontjának távolsága $R$. Konvenció szerint a forgástengely a $z$ tengellyel párhuzamos és az $x$ tengely irányában található a forrás fókuszpontja. A detektor az $(u_0,v_0)$ koordinátákkal jellemzett pixelétől mért távolsága a legkisebb a forrástól, és ez a távolság $D$.
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.5\textwidth]{abrak/geom2}
+\caption{A Cone-beam CT elrendezésében jellemző irányok\cite{noo}. $\underline{e}_\omega$ a detektor síkjára merőleges irány, $\alpha$ és $\beta$ a detektor síkjában fekvő, egymásra merőleges vektorok. A detektor dőlését a $\phi, \theta, \eta$ szögek jellemzik.}
+\label{fig:geom2}
+\end{figure}
+
+
+
+ \Aref{fig:geom2}.~ábrán azt láthatjuk, hogy míg a forgástengely és a forrás iránya  a modell szerint rögzített, a detektor irányát és állását meghatározó   $\phi, \theta, \eta$ szögeket az ábrák nem hanyagolják el. Ezek közül az $\eta$ szöget, vagyis a detektornak a saját síkjában való elfordulását mindkét cikk figyelembe veszi és számolja. A $\phi$ szöget, vagyis a detektor kifordulását, az asztal forgástengelyével párhuzamos tengely mentén, már csak Noo\cite{noo} cikke számolja ki. A $\theta$  szöggel jellemzett elfordulást pedig mindkét cikk elhanyagolja. Az elhanyagolásokra az ad lehetőséget, hogy az nem befolyásolja nagy mértékben a rekonstruált képeket, illetve a többi paraméter mérési pontosságát. 
+
+ Összefoglalva tehát meghatározandó paraméter a detektor és a forrás távolsága ($D$), a forgástengely és a forrás távolsága ($R$), a detektor pixelei közül a forráshoz legközelebbi ($u,v$), valamint a detektor elfordulása a saját síkjában ($\eta$).  Ezen kívül Noo módszerével meghatározható a detektor ferdeségét jellemző $\phi$ szög is, de ez egyrést a kísérleti algoritmusban sem került meghatározásra, másrészt a rekonstrukciónak sem bemenete.
+ 
+ 
+
+\subsection{A geometriai paraméterek meghatározásának elmélete}
+
+A fent összegzett paraméterek az említett cikkek alapján meghatározhatóak úgy, hogy a forgatható asztalra egy plexi --  vagy egyéb, alacsony sűrűségű -- lapra fém -- vagy egyéb, nagy sűrűségű -- gömb alakú tárgyakat helyezünk el, jól meghatározott távolságra, majd az asztalt körbeforgatva felvételeket készítünk. Belátható\cite{noo}, hogy a forgatás során körbeforduló gömbök a detektoron ellipszis pályát írnak le. A geometriai paramétereket ezen ellipszis pályákból tudjuk meghatározni.
+Ennek módját először Noo cikke alapján mutatom be, majd ismertetem, hogy ahhoz képest Wu cikke milyen változásokat tartalmaz.
+
+\subsubsection{A paraméterek meghatározása Noo\cite{noo} cikke alapján}
+
+Az adatok feldolgozása mindkét esetben azzal kezdődik, hogy az egyes projekciókon meg kell keresni, hogy a detektoron hol jelenik meg a golyók képe. A sorrendben $k$.\ golyó helyzetét az $i$. projekción ($u_k^i, v_k^i$)-vel jelölöm. Noo cikkében két golyót tartalmazó fantomot használnak, így $k$ értéke 1 vagy 2 lehet. $i$ értéke 1 és $N$ között változik, ahol $N$ a teljes körbeforduláshoz alatt elkészített felvételek száma.  Az egyes projekción az említett koordináták megkeresése nem egyértelmű probléma, és az említett cikkek sem adnak részletes segítséget  a feladat elvégzéséhez. Így a golyók középpontjának megkeresésére a megvalósítást tárgyaló \aref{sec:kozeppont}\ fejezetben térek ki. 
+
+Miután a golyók középpontja az összes projekción rendelkezésre áll, elsőként a detektor saját síkjában való elfordulását kell korrigálni, azaz meghatározni az $\eta$ szöget. Ehhez meg kell határozni a forgástengely vetített ($\hat{u}_k, \hat{v}_k$) képét a két ellipszis esetében. \Aref{fig:etameghat}.~ábrán látható, ez a pont az épp ellentétes fázisban lévő pontok közé húzott szakaszok közös metszéspontjában van, amely nem feltétlenül esik egybe az ellipszis ($\overline{u}_k , \overline{v}_k$) középpontjával. A kereset ($\hat{u}_k, \hat{v}_k$) pont így \aref({eq:etameghat1})~egyenletrendszer alapján lineáris regresszióval kapható meg. A pontok ismeretében pedig a detektor elfordulása \aref({eq:etameghat2})~egyenlettel kapható.
+
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.5\textwidth]{abrak/etameghat}
+\caption{A körbeforduló golyók vetített képe. A forgástengely vetített képe nem feltétlenül esik egybe a vetített ellipszis középpontjával.\cite{noo} }
+\label{fig:etameghat}
+\end{figure}
+
+
+\begin{equation}
+\label{eq:etameghat1}
+\left(u_k^j-u_k^i \right) \hat{v}_k - \left(v_k^j-v_k^i \right) \hat{u}_k = v_k^iu_k^j - v_k^ju_k^i, \hskip10pt  j = i+ \frac{N}{2}, \hskip10pt i = 1 \ldots  \frac{N}{2} 
+\end{equation}
+
+
+\begin{equation}
+\label{eq:etameghat2}
+\eta = \arctan \left ( \frac{\hat{u}_1 - \hat{u}_2}{\hat{v}_1 - \hat{v}_2} \right )
+\end{equation}
+
+
+
+Az $\eta$ szög meghatározása után az összes projekción a megtalált körök középpontját el kell forgatni ezzel a szöggel, és ez után a képek úgy kezelhetőek, mintha egy ferdeségtől mentes detektorral készültek volna. Vagyis egy ellipszis ($u_k^i, v_k^i$) pontja helyett \aref({eq:forgatas})~egyenletekkel számolt (${u_k^i}^*, {v_k^i}^*$) pontot vesszük figyelembe a számolás további részében.  Csupán arra kell odafigyelni, hogy a detektoron keresett ($u_0,v_0$) koordinátákat végül vissza kell forgatni .
+
+\begin{equation}
+\label{eq:forgatas}
+\begin{pmatrix}
+{u_k^i}^* \\ {v_k^i}^*
+\end{pmatrix}
+ = 
+ \begin{pmatrix}
+ \cos \eta & -\sin \eta \\
+ \sin \eta & \cos \eta
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+{u_k^i} \\ {v_k^i}
+\end{pmatrix}
+\end{equation}
+
+
+Ez után az elforgatott pontokra ellipszist kell illeszteni, ahol az ellipszis pontjai \aref({eq:ellipse})~egyenletet elégítik ki. 
+
+\begin{equation}
+\label{eq:ellipse}
+a \left ( {u^i}^* - \overline{u} \right )^2 + b  \left ( {v^i}^* - \overline{v} \right )^2 + 2c  \left ( {u^i}^* - \overline{u} \right ) \left ({v^i}^* - \overline{v} \right ) = 1
+\end{equation}
+
+
+Az fenti egyenletből lineáris regresszióval meghatározhatóak az ellipszis ($\overline{u}, \overline{v}$) középpontjai, az $a$ és $b$ paraméterek, amelyek a tengelyek hosszával vannak kapcsolatban, valamint $c$, amely paraméter az ellipszis ferdeségére utal.  Ezekből a paraméterekből először a forrás és a tengely távolsága ($D$) a meghatározható, \aref({eq:noo_d})~egyenletek alapján. Az újonnan meghatározott $D$ távolság ismeretében a további meghatározandó paraméterek \aref({eq:noo_tobbi})~egyenletekkel számolhatóak. Az egyenletekben $z_1$ és $z_2$ a golyók $z$ koordinátájára utal a fantomon. Amennyiben az adott golyó a fantomon a röntgenforrás vonala felett helyezkedik el, úgy előjele pozitív, amennyiben alatta, úgy előjele negatív. Ez az adat sem feltétlenül mérhető, így ezt is a képekből határozom meg. Továbbá \aref({eq:noo_d}).~egyenletből az elsőnél látható $\epsilon$ tag értéke $\pm1$: pozitív előjellel, ha a két golyó a a röntgenforrás két oldalán helyezkedik el, vagyis ha $z_1z_2 < 0$. Amikor a golyók ugyan azon az oldalon vannak, vagyis $z_1z_2>0$, akkor $\epsilon$ értéke lehet $+1$, valamint $-1$ is: ilyen esetben az előjel megállapításához szükséges a felhasználó döntése.
+
+\begin{equation}
+\label{eq:noo_d}
+\left.
+\begin{split}
+D^2 &= \frac{(a_1- 2n_0n_1 )- \epsilon \sqrt{a_1^2+ 4n_1^2 - 4n_0n_1a_1}}{2n1^2}\\
+n_0&= \frac {1-m_0^2-m_1^2}{2m_0m_1}\\
+n_1&= \frac{a_2-a_1m_1^2}{2m_0m_1}\\ 
+m_0 &=\left ( \overline{v}_2 - \overline{v}_1 \right) \sqrt{b_2-\frac{c_2^2}{a_2}}\\
+m_1 &= \sqrt{b_2 - \frac{c_2^2}{a_2}} \sqrt{b_1- \frac{c_1^2}{a_1}} 
+\end{split}
+\right\}
+\end{equation}
+
+
+
+\begin{equation}
+\label{eq:noo_tobbi}
+\left.
+\begin{split}
+v_0^* &= \overline{v}_1 - \text{sign} (z_1) \frac {\sqrt{a_1 + a_1^2D^2    }}{\sqrt{a_1b_1-c_1^2}}\\
+u_0^* &= \frac{1}{2} \overline{u}_1  + \frac{1}{2} \overline{u}_2 + \frac{c_1}{2a_1} \left ( \overline{v}_1 - v_0^* \right) + \frac{c_2}{2a_2} \left (\overline{v}_2 - v_0^* \right)\\
+\rho_k &= \frac{\sqrt{a_kb_k-c_k^2}}{\sqrt{a_kb_k+a_k^2b_kD^2-c_k^2}}  \hskip10pt k = 1,2\\
+\zeta_k &= D \cdot \text{sign}(z_k)a_k \frac{\sqrt{a_k}}{\sqrt{a_kb_k+a_k^2b_kD^2-c_k^2}}\\
+\sin \phi & = -\frac{c_1}{2a_1}  \zeta_1 - \frac{c_2}{2a_2} \zeta_2
+\end{split}
+\right \}
+\end{equation}
+
+
+Végül már csak a forrás és forgástengely közötti $R$ távolságot kell meghatároznunk. Ez \aref({eq:noo_r})~egyenlet lapján történik, ahol $d$ a két golyó távolsága. 
+
+\begin{equation}
+\label{eq:noo_r}
+\begin{split}
+\frac{d^2}{R^2} = \frac{1}{N} \sum_{i=1}^{N} \left\{ \left ( \zeta_1 \frac{u_1^i - u_0^*}{v_1^i - v_0^*}  - \zeta_2 \frac{u_2^i - u_0^*}{v_2^i - v_0^*} \right)^2 + \left( \frac{D \zeta_1}{v_1^i - v_0^*} - \frac{D \zeta_2}{v_2^i - v_0^*} \right)^2 + \left ( \zeta_1 - \zeta_2 \right) ^2 \right\}
+\end{split}
+\end{equation}
+
+
+\subsubsection{A paraméterek meghatározása Wu\cite{wu} cikke alapján}
+
+
+A fentiekhez képest a legnagyobb eltérést az jelenti Noo és Wu cikke között, hogy utóbbi esetben a fantomon nem két golyó van, hanem több, ezzel növelve a módszer megbízhatóságát. 
+
+A paraméterek meghatározása ebben az esetben is az $\eta$ szög meghatározásával és a vele való korrekcióval történik, ám ebben az esetben -- mivel több golyó adata áll rendelkezésre -- egyenes illesztéssel tudjuk meghatározni $\tan \eta$ értékét, \aref({eq:wu_eta})~egyenlet szerint.
+
+\begin{equation}
+ \label{eq:wu_eta}
+\hat{u}_k  = c + \tan \eta \cdot \hat{v}_k
+\end{equation}
+
+A mérési pontokra ez után szintén ellipszist kell illeszteni, azonban Wu cikkében \aref({eq:wu_ellipse})~egyenlet írja le a ellipszist. el van hanyagolva tehát \aref({eq:ellipse})~egyenletben még meglévő $c$ paraméter, amely akkor tehető meg, ha az ellipszis nagytengelye éppen vízszintes állású. Ez jó közelítéssel igaz is, hiszen az ellipszisen el vannak forgatva az előzetesen meghatározott $\eta$ szöggel, amely következtében a forgástengely képe a detektoron egy függőleges egyenes. Mivel az asztal körbeforgatása során a golyók merőlegesen mozognak a forgástengelyre, a vetített képükre is igaz lesz, hogy a pályájuk nagytengelye merőleges a forgástengely vetületére, azaz éppen vízszintes. 
+
+\begin{equation}
+\label{eq:wu_ellipse}
+a \left ( {u^i}^* - \overline{u} \right )^2 + b  \left ( {v^i}^* - \overline{v} \right )^2  = 1
+\end{equation}
+
+
+
+Ezzel az egyszerűsítéssel a keresett geometriai paramétereket leíró egyenletek is jócskán leegyszerűsödnek. A keresett $v_0^*$ és $D$ paraméterek  \aref({eq:wu_d})~egyenletrendszerből lineáris regresszióval megkaphatóak, amelyek a $k$ és $k'$ sorszámú ellipszisek között teremtenek összefüggést.
+
+\begin{equation}
+\label{eq:wu_d}
+\frac{\overline{v}_k + \overline{v}_{k'}}{2}  - \frac{1}{2 \left( \overline{v}_k   - \overline{v}_{k'}  \right)} \left( \frac{1}{b_k} - \frac{1}{b_{k'}} \right) = v_0^* + D^2 \frac{1}{2 \left( \overline{v}_k   - \overline{v}_{k'} \right) }   \left( \frac{a_k}{b_k} - \frac{a_{k'}}{b_{k'}} \right)
+\end{equation}
+
+Vegyük észre, hogy Noo módszerével ellentétben itt nem szükséges a golyók függőleges pozíciójának ($z_1, z_2$) vizsgálata. Így ez a módszer minden esetben egyértelműen számolja a kérdéses paramétereket, míg Noo módszerénél az összes többi paraméter értékét meghatározó $D$ paraméter bizonyos esetekben -- amikor a kiválasztott golyók függőlegesen a forrás azonos oldalain voltak -- nem volt egyértelmű. Továbbá ez a képlet jóval egyszerűbb, mint \aref({eq:noo_d})~egyenletekben leírtak.
+
+Ugyancsak egyszerű képletet kapunk $u_0^*$ értékére: mivel a $c$ paraméterek értékét elhanyagoljuk, a Noo által használt (\ref{eq:noo_tobbi}) képletek megfelelő sorára ránézve látszik, hogy $u_0^*$ értéke az ellipszis illesztésnél kapott $\overline{u}_k$ értékek átlagolásával kapható : \ref{eq:wu_u0}, ahol $E$ az alkalmazott golyók -- és így az ellipszisek -- száma. 
+\begin{equation}
+\label{eq:wu_u0}
+u_0^* = \frac{1}{E} \sum_{k=1}^E \overline{u}_k
+\end{equation}
+
+
+Ez után az egyetlen meghatározandó paraméter a forgástengely és a forrás $R$ távolsága. Ezt a távolságot most \aref({eq:wu_r})~egyenletekkel tudjuk meghatározni, amelyek egy $k$ és egy $k'$ sorszámú ellipszis között teremtenek kapcsolatot, és ahol $d^{kk'}$ a két  ellipszishez tartozó golyók távolsága a fantomon.
+
+
+\begin{equation}
+\label{eq:wu_r}
+\left( \frac{d^{kk'}}{R} \right) ^2 = \left ( \zeta_k - \zeta_{k'}  \right )^2  +  \left (\rho_{k} \right )^2 + \left (\rho_{k'} \right )^2  - 2\rho_k \rho_{k'} \cos  \left ( \alpha_k - \alpha_{k'} \right ) 
+\end{equation}
+
+
+
+
+
+
+\subsection{A golyók középpntjának meghatárzoása}
+\label{sec:kozeppont}
 
 
 \clearpage
 
-\begin{thebibliography}{9}
+%\begin{thebibliography}{9}
 
-\bibitem{reduce}
-Mark Harris,
-{\it Optimizing Parallel Reduction in CUDA},
-{\tt online: http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf},
-Utolsó hozzáférés: 2016.05.28. 14:00
-%(\tt online, }
+\bibliographystyle{abbrv}
+\bibliography{bibfile} 
 
 
+%
+%\bibitem{reduce}
+%Mark Harris,
+%{\it Optimizing Parallel Reduction in CUDA},
+%{\tt online: http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf},
+%Utolsó hozzáférés: 2016.05.28. 14:00
+%
+%\bibitem{Noo}
+%Frédéric Noo, Rolf Clackdoyle, Catherine Mennessier, Timothy A White, Timothy J Roney,
+% {,,Analytic method based on identification of ellipse parameters for scanner calibration in cone-beam tomography},
+% \emph{Physics in Medicine and Biology},
+% vol. 45,
+%  number={11},
+%  pages={3489},
+%  url={http://stacks.iop.org/0031-9155/45/i=11/a=327},
+%  year={2000},
+%  abstract={This paper is about calibration of cone-beam (CB) scanners for both x-ray computed tomography and single-photon emission computed tomography. Scanner calibration refers here to the estimation of a set of parameters which fully describe the geometry of data acquisition. Such parameters are needed for the tomographic reconstruction step. The discussion is limited to the usual case where the cone vertex and planar detector move along a circular path relative to the object. It is also assumed that the detector does not have spatial distortions. We propose a new method which requires a small set of measurements of a simple calibration object consisting of two spherical objects, that can be considered as `point' objects. This object traces two ellipses on the detector and from the parametric description of these ellipses, the calibration geometry can be determined analytically using explicit formulae. The method is robust and easy to implement. However, it is not fully general as it is assumed that the detector is parallel to the rotation axis of the scanner. Implementation details are given for an experimental x-ray CB scanner.}
+%}
+	
 %\bibitem{url}
 %{\tt http://fizipedia.bme.hu/index.php/Gamma\_spektroszkópia},
 %2013.~november~29., 1:00
@@ -264,5 +470,5 @@ Utolsó hozzáférés: 2016.05.28. 14:00
 %C.M. Lederer, J.M. Hollander, I. Perlman,
 %{\it \foreignlanguage{english}{Table of Isotopes}},
 %Wiley, New York, 1984.
-\end{thebibliography}
+%\end{thebibliography}
 \end{document}

@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{reduce}
+M.~Harris.
+\newblock {Optimizing Parallel Reduction in CUDA}.
+\newblock
+  {http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf}.
+\newblock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+
+\bibitem{noo}
+F.~Noo, R.~Clackdoyle, C.~Mennessier, T.~A. White, and T.~J. Roney.
+\newblock Analytic method based on identification of ellipse parameters for
+  scanner calibration in cone-beam tomography.
+\newblock {\em Physics in Medicine and Biology}, 45(11):3489, 2000.
+
+\bibitem{wu}
+D.~Wu, L.~Li, L.~Zhang, Y.~Xing, Z.~Chen, and Y.~Xiao.
+\newblock Geometric calibration of cone-beam ct with a flat-panel detector.
+\newblock In {\em Nuclear Science Symposium and Medical Imaging Conference
+  (NSS/MIC), 2011 IEEE}, pages 2952--2955, Oct 2011.
+
+\end{thebibliography}
