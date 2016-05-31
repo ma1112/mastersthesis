@@ -11,6 +11,9 @@
 \usepackage{multirow}
 \usepackage{subcaption}
 \usepackage{subfig}
+
+
+
 %matgót megoldottam a 2. sorban.
 %\usepackage{anysize} %margóhoz
 %\marginsize{3cm}{3cm}{2.5cm}{2.5cm}
@@ -240,6 +243,7 @@ A korrekciós faktorok  pixelenként kerülnek meghatározásra, így azok, mint
  
  
 \subsection{A gain kalibráció implementálása és a szükséges mérések leírása} 
+\label{sec:reduce}
  
  
 A bemeneti fájlok elkészítéséhez, azaz a mérési utasításhoz szükséges megjegyeznem, hogy a mérések során észrevehető volt, hogy a detektor által készített képek egy része valamiért jóval sötétebb, mint az azonos körülmények között készült egyéb képek. Ez a hiba a képek kb.\ 5\%-át érinti, és okát nem sikerült felderíteni. Más felhasználók is panaszkodtak hasonló hibára ennél a detektortípusnál. A korrekciós faktorok számításánál azonban kimondottan fontos, hogy ilyen képeket ne használjunk fel a számításokhoz -- továbbá az ilyen képek kezelése egyéb helyzetekben is szükségszerűnek tűnik. Ennek érdekében a gain kalibrációhoz szükséges méréseket úgy végeztük el, hogy egy adott beállítással több képet készítettünk ( 10--20 képet beállításonként). Az azonos beállításokkal készült képeket külön mappákba mentettük, így a szoftver is ilyen formában várja azokat az adatok feldolgozása során. Ez a megoldás azért szerencsés, mert egy mappán belül átlagolva a képek intenzitásértékét, könnyen és egyértelműen kiszűrhető, ha valamelyik kép jóval sötétebb, a fent említett hiba miatt. Továbbá az azonos mappákban lévő, tehát azonos beállításokkal készült képeket átlagolva a képeket terhelő zaj is csökken. Így amikor a korrekciós faktorokat számolom, mappánként átlagolom azokat a képeket, amelyek átlagos intenzitása nem tér el 10\%-nál jobban a mappában lévő képek átlagos intenzitásának átlagától. Az program  robusztusságát  tovább növelve, a képek beolvasásakor vizsgálom, hogy  azok milyen expozíciós beállításokkal készültek, és ez alapján is szelektálom a képeket, kiszűrve a mérés során elkövetett emberi hibákat. A mérésvezérlő szoftverről ugyanis tudni érdemes, hogy a felvételek készítésének elindítása a röntgen forrás bekapcsolásától függetlenül elindítható, és az indítás után sorozatosan készít képeket, amíg le nem állítják. Mérés közben a forrás feszültsége és áramerőssége szabadon változtatható, illetve a forrás ki- és bekapcsolható. A röntgencső független kezelése részben biztonságvédelmi célokat szolgál, azonban lehetőséget ad a felhasználónak, hogy a képek sorozatos kimentését elindítsa úgy, hogy a forrás nincs bekapcsolva, vagy a beállított paraméterei nem megfelelők. Ekkor gyakran előfordul, hogy a felhasználó a paramétereket menet közben állítja, és az addigi eredményeket nem törli ki. Ezt kiküszöbölendő, a gain korrekcióhoz készített kalibrációs képek feldolgozása során a képek átlagos intenzitásán kívül a program vizsgálja az átlagos áramerősség, feszültség és exponálási idő paramétereket is, és a kilógó értékkel készült képeket figyelmen kívül hagyja. Továbbá figyelembe veszi azt is, hogy offset korrekcióhoz készült kalibráló képek között ne legyen olyan, ahol a forrás be volt kapcsolva -- vagy ha van, akkor hagyja azt is figyelmen kívül. Hasonlóan a gain és flattness hibák faktorai meghatározásánál az algoritmus ignorálja azokat a képeket, ahol a forrás ki volt kapcsolva. Amennyiben egy mappában kevés kép van, amely a fenti szűröknek megfelel (5-nél nem több), akkor a mappa tartalmát a szoftver nem használja fel a korrekciós faktorok meghatározásához. Továbbá, amennyiben túl kevés mappát talál a szoftver (5-nél nem többet), tehát túl kevés a különböző expozíciós beállítások száma a korrekciós faktorok meghatározásához -- akár összesen, akár túl kevés megy át a fenti szűrükön--, a kalibrációs  faktorok nem kerülnek meghatározásra. Így elkerülhető, hogy túl kevés pontra illesszünk egyenest, és ezért hibás eredményeket kapjunk, vagyis a képkészlet ellenőrzése szintén a szoftver robusztusságát növeli. A felvételek elkészítésekor alkalmazott feszültségértékeket az program szintén a képek beolvasásakor határozza meg, így azt külön megadni nem szükséges, mint ahogy a képeket feszültség szerint sem kell szétválogatni -- ellentétben a kísérleti algoritmussal.
@@ -318,6 +322,8 @@ A fent összegzett paraméterek az említett cikkek alapján meghatározhatóak 
 Ennek módját először Noo cikke alapján mutatom be, majd ismertetem, hogy ahhoz képest Wu cikke milyen változásokat tartalmaz.
 
 \subsubsection{A paraméterek meghatározása Noo\cite{noo} cikke alapján}
+\label{sec:noo}
+
 
 Az adatok feldolgozása mindkét esetben azzal kezdődik, hogy az egyes projekciókon meg kell keresni, hogy a detektoron hol jelenik meg a golyók képe. A sorrendben $k$.\ golyó helyzetét az $i$. projekción ($u_k^i, v_k^i$)-vel jelölöm. Noo cikkében két golyót tartalmazó fantomot használnak, így $k$ értéke 1 vagy 2 lehet. $i$ értéke 1 és $N$ között változik, ahol $N$ a teljes körbeforduláshoz alatt elkészített felvételek száma.  Az egyes projekción az említett koordináták megkeresése nem egyértelmű probléma, és az említett cikkek sem adnak részletes segítséget  a feladat elvégzéséhez. Így a golyók középpontjának megkeresésére nem itt, hanem a geometriai kalibráció megvalósítást tárgyaló \aref{sec:kozeppont}\ fejezetben térek ki. 
 
@@ -451,10 +457,7 @@ u_0^* = \frac{1}{E} \sum_{k=1}^E \overline{u}_k\\
 \end{equation}
 
 
-Ez után az egyetlen meghatározandó paraméter a forgástengely és a forrás $R$ távolsága. Ezt a távolságot most \aref({eq:wu_r})~egyenletekkel tudjuk meghatározni, amelyek egy $k$ és egy $k'$ sorszámú ellipszis között teremtenek kapcsolatot, és ahol $d^{kk'}$ a két  ellipszishez tartozó golyók távolsága a fantomon. 
-
-TODO: Dumálni itt arról, hogy mi az alfa.
-
+Ez után az egyetlen meghatározandó paraméter a forgástengely és a forrás $R$ távolsága. Ezt a távolságot most \aref({eq:wu_r})~egyenletekkel tudjuk meghatározni, amelyek egy $k$ és egy $k'$ sorszámú ellipszis között teremtenek kapcsolatot, és ahol $d^{kk'}$ a két  ellipszishez tartozó golyók távolsága a fantomon. A képletben továbbá $ \left ( \alpha_k - \alpha_{k'} \right )$ jelöli annak az elfordulásnak a szögét, amely elfordulással a két golyó az ellipszisük azonos fázisába forgathatóak. Ez a szög tehát $0^\circ$, amennyiben a golyók a plexi fantomon a forgástengely azonos oldalára vannak felerősítve, és $180^\circ$, amennyiben a fantom ellentétes oldalain vannak.
 
 \begin{equation}
 \label{eq:wu_r}
@@ -470,14 +473,119 @@ TODO: Dumálni itt arról, hogy mi az alfa.
 
 \subsection{A geometriai kalibráló mérés kivitelezése}
 
-A geometriai adatok meghatározásához tehát fém golyókat 
+A geometriai kalibrációs mérésekhez csapágygolyókat használtunk, amelyeket cellux ragasztóval rögzítettünk egy plexi lapra, \aref{fig:geomfantom}.~ábrán látható módon.
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.8\textwidth]{abrak/geomfantom}
+\caption{A geometriai kalibrációhoz használt fantom}
+\label{fig:geomfantom}
+\end{figure}
+
+
+ A plexin 2~mm-enkénti bemélyedés segítette a pontos pozicionálást, a golyókat ezekbe a lyukakba ragasztottuk bele. Továbbá ezen barázdarendszer a golyók távolságának leolvasását is megkönnyítette. A méréseket a lehető legmagasabb csőfeszültség mellett, 80~kV-on végeztük, a fantomot körbeforgatva. A magas feszültségre azért volt szükség, hogy a plexi minél kevésbé legyen látható az elkészült felvételeken, ezzel segítve a golyók megtalálását a képen. Ugyanakkor a magas feszültség ellenére is, amikor a lemez síkja épp párhuzamos volt a fősugárral -- tehát a detektoron \aref{fig:geomfantom}.~ábrán látható elrendezés $90^\circ$-kal való elforgatottja jelent meg, a plexi lemez a fém golyókkal összemérhető intenzitást adott, vagyis a golyók elkülönítése a plexitől ekkor nehezebb feladat, mintha a golyók intenzitása jelentősen eltérni a plexiétől. Egy ilyen helyzetben és egy 90$^\circ$-kal elforgatott helyzetben készült ábrázol \aref{fig:geomfantom_plexi}.~ábra. Láthatjuk rajta, hogy a fősugárra merőleges állásban (a felső képen) a golyók intenzitására 1000--2000 körüli érték adódik, míg a plexinél ez az érték 10~000 körüli. Elforgatott állásban a plexi és a golyók intenzitása is 1000--2000 körüli érték, vagyis ekkor már a plexi elsötétülése megegyezik a golyóékéval. Ez a a jelenség az algoritmusok tervezése során egy megoldandó problémát jelentett, amelyre \aref{sec:kozeppont}.~fejezetben térek ki.
 
 
 
 
-\subsection{A golyók középpontjának meghatározása}
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.8\textwidth]{abrak/geomfantom_meroleges}
+\includegraphics[width=0.8\textwidth]{abrak/geomfantom_parhuzamos}
+\caption{A geometriai kalibrációhoz használt fantom}
+\label{fig:geomfantom_plexi}
+\end{figure}
+
+
+
+
+
+
+
+\subsection{A geometriai kalibráció megvalósítása}
+
+
+
+A geometriai kalibráció robusztus algoritmusainak megalkotása során rendelkezésemre állt a kísérleti algoritmus során eredményesnek bizonyult megvalósítás\cite{botond}, ami lényegében \acite{wu} cikken alapult,  valamint felhasználtam  \acite{noo} cikkben leírtakat is. Míg utóbbi csak két golyó adataival dolgozik, kevesebb elhanyagolást alkalmaz. Előbbi azonban egyszerűbb képleteket használ, eleve több golyós fantomot feltételezve, amely gyakran lineáris regresszióvá alakítja a képleteket, felhasználva egyszerre az összes golyó adatait. Mindkét cikk algoritmusát implementáltam a programomban, megvizsgáltam, hogy vajon a kevesebb elhanyagolást eredményező változat robusztussá tehető e, ha a több golyó adatait megfelelő hibaszámítással súlyozva átlagolom. A hibaszámítást a másik algoritmus megvalósítása során is bevezettem, így mindkét módszernél kiküszöbölve az esetleges hibákat a golyók keresése és az ellipszisek illesztése során. Továbbá új algoritmust vezettem be a golyók középpontjának megkeresésére, amely a felhasználótól kevesebb információt kér, pontosabban jár el akkor, amikor a plexi intenzitásban nem tér el eléggé a golyóktól, valamint a videókártyán való megvalósításnak köszönhetően hamar lefut.
+
+A következőkben bemutatom a geometriai korrekciós faktorok meghatározásának folyamatát az elkészült programban, ismertetem a  megtervezett algoritmusokat és azok használatának lehetőségeit és korlátait, valamint az eredményeit.
+
+
+\subsubsection{ A folyamat áttekintése és a felhasználótól kért adatok. }
+
+
+Az általam megvalósított kalibrációs szoftver újabb funkciója a geometriai korrekciós mérések kiértékelése. A funkció kiválasztásakor először beolvasásra kerülnek a gain kalibráció adatai, amely helyének kiválasztására a felhasználónak grafikus felületen van lehetősége. Szintén grafikus felületen választható ki az, hogy hol keresse a program a geometriai kalibrációhoz szükséges képkészletet. A mappában lévő képek ezek után egy csúszka mozgatásával átnézhetőek, továbbá szintén grafikus felületen várja a program a szükséges felhasználótól bekérendő adatok megadását. Ezek az adatok a következők:
+
+\begin{itemize}
+  \item Első felhasználni kívánt kép.
+  \item Azon golyók száma, amelyek az összes képen rajta vannak.
+  \item Azon golyók száma, amik nincsenek rajta az összes képen.
+  \item Az első képpel azonos állású, $360^\circ$-kal elforgatott kép
+  \item A forrás és a detektor becsült távolsága mm-ben.
+    \item A fantomon a golyók egymástól vett távolságát.
+\end{itemize}
+
+Az első kép kiválasztására azért van lehetőség, mert a felhasználó hibázhat a mérés elindításakor: nem kapcsolja be a röntgen forrást, nem indíja el a motort, stb... A keresendő golyók száma szintén fontos, a golyók keresésénél felhasznált paraméter. Az általam megvalósított algoritmusnak segítséget ad az is, hogy tudja, hogy bizonyos képeken több golyó lehet a képen, mint az elsőn -- például mert a kép alsó és felső szélén lévő golyók vetülete a detektoron kívülre eset és így a képről eltűnhet a forgatás hatására. Ennek megállapításához a felhasználónak eleve át kell néznie azon képeket, amik egy teljes körbefordulás alatt készültek, így arra is megkéri a program, hogy a csúszkát ez után hagyja egy olyan állapotban, amely nagyjából  $360^\circ$-kal van elforgatva az első képhez képest. Itt nem szükséges pontosan a teljes körbeforduláshoz tartozó projekciót megadni, a felhasználó ettől eltérhet $\pm 45^\circ$-kal. A cél itt az, hogy a felhasználó jelölje ki, körül-belül hol kell keresni a teljes körbefordulást, hogy annak megkeresése rövidebb időt vegyen igénybe, mintha az összes projekciót át kellene nézni. Szükséges továbbá a Noo féle számításhoz megadni a detektor és a forrás távolságát. Erre azért van szükség, mert ahogy \aref{sec:noo} fejezetben említettem, a Noo féle módszernél ezen távolság kiszámítása azon esetekben, amikor a két kiszemelt golyó a forgástengely azonos oldalán vannak, nem egyértelmű. Ennek eldöntését segíti a felhasználó által megadott paraméter, amely szintén nagyságrendi becslést kell, hogy adjon, tehát $10~cm$ körüli hiba még megengedett. Ez után egy újabb grafikus felületen kell megadni a fantomon a golyók helyzetét.
+
+
+Amennyiben ez megtörtént, a felhasználó ellenőrizheti, hogy az algoritmus jó helyen találta e meg a golyókat a kezdeti képen, illetve, hogy a teljes körbefordulás utáni kép egyezik e az elsőnek választottal. Amennyiben bármelyikben hibázott a program, lehetőség van visszalépni, és újabb kezdeti projekciót választani. A grafikus felület egy ilyen állapotát mutatja meg  \aref{fig:geomui}.~ábra. 
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.8\textwidth]{abrak/geomui}
+\caption{A geometriai kalibrációs funkció felhasználói felülete. A felhasználó a fenti mappát választotta ki a képek helyéül. A bal oldali képet választotta első képnek, az alsó részen pedig megadta a szükséges paramétereket. A szoftver meghatározta a teljes körbefordulás utáni projekciót és megkereste a két projekción a gömbök középpontját. }
+\label{fig:geomui}
+\end{figure}
+
+
+
+A kijelölt projekció módosítására egyébként a diplomamunkám elkészítése során nem kellett sort kerítenem, az első képen is biztosan felismerte a golyók helyzetét a program és a körbefordulás utáni képet is stabilan megtalálta. Az esetleges hibás felismerések elkerülése végett ugyanakkor érdemes olyan projekcióról indítani a kalibrációt, amelyen a plexi elsötétedése alacsony mértékű.
+
+
+A kísérleti algoritmusnál megvalósítottakhoz  képest ez a felület jóval felhasználóbarátabb, kevesebb információt kér a felhasználótól, kisebb a felhasználó hibázási lehetősége is -- ahol a program számot vár, ott szöveget nem tud megadni, stb.
+
+A program a felhasználó jóváhagyása után az alább ismertetett algoritmusokkal kiszámolja a kalibrációs faktorokat, majd az eredményt közli a felhasználóval. A folyamat  jó részét a képek feldolgozása, azaz a golyók középpontjának megkeresése teszi ki. A feldolgozás állapotáról a felhasználó egy folyamatjelző sávon tudja követni.
+
+
+
+
+
+
+\subsubsection{Teljes körbefordulás meghatározása}
+
+A szoftver első feladata, még a felhasználótól való adatbekérés során, hogy meghatározza, melyik projekció felel meg az elsőként kiválasztott projekció $360^\circ$-kal való elforgatottjának. Ehhez a felhasználó megad egy viszonyítási alapot: egy olyan képet, amely nagyjából megfelel a fenti kritériumnak. A szoftver ez után a két kép sorszámának különbségét elosztja $8$-cal. A teljes körbefordulás képét a felhasználó által megadott kép körül ilyen távolságban keresi, a képek sorszámainak tekintetében. Így nem kell végignézni a teljes mappa tartalmát és a folyamat felgyorsul. 
+
+
+A teljes körbefordulást vizsgálatot úgy végzem, hogy az első képpel korrerálom a kiválasztott második képpel, és megvizsgálom, hogy a korreláció melyik képpel a legnagyobb. Ez a kép lesz a teljes körbefordulás utáninak választott kép. A kiválasztott $A$ és $B$ közötti kép $C$ korrelációs együtthatóját \aref({eq:corr})~képlet alapján végzem, ahol az összegzés a kép összes pixelére vonatkozik, a felülvonás az átlagolást jelenti, $\sigma$ pedig a képek szórását jelöli. A műveletet grafikus kártyán, párhuzamosan végzem. Az átlagokat és a szórásokat pedig a művelet előtt, szintén grafikus kártyán párhuzamosítva végzem: az átlagoláshoz a pixelek értékeit össze kell adni, a szórás pedig a pixel értékeinek négyzetösszegéből származtatható. Így valójában mindkét művelet \aref{sec:reduce} fejezetben bemutatott \emph{reduce} műveletet testesíti meg és könnyen párhuzamosítható. 
+
+\begin{equation}
+\label{eq:corr}
+C = \frac{ \sum_{i=1}^{N}  \left \{ (A_i  - \overline{A} ) \cdot ( B_i - \overline{B} ) \right \} }{N \cdot \sigma_A  \cdot \sigma_B}
+\end{equation}
+
+
+A fenti módon számolt korrelációs érték $0$ és $1$ közötti értéket vehet fel: a kép önmagával való korrelációs együtthatója éppen $1$. Ez alapján a szoftver vizsgálhatja azt is, hogy a megtalált kép eléggé hasonlít e az elsőként kiválasztott képre. Amennyiben a korrelációs együttható $0,\!9$ alatt van, vagyis a két kép nem hasonlít eléggé, a szoftver figyelmezteti a felhasználót.
+
+
+
+\subsubsection{A golyók középpontjának meghatározása}
 \label{sec:kozeppont}
-(Ez a fejezet csak azért van it, mert korábban hivatkoztam rá.)
+
+
+
+Amennyiben a felhasználó minden adatot megadott, megkezdődik a képek feldolgozása, amelynek során először meghatározásra kerülnek az egyes projekciókon a golyók koordinátái. Tölgyesi\cite{botond} munkája során erre két algoritmust implementált. Az egyiknél a kép kis részleteinek egy körlap képével való korrelációját számolja. Ez a módszer bizonytalannak bizonyult és ezért már a korábbi munka során el lett vetve. A másik módszere szerint a képeket először invertálja ( hogy a nagy elnyelésű golyók helyén a kép intenzitása nagy legyen), majd golyók helyét a kép egy részletén belül az ott látható képpontok intenzitással súlyozott súlypontjába becsüli.  Ennek az algoritmusnak is van hátulütője. Egyrészt megfelelő méretű ablakot kell választani, hogy a golyó épp beleessen a vizsgált tartományba és ennek az ablaknak a helyét minden projekciónál számon kell tartani. Kifejezetten hibás eredményhez vezethet ez az algoritmus akkor, amikor a golyókat épp a fősugárral párhuzamosan álló plexi lapon próbáljuk megtalálni. Ekkor a plexi lap okozta gyengülés \aref{fig:geomfantom_plexi}.~ábrán látottak alapján összemérhető, vagy akár nagyobb, mint a golyó által okozott. A plexi ilyenkor jelentős mértékben befolyásolni tudja a súlypontkeresést, akár téves útra térítve a golyók keresését. Ez ellen a vizsgált ablak csökkentésével lehet, de erre egyrészt a korábbi munka során nem született ajánlás. Másrészt ilyet magam sem tudtam meghatározni. 
+
+
+A fenti hibák elkerülése érdekében a körök középpontjainak megkereséséhez egy új fajta  algoritmust használtam fel: a Hough-transzformációt.
+
+
+
+
+
 
 \clearpage
 

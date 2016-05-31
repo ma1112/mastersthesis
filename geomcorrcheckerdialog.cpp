@@ -216,6 +216,10 @@ void geomCorrCheckerDialog::validateResult()
     activeLabel = NULL;
     ui->goodButton->setEnabled(true);
     ui->topLabel->setText("Adjust number of circles, then click on 'Looks Good' to continue, 'Reset' to start over again.");
+    if(maxCorrelation < 0.9)
+    {
+        ui->topLabel->setText("WARNING: Coorelation is too low, rotated index is possibly false.");
+    }
 }
 
 

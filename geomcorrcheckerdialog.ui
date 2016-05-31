@@ -141,21 +141,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Choose</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="outputDirButton">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>75</width>
-     <height>23</height>
+     <width>101</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -176,12 +163,12 @@
    </property>
    <widget class="QLabel" name="leftLabel">
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="rightLabel">
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
   </widget>
@@ -199,13 +186,6 @@
      <widget class="QLabel" name="inputDirLabel">
       <property name="text">
        <string>Input Directory</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="outputDirLabel">
-      <property name="text">
-       <string>Output Directory</string>
       </property>
      </widget>
     </item>

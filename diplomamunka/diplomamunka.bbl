@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{botond}
+T.~Botond.
+\newblock Röntgen ct készülék építése.
+\newblock {\em Diplomamunka, BME NTI}, 2014.
+
 \bibitem{reduce}
 M.~Harris.
 \newblock {Optimizing Parallel Reduction in CUDA}.

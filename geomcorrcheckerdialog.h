@@ -52,6 +52,7 @@ private slots:
     void calculate();
 
 
+    void on_rightButton_clicked();
 };
 
 #endif // GEOMCORRCHECKERDIALOG_H

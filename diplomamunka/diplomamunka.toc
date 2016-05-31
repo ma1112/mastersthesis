@@ -9,6 +9,9 @@
 \select@language {magyar} \contentsline {subsection}{\numberline {3.2}A geometriai param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}s\IeC {\'a}nak elm\IeC {\'e}lete}{16}
 \select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.1}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Noo\cite {noo} cikke alapj\IeC {\'a}n}{16}
 \select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.2}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Wu\cite {wu} cikke alapj\IeC {\'a}n}{19}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.3}A geometriai kalibr\IeC {\'a}l\IeC {\'o} m\IeC {\'e}r\IeC {\'e}s kivitelez\IeC {\'e}se}{20}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.4}A goly\IeC {\'o}k k\IeC {\"o}z\IeC {\'e}ppntj\IeC {\'a}nak meghat\IeC {\'a}rzo\IeC {\'a}sa}{21}
-\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{22}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.3}A geometriai kalibr\IeC {\'a}l\IeC {\'o} m\IeC {\'e}r\IeC {\'e}s kivitelez\IeC {\'e}se}{21}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.4}A geometriai kalibr\IeC {\'a}ci\IeC {\'o} megval\IeC {\'o}s\IeC {\'\i }t\IeC {\'a}sa}{22}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.1} A folyamat \IeC {\'a}ttekint\IeC {\'e}se \IeC {\'e}s a felhaszn\IeC {\'a}l\IeC {\'o}t\IeC {\'o}l k\IeC {\'e}rt adatok. }{23}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.2}Teljes k\IeC {\"o}rbefordul\IeC {\'a}s meghat\IeC {\'a}roz\IeC {\'a}sa}{25}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.3}A goly\IeC {\'o}k k\IeC {\"o}z\IeC {\'e}ppontj\IeC {\'a}nak meghat\IeC {\'a}roz\IeC {\'a}sa}{26}
+\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{27}

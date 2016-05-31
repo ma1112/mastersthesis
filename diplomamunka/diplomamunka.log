@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  29 MAY 2016 21:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  31 MAY 2016 14:26
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -478,18 +478,18 @@ Package: subfig 2005/06/28 ver: 1.3 subfig package
 \sf@top=\skip52
 \sf@bottom=\skip53
 ) (diplomamunka.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
+LaTeX Font Info:    ... okay on input line 31.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -563,7 +563,7 @@ LaTeX Info: Redefining \mit on input line 512.
 <abrak/bmelogo.jpg, id=1, 709.6914pt x 198.9834pt>
 File: abrak/bmelogo.jpg Graphic file (type jpg)
  <use abrak/bmelogo.jpg>
-Package pdftex.def Info: abrak/bmelogo.jpg used on input line 35.
+Package pdftex.def Info: abrak/bmelogo.jpg used on input line 38.
 (pdftex.def)             Requested size: 227.62204pt x 63.81868pt.
 
 [1
@@ -578,7 +578,7 @@ DF version <1.7>, but at most version <1.5> allowed
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
 
 <use abrak/jelentkezes.pdf>
-Package pdftex.def Info: abrak/jelentkezes.pdf used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf used on input line 43.
 (pdftex.def)             Requested size: 597.551pt x 845.07518pt.
 
 
@@ -586,7 +586,7 @@ pdfTeX warning: pdflatex (file ./abrak/jelentkezes.pdf): PDF inclusion: found P
 DF version <1.7>, but at most version <1.5> allowed
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
 <use abrak/jelentkezes.pdf>
-Package pdftex.def Info: abrak/jelentkezes.pdf used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf used on input line 43.
 (pdftex.def)             Requested size: 597.551pt x 845.07518pt.
 
 
@@ -600,35 +600,35 @@ DF version <1.7>, but at most version <1.5> allowed
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
 
 <use abrak/jelentkezes.pdf, page 1>
-Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 43.
 (pdftex.def)             Requested size: 597.551pt x 845.07518pt.
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
  <use abrak/jelentkezes.pdf, page 1>
-Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 43.
 (pdftex.def)             Requested size: 597.57834pt x 845.11386pt.
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
 
 <use abrak/jelentkezes.pdf, page 1>
-Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 43.
 (pdftex.def)             Requested size: 597.57834pt x 845.11386pt.
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
  <use abrak/jelentkezes.pdf, page 1>
-Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 43.
 (pdftex.def)             Requested size: 597.57834pt x 845.11386pt.
 File: abrak/jelentkezes.pdf Graphic file (type pdf)
 
 <use abrak/jelentkezes.pdf, page 1>
-Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 40.
+Package pdftex.def Info: abrak/jelentkezes.pdf, page1 used on input line 43.
 (pdftex.def)             Requested size: 597.57834pt x 845.11386pt.
  [1
 
  <./abrak/jelentkezes.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 44--46
+Underfull \hbox (badness 10000) in paragraph at lines 47--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--54
+Underfull \hbox (badness 10000) in paragraph at lines 55--57
 
  []
 
@@ -645,7 +645,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--54
 File: abrak/gaingrafikon.jpg Graphic file (type jpg)
 
 <use abrak/gaingrafikon.jpg>
-Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 109.
+Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 112.
 (pdftex.def)             Requested size: 352.81552pt x 164.71652pt.
 
 Underfull \vbox (badness 6675) has occurred while \output is active []
@@ -654,14 +654,14 @@ Underfull \vbox (badness 6675) has occurred while \output is active []
 <abrak/gainnelkul.png, id=54, 1541.76pt x 867.24pt>
 File: abrak/gainnelkul.png Graphic file (type png)
  <use abrak/gainnelkul.png>
-Package pdftex.def Info: abrak/gainnelkul.png used on input line 121.
+Package pdftex.def Info: abrak/gainnelkul.png used on input line 124.
 (pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
 
 [6 <./abrak/gaingrafikon.jpg> <./abrak/gainnelkul.png>]
 <abrak/gainnel.png, id=61, 1541.76pt x 867.24pt>
 File: abrak/gainnel.png Graphic file (type png)
  <use abrak/gainnel.png>
-Package pdftex.def Info: abrak/gainnel.png used on input line 130.
+Package pdftex.def Info: abrak/gainnel.png used on input line 133.
 (pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
 
 [7 <./abrak/gainnel.png (PNG copy)>] [8] [9]
@@ -669,27 +669,27 @@ Package pdftex.def Info: abrak/gainnel.png used on input line 130.
 File: abrak/offsetslope.jpg Graphic file (type jpg)
 
 <use abrak/offsetslope.jpg>
-Package pdftex.def Info: abrak/offsetslope.jpg used on input line 220.
+Package pdftex.def Info: abrak/offsetslope.jpg used on input line 223.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
 <abrak/offsetintercept.jpg, id=79, 1541.76pt x 867.24pt>
 File: abrak/offsetintercept.jpg Graphic file (type jpg)
 
 <use abrak/offsetintercept.jpg>
-Package pdftex.def Info: abrak/offsetintercept.jpg used on input line 221.
+Package pdftex.def Info: abrak/offsetintercept.jpg used on input line 224.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
 <abrak/slope50.jpg, id=80, 1541.76pt x 867.24pt>
 File: abrak/slope50.jpg Graphic file (type jpg)
  <use abrak/slope50.jpg>
-Package pdftex.def Info: abrak/slope50.jpg used on input line 230.
+Package pdftex.def Info: abrak/slope50.jpg used on input line 233.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
 <abrak/intercept50.jpg, id=81, 1541.76pt x 867.24pt>
 File: abrak/intercept50.jpg Graphic file (type jpg)
 
 <use abrak/intercept50.jpg>
-Package pdftex.def Info: abrak/intercept50.jpg used on input line 231.
+Package pdftex.def Info: abrak/intercept50.jpg used on input line 234.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -703,30 +703,30 @@ Underfull \vbox (badness 6675) has occurred while \output is active []
 [14] <abrak/geom1.jpg, id=99, 918.43124pt x 591.20876pt>
 File: abrak/geom1.jpg Graphic file (type jpg)
  <use abrak/geom1.jpg>
-Package pdftex.def Info: abrak/geom1.jpg used on input line 289.
+Package pdftex.def Info: abrak/geom1.jpg used on input line 293.
 (pdftex.def)             Requested size: 220.50887pt x 141.9381pt.
 
 <abrak/geom2.jpg, id=100, 917.4275pt x 501.875pt>
 File: abrak/geom2.jpg Graphic file (type jpg)
  <use abrak/geom2.jpg>
-Package pdftex.def Info: abrak/geom2.jpg used on input line 303.
+Package pdftex.def Info: abrak/geom2.jpg used on input line 307.
 (pdftex.def)             Requested size: 220.50887pt x 120.62859pt.
 
 [15 <./abrak/geom1.jpg>] [16 <./abrak/geom2.jpg>]
 <abrak/etameghat.jpg, id=107, 722.7pt x 591.20876pt>
 File: abrak/etameghat.jpg Graphic file (type jpg)
  <use abrak/etameghat.jpg>
-Package pdftex.def Info: abrak/etameghat.jpg used on input line 330.
+Package pdftex.def Info: abrak/etameghat.jpg used on input line 336.
 (pdftex.def)             Requested size: 220.50887pt x 180.38606pt.
 
 [17 <./abrak/etameghat.jpg>]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 387.
+(amsmath)                trying to recover with `aligned' on input line 393.
 
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 402.
+(amsmath)                trying to recover with `aligned' on input line 408.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -735,27 +735,67 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [19]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 466.
+(amsmath)                trying to recover with `aligned' on input line 469.
 
-[20] [21] (diplomamunka.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 4--9
+<abrak/geomfantom.jpg, id=118, 1441.385pt x 1308.89pt>
+File: abrak/geomfantom.jpg Graphic file (type jpg)
+
+<use abrak/geomfantom.jpg>
+Package pdftex.def Info: abrak/geomfantom.jpg used on input line 481.
+(pdftex.def)             Requested size: 352.81552pt x 320.37129pt.
+ [20] [21 <./abrak/geomfantom.jpg>]
+<abrak/geomfantom_meroleges.jpg, id=126, 1541.76pt x 867.24pt>
+File: abrak/geomfantom_meroleges.jpg Graphic file (type jpg)
+
+<use abrak/geomfantom_meroleges.jpg>
+Package pdftex.def Info: abrak/geomfantom_meroleges.jpg used on input line 496.
+
+(pdftex.def)             Requested size: 352.81552pt x 198.45529pt.
+
+<abrak/geomfantom_parhuzamos.jpg, id=127, 1541.76pt x 867.24pt>
+File: abrak/geomfantom_parhuzamos.jpg Graphic file (type jpg)
+
+<use abrak/geomfantom_parhuzamos.jpg>
+Package pdftex.def Info: abrak/geomfantom_parhuzamos.jpg used on input line 497
+.
+(pdftex.def)             Requested size: 352.81552pt x 198.45529pt.
+ [22 <./abrak/geomfantom_meroleges.jpg> <./abrak/geomfantom_parhuzamos.jpg>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 523.
+
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 523.
+ [23]
+<abrak/geomui.jpg, id=134, 886.31125pt x 713.66624pt>
+File: abrak/geomui.jpg Graphic file (type jpg)
+ <use abrak/geomui.jpg>
+Package pdftex.def Info: abrak/geomui.jpg used on input line 539.
+(pdftex.def)             Requested size: 352.81552pt x 284.08934pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [24 <./abrak/geomui.jpg>] [25] [26] (diplomamunka.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 9--14
 []\T1/cmr/m/n/12 M. Har-ris.  Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 4--9
+Underfull \hbox (badness 10000) in paragraph at lines 9--14
 \T1/cmr/m/n/12 http://docs.nvidia.com/cuda/samples/6_Advanced/reduction/doc/red
 uction.pdf.
  []
 
-) [22
+) [27
 
 ] (diplomamunka.aux) ) 
 Here is how much of TeX's memory you used:
- 6571 strings out of 493673
- 98793 string characters out of 3143954
- 198172 words of memory out of 3000000
- 9804 multiletter control sequences out of 15000+200000
+ 6623 strings out of 493673
+ 99866 string characters out of 3143954
+ 198241 words of memory out of 3000000
+ 9849 multiletter control sequences out of 15000+200000
  15256 words of font info for 40 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -776,9 +816,9 @@ amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
 rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program F
 iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (23 pages, 6944363 bytes).
+Output written on diplomamunka.pdf (28 pages, 8432111 bytes).
 PDF statistics:
- 490 PDF objects out of 1000 (max. 8388607)
+ 518 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 76 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
