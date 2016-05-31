@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  31 MAY 2016 14:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  31 MAY 2016 20:24
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -498,7 +498,7 @@ LaTeX Font Info:    ... okay on input line 31.
 * paper: a4paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: twoside 
+* modes: 
 * h-part:(L,W,R)=(85.35826pt, 441.01773pt, 71.13188pt)
 * v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
 * \paperwidth=597.50787pt
@@ -506,13 +506,13 @@ LaTeX Font Info:    ... okay on input line 31.
 * \textwidth=441.01773pt
 * \textheight=702.78308pt
 * \oddsidemargin=13.08827pt
-* \evensidemargin=-1.1381pt
+* \evensidemargin=13.08827pt
 * \topmargin=-38.1381pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=12.0pt
 * \footskip=30.0pt
-* \marginparwidth=85.0pt
+* \marginparwidth=35.0pt
 * \marginparsep=10.0pt
 * \columnsep=10.0pt
 * \skip\footins=10.8pt plus 4.0pt minus 2.0pt
@@ -520,8 +520,8 @@ LaTeX Font Info:    ... okay on input line 31.
 * \voffset=0.0pt
 * \mag=1000
 * \@twocolumnfalse
-* \@twosidetrue
-* \@mparswitchtrue
+* \@twosidefalse
+* \@mparswitchfalse
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
@@ -647,9 +647,6 @@ File: abrak/gaingrafikon.jpg Graphic file (type jpg)
 <use abrak/gaingrafikon.jpg>
 Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 112.
 (pdftex.def)             Requested size: 352.81552pt x 164.71652pt.
-
-Underfull \vbox (badness 6675) has occurred while \output is active []
-
  [5]
 <abrak/gainnelkul.png, id=54, 1541.76pt x 867.24pt>
 File: abrak/gainnelkul.png Graphic file (type png)
@@ -691,15 +688,8 @@ File: abrak/intercept50.jpg Graphic file (type jpg)
 <use abrak/intercept50.jpg>
 Package pdftex.def Info: abrak/intercept50.jpg used on input line 234.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [10]
-[11 <./abrak/offsetslope.jpg> <./abrak/offsetintercept.jpg> <./abrak/slope50.jp
-g> <./abrak/intercept50.jpg>] [12]
-Underfull \vbox (badness 6675) has occurred while \output is active []
-
- [13]
+ [10] [11 <./abrak/offsetslope.jpg> <./abrak/offsetintercept.jpg> <./abrak/slop
+e50.jpg> <./abrak/intercept50.jpg>] [12] [13]
 [14] <abrak/geom1.jpg, id=99, 918.43124pt x 591.20876pt>
 File: abrak/geom1.jpg Graphic file (type jpg)
  <use abrak/geom1.jpg>
@@ -728,11 +718,7 @@ Package amsmath Warning: Cannot use `split' here;
 Package amsmath Warning: Cannot use `split' here;
 (amsmath)                trying to recover with `aligned' on input line 408.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [18]
-[19]
+[18] [19]
 
 Package amsmath Warning: Cannot use `split' here;
 (amsmath)                trying to recover with `aligned' on input line 469.
@@ -775,9 +761,7 @@ File: abrak/geomui.jpg Graphic file (type jpg)
 Package pdftex.def Info: abrak/geomui.jpg used on input line 539.
 (pdftex.def)             Requested size: 352.81552pt x 284.08934pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [24 <./abrak/geomui.jpg>] [25] [26] (diplomamunka.bbl
+[24 <./abrak/geomui.jpg>] [25] [26] (diplomamunka.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 9--14
 []\T1/cmr/m/n/12 M. Har-ris.  Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
@@ -792,10 +776,10 @@ uction.pdf.
 
 ] (diplomamunka.aux) ) 
 Here is how much of TeX's memory you used:
- 6623 strings out of 493673
- 99866 string characters out of 3143954
- 198241 words of memory out of 3000000
- 9849 multiletter control sequences out of 15000+200000
+ 6621 strings out of 493673
+ 99845 string characters out of 3143954
+ 199189 words of memory out of 3000000
+ 9848 multiletter control sequences out of 15000+200000
  15256 words of font info for 40 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -816,7 +800,7 @@ amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
 rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program F
 iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (28 pages, 8432111 bytes).
+Output written on diplomamunka.pdf (28 pages, 8432144 bytes).
 PDF statistics:
  518 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

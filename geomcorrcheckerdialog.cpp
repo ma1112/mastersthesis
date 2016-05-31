@@ -218,7 +218,7 @@ void geomCorrCheckerDialog::validateResult()
     ui->topLabel->setText("Adjust number of circles, then click on 'Looks Good' to continue, 'Reset' to start over again.");
     if(maxCorrelation < 0.9)
     {
-        ui->topLabel->setText("WARNING: Coorelation is too low, rotated index is possibly false.");
+        ui->topLabel->setText("WARNING: Coorelation is too low: " + QString::number(maxCorrelation) +", rotated index is possibly false.");
     }
 }
 
@@ -1345,18 +1345,18 @@ std::cout << "R : " << R << std::endl;
 
             for(int b1 = 0; b1 < n ; b1 ++)
             {
-                if(orderOfBalls[b1] = i)
+                if(orderOfBalls[b1] == i)
                 {
-                    ball1Index = i;
+                    ball1Index = b1;
                     break;
                 }
             }
 
             for(int b2 = 0; b2 < n ; b2 ++)
             {
-                if(orderOfBalls[b2] = j)
+                if(orderOfBalls[b2] == j)
                 {
-                    ball2Index = j;
+                    ball2Index = b2;
                     break;
                 }
             }
@@ -1572,8 +1572,8 @@ std::cout << "R : " << R << std::endl;
                 continue;
             }
 
-            long double ro1 = 1.0 / (v[i]-v0_wu_witherror) / sqrt(b[i]);
-            long double ro2 = 1.0 / (v[j]-v0_wu_witherror) / sqrt(b[j]);
+            long double ro1 = 1.0 / abs(v[i]-v0_wu_witherror) / sqrt(b[i]);
+            long double ro2 = 1.0 / abs(v[j]-v0_wu_witherror) / sqrt(b[j]);
 
             long double dv1 = error[i*5 + 1];
             long double dv2 = error[j*5 +1];
@@ -1605,9 +1605,9 @@ std::cout << "R : " << R << std::endl;
                         );
 
             long double dzeta2 = sqrt(
-                        pow(dv2 * (1-ro2 * ro2 ) / D_wu,2 )+
-                        pow(dv0_wu * (1-ro2 * ro2 ) / D_wu,2 )+
-                        pow(dro2 *  (v[j]-v0_wu) * (- 2.0 * ro2 ) / D_wu,2)
+                        pow(dv2 * (1-ro2 * ro2 ) / D_wu_witherror,2 )+
+                        pow(dv0_wu * (1-ro2 * ro2 ) / D_wu_witherror,2 )+
+                        pow(dro2 *  (v[j]-v0_wu_witherror) * (- 2.0 * ro2 ) / D_wu_witherror,2)
                         + pow (dD_wu * zeta2 /D_wu_witherror,2  )
                         );
             //Determining phase ( 1 or 180)
@@ -1627,7 +1627,7 @@ std::cout << "R : " << R << std::endl;
 
             long double ddOverR2 =
                     sqrt(
-                            pow(dzeta1 *(2.0 * (zeta1 - zeta2)),2) +
+                            pow(dzeta1 * 2.0 * (zeta1 - zeta2),2) +
                             pow(dzeta2 *(2.0 * (zeta1 - zeta2)),2)+
                             pow( dro1 * (2.0 * ro1 - 2.0 * ro2 * cosDelta  ),2)+
                             pow( dro2 * (2.0 * ro2 - 2.0 * ro1 * cosDelta  ),2)
@@ -1642,20 +1642,20 @@ std::cout << "R : " << R << std::endl;
             int ball1Index = 0;
             int ball2Index = 0;
 
-            for(int b1 = 0; b1 < n ; b1 ++)
+            for(int b1 = 0; b1 < n ; b1++)
             {
-                if(orderOfBalls[b1] = i)
+                if(orderOfBalls[b1] == i)
                 {
-                    ball1Index = i;
+                    ball1Index = b1;
                     break;
                 }
             }
 
-            for(int b2 = 0; b2 < n ; b2 ++)
+            for(int b2 = 0; b2 < n ; b2++)
             {
-                if(orderOfBalls[b2] = j)
+                if(orderOfBalls[b2] == j)
                 {
-                    ball2Index = j;
+                    ball2Index = b2;
                     break;
                 }
             }
@@ -1671,8 +1671,18 @@ std::cout << "R : " << R << std::endl;
 
             long double R = sqrt( 1.0 / dOverR2 * d2 );
 
-            long double dR = ddOverR2 * R * 0.5 / dOverR2;
+            long double dR = ddOverR2 * d * 0.5 /dOverR2 / sqrt(dOverR2)  ;
 
+            std::cout << " WU: d IS " <<d << "from ellipse " << i << " and " <<  j << " that is ball " <<ball1Index << " , " << ball2Index  << std::endl;
+
+            std::cout << "Wu ro1 is " << ro1 << "with relative error " << 100.0 * dro1 / ro1 << "from ellipse " << i << " and " <<  j << std::endl;
+            std::cout << "Wu ro2is " << ro2 << "with relative error " << 100.0 * dro2 / ro2 << "from ellipse " << i << " and " <<  j << std::endl;
+
+            std::cout << "Wu zeta 1  " << zeta1 << "with relative error " << 100.0 * dzeta1 / zeta1 << "from ellipse " << i << " and " <<  j << std::endl;
+            std::cout << "Wu zeta 2  " << zeta2 << "with relative error " << 100.0 * dzeta2 / zeta2 << "from ellipse " << i << " and " <<  j << std::endl;
+
+
+            std::cout << "Wu dOverR2 is " << dOverR2 << "with relative error " << 100.0 * ddOverR2 / dOverR2 << "from ellipse " << i << " and " <<  j << std::endl;
 
             std::cout << " WU: R IS " <<R << " with relative error " << 100.0 * dR / R << "% " << "from ellipse " << i << " and " <<  j << std::endl;
 
