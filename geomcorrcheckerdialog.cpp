@@ -1695,7 +1695,7 @@ std::cout << "R : " << R << std::endl;
     long double RWu = RWuMean / RWuNorm;
     long double dRWu = sqrt(dRWuMean) / RWuNorm;
 
-    std::cout << "Averaged R with Wu method: " << RWu << " mm with error of " << dRWu << " mm that is  " << 100.0 * dR / R << " percent. " << std::endl;
+    std::cout << "Averaged R with Wu method: " << RWu << " mm with error of " << dRWu << " mm that is  " << 100.0 * dRWu / RWu << " percent. " << std::endl;
 
 
 

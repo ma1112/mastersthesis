@@ -26,7 +26,9 @@ Geomcorr::Geomcorr()
 filterWidth = 9;
 eta = 0.0;
 HANDLE_ERROR (cudaMalloc( (void**)&d_filter, 81* sizeof(float)));
-float filter[81] = {14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.62541433f, 8.588367701f, 10.91566001f, 13.3313922f, 14.7107721f,
+float filter[81] = {
+
+    /*14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.62541433f, 8.588367701f, 10.91566001f, 13.3313922f, 14.7107721f,
                     13.3313922f, 9.452580065f, 4.056226896f, -0.747480748f, -2.678033129f, -0.747480748f, 4.056226896f, 9.452580065f, 13.3313922f,
                     10.91566001f, 4.056226896f, -4.795873011f, -12.42974587f, -15.45925025f, -12.42974587f, -4.795873011f, 4.056226896f, 10.91566001f,
                     8.588367701f, -0.747480748f, -12.42974587f, -22.36392898f, -26.28366654f, -22.36392898f, -12.42974587f, -0.747480748f, 8.588367701f,
@@ -34,7 +36,19 @@ float filter[81] = {14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.6254
                     8.588367701f, -0.747480748f, -12.42974587f, -22.36392898f, -26.28366654f, -22.36392898f, -12.42974587f, -0.747480748f, 8.588367701f,
                     10.91566001f, 4.056226896f, -4.795873011f, -12.42974587f, -15.45925025f, -12.42974587f, -4.795873011f, 4.056226896f, 10.91566001f,
                     13.3313922f, 9.452580065f, 4.056226896f, -0.747480748f, -2.678033129f, -0.747480748f, 4.056226896f, 9.452580065f, 13.3313922f,
-                    14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.62541433f, 8.588367701f, 10.91566001f, 13.3313922f, 14.7107721f
+                    14.7107721f, 13.3313922f, 10.91566001f, 8.588367701f, 7.62541433f, 8.588367701f, 10.91566001f, 13.3313922f, 14.7107721f*/
+
+    0.00033147f , 0.001484032f , 0.004053273f , 0.007087544f , 0.008447815f , 0.007087544f , 0.004053273f , 0.001484032f , 0.00033147f,
+    0.001484032f , 0.005911549f , 0.013649965f , 0.019647961f , 0.021186881f , 0.019647961f , 0.013649965f , 0.005911549f , 0.001484032f,
+    0.004053273f , 0.013649965f , 0.021961039f , 0.012496394f , 0.001194649f , 0.012496394f , 0.021961039f , 0.013649965f , 0.004053273f,
+    0.007087544f , 0.019647961f , 0.012496394f , -0.04775627f , -0.093734924f , -0.04775627f , 0.012496394f , 0.019647961f , 0.007087544f,
+    0.008447815f , 0.021186881f , 0.001194649f , -0.093734924f , -0.162403003f , -0.093734924f , 0.001194649f , 0.021186881f , 0.008447815f,
+    0.007087544f , 0.019647961f , 0.012496394f , -0.04775627f , -0.093734924f , -0.04775627f , 0.012496394f , 0.019647961f , 0.007087544f,
+    0.004053273f , 0.013649965f , 0.021961039f , 0.012496394f , 0.001194649f , 0.012496394f , 0.021961039f , 0.013649965f , 0.004053273f,
+    0.001484032f , 0.005911549f , 0.013649965f , 0.019647961f , 0.021186881f , 0.019647961f , 0.013649965f , 0.005911549f , 0.001484032f,
+    0.00033147f , 0.001484032f , 0.004053273f , 0.007087544f , 0.008447815f , 0.007087544f , 0.004053273f , 0.001484032f , 0.00033147f
+
+
 
  };
 HANDLE_ERROR (cudaMemcpy(d_filter,filter,81* sizeof(float),cudaMemcpyHostToDevice));
@@ -557,6 +571,7 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     const dim3 blockSize(16 + filterWidth-1 , 16 + filterWidth-1);
     const dim3 gridSize((image.width + 15) / 16  , (image.height + 15 ) / 16);
 
+
     Image_cuda_compatible convolvedImage,transformedImage, zeroCrossImage, cleanZeroCrossing,maxImg;
     transformedImage.reserve_on_GPU();
     maxImg.reserve_on_GPU();
@@ -567,12 +582,30 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     kernel_convolve_image<<<gridSize,blockSize>>>(image.gpu_im,convolvedImage.reserve_on_GPU(),d_filter,4,image.width,image.height);
 
     convolvedImage.calculate_meanvalue_on_GPU();
+    /*
+    convolvedImage.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_convolved.jpg");
+    convolvedImage.writetofloatfile("C:/awing/hough/" + image.getid()  +"_convolved.binf");
+    std::string id = image.getid();
+*/
+
     const dim3 newblockSize(16,16);
     const dim3 newgridSize(96,54);
 
    kernel_zero_crossing_extractor<<<newgridSize,newblockSize>>>(convolvedImage.reserve_on_GPU(), zeroCrossImage.reserve_on_GPU(), zeroCrossImage.width, zeroCrossImage.height, convolvedImage.getstdev() * 0.5f);
 
+
+  /* zeroCrossImage.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_zerocross.jpg");
+   zeroCrossImage.writetofloatfile("C:/awing/hough/" + image.getid()  +"_zerocross.binf");
+*/
+
+
+   //DEBUG
+
+
    kernel_vertical_line_remover<<<newgridSize,newblockSize>>>(zeroCrossImage.reserve_on_GPU(),cleanZeroCrossing.reserve_on_GPU(), cleanZeroCrossing.width,cleanZeroCrossing.height);
+
+   //cleanZeroCrossing.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_cleanzerocross.jpg");
+   //cleanZeroCrossing.writetofloatfile("C:/awing/hough/" + image.getid()  +"_cleanzerocross.binf");
 
 
     //Executing Hough tranformations with multiple r values
@@ -608,9 +641,11 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     {
         image = maxImg;
     }
+/*
+    maxImg.saveAsJPEG("C:/awing/hough/" + id  +"_max.jpg");
+    maxImg.writetofloatfile("C:/awing/hough/" + id  +"_max.binf");
+*/
 
-    //maxImg.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_max_.jpg");
-    //maxImg.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_max_.binf");
     //Extracting maximums
 
     int circles;
