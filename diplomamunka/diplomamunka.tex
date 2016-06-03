@@ -379,7 +379,7 @@ a \left ( {u^i}^* - \overline{u} \right )^2 + b  \left ( {v^i}^* - \overline{v} 
 \end{equation}
 
 
-Az fenti egyenletből lineáris regresszióval meghatározhatóak az ellipszis ($\overline{u}, \overline{v}$) középpontjai, az $a$ és $b$ paraméterek, amelyek a tengelyek hosszával vannak kapcsolatban, valamint $c$, amely paraméter az ellipszis ferdeségével hozható összefüggésbe.  Ezekből a paraméterekből először a forrás és a tengely távolsága ($D$) a meghatározható, \aref({eq:noo_d})~egyenletek alapján. Az újonnan meghatározott $D$ távolság ismeretében a további meghatározandó paraméterek \aref({eq:noo_tobbi})~egyenletekkel számolhatóak. Az egyenletekben $z_1$ és $z_2$ a golyók $z$ koordinátájára utal a fantomon. Amennyiben az adott golyó a fantomon a röntgenforrás vonala felett helyezkedik el, úgy előjele pozitív, amennyiben alatta, úgy előjele negatív. Ez az adat sem feltétlenül mérhető, így ezt is az elkészült felvételek alapján kell meghatározni. Továbbá \aref({eq:noo_d}).~egyenletekből az elsőnél látható $\epsilon$ tényező értéke $\pm1$: pozitív előjellel, ha a két golyó a a röntgenforrás két oldalán helyezkedik el, vagyis ha $z_1z_2 < 0$. Amikor a golyók ugyan azon az oldalon vannak, vagyis $z_1z_2>0$, akkor $\epsilon$ értéke lehet $+1$, valamint $-1$ is: ilyen esetben az előjel megállapításához szükséges a felhasználó döntése. Az egyenletekben jelen lévő $n_0, n_1, m_0, m_1, \rho_k, \zeta_k$ változók nem a geometria paraméterei,csupán segédváltozók a többi paraméter számolásához.
+A fenti egyenletből lineáris regresszióval meghatározhatóak az ellipszis ($\overline{u}, \overline{v}$) középpontjai, az $a$ és $b$ paraméterek, amelyek a tengelyek hosszával vannak kapcsolatban, valamint $c$, amely paraméter az ellipszis ferdeségével hozható összefüggésbe.  Ezekből a paraméterekből először a forrás és a tengely távolsága ($D$) a meghatározható, \aref({eq:noo_d})~egyenletek alapján. Az újonnan meghatározott $D$ távolság ismeretében a további meghatározandó paraméterek \aref({eq:noo_tobbi})~egyenletekkel számolhatóak. Az egyenletekben $z_1$ és $z_2$ a golyók $z$ koordinátájára utal a fantomon. Amennyiben az adott golyó a fantomon a röntgenforrás vonala felett helyezkedik el, úgy előjele pozitív, amennyiben alatta, úgy előjele negatív. Ez az adat sem feltétlenül mérhető, így ezt is az elkészült felvételek alapján kell meghatározni. Továbbá \aref({eq:noo_d}).~egyenletekből az elsőnél látható $\epsilon$ tényező értéke $\pm1$: pozitív előjellel, ha a két golyó a a röntgenforrás két oldalán helyezkedik el, vagyis ha $z_1z_2 < 0$. Amikor a golyók ugyan azon az oldalon vannak, vagyis $z_1z_2>0$, akkor $\epsilon$ értéke lehet $+1$, valamint $-1$ is: ilyen esetben az előjel megállapításához szükséges a felhasználó döntése. Az egyenletekben jelen lévő $n_0, n_1, m_0, m_1, \rho_k, \zeta_k$ változók nem a geometria paraméterei,csupán segédváltozók a többi paraméter számolásához.
 
 \begin{equation}
 \label{eq:noo_d}
@@ -579,14 +579,11 @@ A fenti módon számolt korrelációs érték $0$ és $1$ közötti értéket ve
 
 Amennyiben a felhasználó minden adatot megadott, megkezdődik a képek feldolgozása, amelynek során először meghatározásra kerülnek az egyes projekciókon a golyók koordinátái. Tölgyesi\cite{botond} munkája során erre két algoritmust implementált. Az egyiknél a kép kis részleteinek egy körlap képével való korrelációját számolja. Ez a módszer bizonytalannak bizonyult és ezért már a korábbi munka során el lett vetve. A másik módszere szerint a képeket először invertálja ( hogy a nagy elnyelésű golyók helyén a kép intenzitása nagy legyen), majd golyók helyét a kép egy részletén belül az ott látható képpontok intenzitással súlyozott súlypontjába becsüli.  Ennek az algoritmusnak is van hátulütője. Egyrészt megfelelő méretű ablakot kell választani, hogy a golyó épp beleessen a vizsgált tartományba és ennek az ablaknak a helyét minden projekciónál számon kell tartani. Kifejezetten hibás eredményhez vezethet ez az algoritmus akkor, amikor a golyókat épp a fősugárral párhuzamosan álló plexi lapon próbáljuk megtalálni. Ekkor a plexi lap okozta gyengülés \aref{fig:geomfantom_plexi}.~ábrán látottak alapján összemérhető, vagy akár nagyobb, mint a golyó által okozott. A plexi ilyenkor jelentős mértékben befolyásolni tudja a súlypontkeresést, akár téves útra térítve a golyók keresését. Ez ellen a vizsgált ablak csökkentésével lehet, de teljesen nem kiküszöbölhető.
 
-A fenti hibák elkerülése érdekében a körök középpontjainak megkereséséhez egy új fajta  algoritmust használtam fel: a Hough-transzformációt. Ez az igen széles körben használt módszer  körök, egyenesek, illetve akár tetszőleges alakzatok lokalizálására használható. Körök keresése esetében először a képeken található éleket kell megkeresni, vagyis a képen található körök szélén lévő pixeleket. Ez után a megtalált él-pixelekből kell köröket rajzolni. \Aref{fig:houghcircles}.~ábrán is szemléltetett módon a szélekből rajzolt körök épp 
-
-
-
+A fenti hibák elkerülése érdekében a körök középpontjainak megkereséséhez egy új fajta  algoritmust használtam fel: a Hough-transzformációt. Ez az igen széles körben használt módszer  körök, egyenesek, illetve akár tetszőleges alakzatok lokalizálására használható. Körök keresése esetében először a képeken található éleket kell megkeresni, vagyis a képen található körök szélén lévő pixeleket. Majd a képre olyan körvonalakat kell rajzolni -- ezeket a továbbiakban másodlagos köröknek nevezem --, amely koröknek középpontjai az eredeti körvonalról kerülnek kiválasztásra. Amennyiben a keresett kör sugara ismert, a másodlagos  köröket is ilyen sugárral kell megrajzolunk. Ekkor a rajzolt körök közös metszete adja meg a keresett, eredeti kör középpontját. Egy ilyen eljárást szemléltet  \aref{fig:houghcircles}.~ábra. Az ábrán lévő piros kör középpontját úgy találjuk meg, hogy a körvonal kijelölt pontjaiból újabb köröket rajzolunk -- az ábrán fekete színnel --. A legtöbb másodlagos kör által érintett -- kék -- pont adja meg a keresett kör középpontját. Természetesen érdemes a keresett kör összes pontja -- vagyis a képen az összes él-pont -- köré másodlagos köröket rajzolni, hogy minél pontosabb eredményt kapjunk. A módszer működik akkor is, ha a körök középpontja nem ismert. Ekkor ugyan azon pontokból különböző sugárral húzunk másodlagos körvonalakat. Mivel az eredeti körnek csak a középpontja van egyenlő távolságra a körvonal pontjaitól, a különböző sugarú másodlagos körök csak akkor fogják egymást egy pontban metszeni, ha a sugaruk éppen a keresett kör sugarával egyezik meg. Vagyis ismeretlen sugarú kör keresése esetén több féle sugárral kell másodlagos köröket rajzolni, és meg kell keresni, hogy a körsugarak melyik értékénél metszi egymást a legtöbb kör. Ekkor megtaláltuk a keresett kör sugarát, a metszések helye pedig megadja a keresett kör középpontját.
 
 \begin{figure}[htbp]
 \center
-\includegraphics[width=0.6\textwidth]{abrak/houghcircles}
+\includegraphics[width=0.49\textwidth]{abrak/houghcircles}
 \caption{Körkeresés Hough-transzformációval.}
 \label{fig:geomfantom_plexi}
 \end{figure}
@@ -594,23 +591,162 @@ A fenti hibák elkerülése érdekében a körök középpontjainak megkeresés�
 
 
 
-\begin{table}[]
-\centering
-\label{tab:logkernel}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-\hline
-0.0046  & 0.0034  & 0.0013  & -0.0008 & -0.0016 & -0.0008 & 0.0013  & 0.0034  & 0.0046  \\ \hline
-0.0034  & 0       & -0.0048 & -0.009  & -0.0107 & -0.009  & -0.0048 & 0       & 0.0034  \\ \hline
-0.0013  & -0.0048 & -0.0126 & -0.0193 & -0.022  & -0.0193 & -0.0126 & -0.0048 & 0.0013  \\ \hline
--0.0008 & -0.009  & -0.0193 & -0.0281 & -0.0316 & -0.0281 & -0.0193 & -0.009  & -0.0008 \\ \hline
--0.0016 & -0.0107 & -0.022  & -0.0316 & -0.0354 & -0.0316 & -0.022  & -0.0107 & -0.0016 \\ \hline 
--0.0008 & -0.009  & -0.0193 & -0.0281 & -0.0316 & -0.0281 & -0.0193 & -0.009  & -0.0008 \\ \hline
-0.0013  & -0.0048 & -0.0126 & -0.0193 & -0.022  & -0.0193 & -0.0126 & -0.0048 & 0.0013  \\ \hline
-0.0034  & 0       & -0.0048 & -0.009  & -0.0107 & -0.009  & -0.0048 & 0       & 0.0034  \\ \hline
-0.0046  & 0.0034  & 0.0013  & -0.0008 & -0.0016 & -0.0008 & 0.0013  & 0.0034  & 0.0046  \\\hline
-\end{tabular}
-\caption{ $\sigma$  = 1.4 paraméterű Gauss függvény Laplace-transzformáltja.  }
-\end{table}
+A Hough-transzformációval tehát kifejezetten köröket tudunk a képen keresni, és emellett az algoritmus jól párhuzamosítható is, hiszen az élkeresés egy konvolúciós művelettel elvégezhető, utána pedig a képre az él pixelek közepéből húzott körvonalak párhuzamosan rajzolhatóak. A továbbiakban bemutatom, hogy a körkeresést pontosan hogyan implementáltam az elkészült programban.
+
+
+A képek feldolgozása során az első lépés tehát az élek megkeresése. Az élek megkeresésére több algoritmus is használható. Először a képet simítani szükséges, hogy az esetleges zajok ne befolyásolják az élkeresést. Ez után kerülnek kiválasztásra az él-pixelek, amelyre  két gyakori megoldás a következő.
+
+\begin{itemize}
+\item Kiszámoljuk a kép gradiensét, azaz azt, hogy egy adott pontban milyen gyorsan változik a kép intenzitása. A nagy intenzitásváltozású helyek jelölik ki az éleket.
+
+\item Kiszámoljuk a kép Laplace-transzformáltját, vagyis a második deriváltját. Ott jelöljük ki az éleket, ahol a Laplace-transzformált értéke pozitívból negatívba megy át, vagyis ahol szélsőértéke van a gradiensnek.
+
+\end{itemize}
+
+Előbbi jóval egyszerűbben számolható, hiszen a gradiens képen az adott pixel értéke eldönti, hogy él-pixel e vagy sem, hiszen csak azt kell vizsgálni, hogy értéke a kijelölt küszöbérték feletti, vagy sem. Az utóbbi módszernél vizsgálni kell az egyes pixelek környezetét, hogy kiderüljön, hogy az adott helyen a Laplace-transzformált előjelet vált e. Vagyis ez a módszer számításigényesebb, ugyanakkor biztosabb. 
+
+A helyes algoritmus megválasztása során annak minőségét tartottam szem előtt, a futási sebességgel szemben, így végül a számításigényesebb, Laplace-transzformálttal való  élkeresést választottam. Ugyanis amikor a legkisebb csapágygolyó épp a plexi takarásában van, a gradiens módszer nem bizonyult hatékonynak. Ekkor ez a módszer nem tudta megkülönböztetni a golyó éleit a plexi élétől. Ezt \aref{fig:kisgolyo1}.~ábrán szemléltetem. A bal oldali ábrán a golyó képét láthatjuk, jobb oldalon pedig a sárga vonallal kijelölt szakasz mentén vett intenzitásértékek grafikonját. A golyó helyén az intenzitásértékek alig módosulnak.    \Aref{fig:kisgolyo2}.~ábrán, amelyen ugyanannak a felvételnek a gradiens képe látható, észrevehetjük, hogy a felső golyó körvonala mentén a gradiens érték valóban nem kiemelkedően magas a plexi lemez határán mérhetőhöz képest, míg a nagyobb golyók határainál jóval magasabb gradiens érték figyelhető meg.  
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.49\textwidth]{abrak/kisgolyo}
+\includegraphics[width=0.49\textwidth]{abrak/kisgolyo_intenzitas}
+\caption{A plexi takarásában lévő legkisebb golyó képe, valamint az intenzitás értékek változása a golyó vízszintes metszetében -- a bal oldali képen sárga egyenessel kijelölve.}
+\label{fig:kisgolyo1}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.49\textwidth]{abrak/gradiens_kisgolyo}
+\caption{A plexi takarásában lévő és más golyók, a kép gradiensén.}
+\label{fig:kisgolyo2}
+\end{figure}
+
+Gradiens alapon tehát nem sikerül jól elválasztani a golyól szélét a plexi lemez szélétől, ami a Hough-transzformáció során rossz eredményeket szül, ugyanis így  a plexi szélében lévő kisebb görbületek miatt a keresett kis csapágygolyó közepén lévő Hough-transzformált érték gyakran alulmúlja a plexi lemez miatt máshol megjelenő értékeket. Így ezen speciális esetekben a Hough-transzformált nem a golyó középpontjánál lesz a legmagasabb értékű.
+
+
+A gradiens módszer helyett ezért a Laplace-operátorral kapott kép null-átmenetei alapján választottam ki az él-pixeleket. Ez alapján a végül megvalósított algoritmus a következőképp alakult. A felvételeket gain korrigálás után egy $\sigma = 1,\!4$ paraméterű Gauss-görbével konvolválva elmostam a zajok kiszűrése érdekében, valamint kiszámoltam a Laplace-transzformáltját. A két műveletet egyszerre lehet elvégezni, hiszen a konvolúció tulajdonságai alapján elég a képet egy olyan mátrix-szal konvolválni, amely a Gauss-eloszlású mátrix Laplapce-operátort szimbolizáló mátrix-ával konvolválva kapjuk meg.  Tehát a mátrix elemeit a Gauss-görbe Laplace-transzformáltjából, vagyis \aref({eq:LoG})~egyenletből kell mintavételezni. Az egyenletben az angol irodalomban használatos \emph{LoG} jelölést használtam a Gauss eloszlás Laplace transzformációjának jelölésére, $\sigma$ pedig a Gauss görbe szórása. Az egyenletből egy $9x9$ méretű mátrixot alkottam meg, mint a \emph{LoG} művelet konvolúciós mátrixát. Az elkészült mátrix grafikusan ábrázolva \aref{fig:logkernel}.~ábrán látható.
+
+\begin{equation}
+\label{eq:LoG}
+\text{LoG} = \frac{-1}{\pi \sigma^2} \cdot \left ( 1-\frac{x^2+y^2}{2\sigma^2} \right ) \cdot e^{-\frac{x^2+y^2}{2\sigma^2}}
+\end{equation}
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.49\textwidth]{abrak/logkernel}
+\caption{$\sigma = 1,\!4$ paraméterű Gauss görbe Laplace transzformáltja.}
+\label{fig:logkernel}
+\end{figure}
+
+
+Az élkeresésnél a gain korrigált felvételeket ezzel a mátrix-szal konvolválva kaptam meg a simított kép Laplace-transzformáltját, amelyen ez után a nullátmenetek helyét kerestem meg. Ennél a lépésnél minden pixelre megvizsgáltam, hogy az adott pixel függőleges, illetve vízszintes szomszédjainak előjele eltér e. Továbbá bevezettem egy újabb kritériumot is az  élpixelek keresésénél, nevezetesen azt, hogy a szomszédos pixeleknek ne csak az előjele térjen el, hanem a null átmenet legyen elég erős, azaz a null átmenet szélén lévő pixelek abszolút értéke legyen nagyobb, mint egy kritikus érték. Ezt a kritikus értéket a \emph{LoG} művelettel kapott kép szórásának a felének határoztam meg. Az ilyen módon meghatározott él-pixelek nagy része a golyók határát jelölte ki, mégpedig úgy, hogy a kisebb golyók szélének a nagy részét is megtalálta az algoritmus. Az eddigi felvételen személtetve ez a módszer\aref{fig:242_circles}.~ábra bal oldali képén feltüntetett pixeleket találja meg élként. Ha a gradiens módszerrel szeretnénk olyan élképet kapni, amely a felső, kis méretű golyó kerületének jó részén felismeri az éleket, akkor olyan küszöbértéket kel választani a gradiens képen, amely után ugyan ezen ábra jobb oldali képén látható pixeleket kapjuk éleknek. Vegyük észre, hogy a gradiens módszer jelentős mennyiségű pixelt eredményez élnek ott, ahol a plexi határa található, és a kép hátterében is zajos képet ad. Ezek a tényezők rontják a Hough-transzformált minőségét és növelik a futási idejét.
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.33\textwidth]{abrak/242_zerocross_vagott}
+\includegraphics[width=0.33\textwidth]{abrak/0242_gradienttreshold}
+\caption{Élpixelek a szoftverben megvalósított módon Laplace-transzformálttal (balra), valamint gradiens küszöböléssel (jobbra).}
+\label{fig:242_circles}
+\end{figure}
+
+
+A Laplace-transzformált segítségével előállított élpixeleket ezután Hough-transzformáltam. Mivel itt a körök sugara nem ismert és projekciónként és mérésenként is változóak, úgy jártam el, hogy az él-pixelek köré különböző sugarú köröket rajzoltam, vagyis az eredeti képpel megegyező méretű képeket készítettem, ahol a pixelek intenzitása helyett mos a pixelek azt a számot tárolják, ahány adott sugarú másodlagos kör metszi egymást azon a helyen. Ezeket a képeket a továbbiakban másodlagos képeknek nevezem. Több féle sugárral megrajzolva a másodlagos köröket, a másodlagos képekből úgy alakítottam ki a végső Hough-transzformált képét, hogy minden pixelnek a másodlagos képeken felvett legnagyobb értékét adtam végső értékül. Vagyis a végső Hough transzformált képen ($HT$) az $i$ pixel értéke az $r$ sugarú másodlagos körök rajzolatából kapott $HT^r_i$ képekből \aref({eq:hough})~egyenlet alapján keletkezik. A másodlagos képeket $r_{min} = 5$ és $r_{max}=25$ közötti sugarú körök rajzolásával készítettem, de ez a paraméter igény esetén könnyedén átállítható.
+
+
+\begin{equation}
+\label{eq:hough}
+\text{HT}_i^{vegso} = \max_{r_{min}<=r<=r_{max}} \left(HT^r_i \right)
+\end{equation}
+
+
+Az így kapott Hough-transzformált \aref{fig:242_hough}.~ábra bal oldalán látható. A képen a maximális intenzitásokat megkeresve meghatározhatóak a körök középpontjai. A megtalált középpontokat az eredeti képen piros kereszttel jelölve a jobb oldali ábrán tüntettem fel. Jól látszik, hogy a köröket igen pontosan megtalálta az algoritmus.
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.417\textwidth]{abrak/242_max_cropped2}
+\includegraphics[width=0.33\textwidth]{abrak/0242_korok}
+\caption{A kép Hough-transzformáltja (balra) és a megtalált körök középpontjai az eredeti felvételen jelölve (jobbra).}
+\label{fig:242_hough}
+\end{figure}
+
+
+A középpontok kereséséhez használt összes képtranszformációt grafikus kártyán valósítottam meg, így azok párhuzamosan futva, gyorsan dolgozzák fel a képeket. Minden projekciók a felhasználó által megadott mennyiségű golyó középpontja kerül meghatározásra, beleértve azon golyók számát is, amiket a felhasználó megjelölt, mint a felvételek valamelyikén a detektor látóteréből kilépő golyó. Így a felvételek azon részén, ahol nem esik minden golyó képe a detektorra,  olyan pixeleket is azonosíthat az algoritmus golyó középpontnak, ahol valójában nincs is golyó. Ez a képek feldolgozását nem zavarja, ugyanis az ellipszisekhez illesztésére használt koordinátákat a következőképp gyűjtöm össze. A felhasználó által kijelölt első projekción meghatározásra kerülnek azon golyók képei, amelyek azon láthatóak. Így fontos kérés a felhasználó felé, hogy kezdetben olyan képet adjon meg, amelyen nincs olyan golyó, amely bármikor is eltűnik a detektorról. Ezen golyók középpontjai -- amelyet a felhasználó a további feldolgozás előtt ellenőriz és jóváhagy -- köré fogja gyűjteni a szoftver az ellipszispálya további pontjait, úgy, hogy minden projekcióról választ egy pontot, mint az adott ellipszishez tartozó pont. Alapvetően a Hough-transzformált képen található lokálisan maximális intenzitású pixeleket rendeli a szoftver az egyes ellipszisekhez, úgy, hogy egy adott ellipszis adatsorához az előző projekción megtalált pixelhez legközelebb eső Hough-maximumot rendeli. Amennyiben valamely ellipszis adatsorához olyan pozíciót rendelnénk, amely az előzőtől jócskán eltér -- függőlegesen több, mint $15$ pixellel, illetve vízszintesen több, mint $100$ pixellel --, úgy az előző projekción meghatározott pozíció közvetlen környezetéből választok koordinátát az adott ellipszishez, aszerint, hogy az adott környezetben az új képen hol a legnagyobb a Hough-transzformált értéke. Ilyen eset akkor fordulhat elő, ha valamiért nem sikerült megtalálni egy adott golyót a felvételen. A eljárás meggátolja a szoftvert, hogy ilyenkor túlságosan kiszóró pontot adjon hozzá valamelyik ellipszis koordináta-halmazához.
+
+
+A teljes körbefordulás alatt összegyűjtött koordináták közül két ellipszishez tartozót ábrázoltam \aref{fig:ellipses}.~ábrán. Az ábrákon fekete színnel láthatóak azok a koordináták, amelyeket az én algoritmusom határozott meg. Piros színnel látható a kísérleti algoritmus által meghatározott koordináták, ugyan azon az adatsoron. Bár az én algoritmusom csak egész koordinátákban tudja meghatározni az egyes projekciókon a golyók középpontját, a jóval pontosabb alakzatfelismerés miatt ez ront az adatsor minőségén. Az ábrákon látható, hogy az általam használt módszer kevesebb kiszóró pontot eredményez, és a kiszórás mértéke is alacsonyabb, mint a kísérleti algoritmusban megvalósított módszernél.
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.99\textwidth]{abrak/ellipse1}
+\includegraphics[width=0.99\textwidth]{abrak/ellipse2}
+\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, két ellipszis mentén. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
+\label{fig:ellipses}
+\end{figure}
+
+
+
+
+\subsubsection{Ellipszis illesztés}
+
+
+Az egyes ellipszisekhez tartozó adatsorokhoz meg kell határozni a rájuk illeszthető ellipszis paramétereit. Ezt \acite{noo} cikk alapján úgy végeztem el, hogy az egyes ellipszisekhez kerestem azon $p_0,p_1,p_2,p_3,p_4$ együtthatókat, amelyekkel \aref({eq:ellipsefit})~egyenletrendszer bal oldala a legkisebb négyzetes eltérést eredményezi a jobb oldalhoz képest. 
+
+\begin{equation}
+\label{eq:ellipsefit}
+p_0 (u^i)^2 - 2p_1u^i - 2p_2v^i + 2p_3u^iv^i + p_4 = -(v^i)^2 \hskip10pt i=1..N
+\end{equation}
+
+A legkisebb négyzetek probléma megoldását a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével állítottam elő. Az egyes ellipszisekhez a további feldolgozás szempontjából lényeges, (\ref{eq:ellipse})~egyenletben bevezetett $a,b,c,\overline{u},\overline{v}$ együtthatókat \aref({eq:ellipsefitparameters}) egyenletekkel lehet megkapni.
+
+
+\begin{equation}
+\label{eq:ellipsefitparameters}
+\left .
+\begin{split}
+\overline{u} &= \frac{p_1-p_2p_3}{p_0-p_3^2}\\
+\overline{v} &= \frac{p_0p_2-p_1p_3}{p_0-p_3^2}\\
+a &= \frac{p0}{p_0\overline{u}^2 + \overline{v}^2 + 2p_3\overline{u} \overline{v} - p_4} \\
+b &= \frac{a}{p_0}\\
+c &=p_3b
+\end{split}
+\right  \}
+\end{equation}
+
+
+A paraméterek kiszámolásán túl kiszámoltam azok hibáját is. Ehhez \acite{ellipse} forrást használtam fel, amely alapján a fenti egyenlettel definiált ellipszis adott $p_i$ paraméterének hibáját 
+
+
+\begin{equation}
+\label{eq:ellipsefiterror}
+\sqrt{\frac{\sum_{j=1}^N \left ( \sum_{i=0}^4 p_i z_{ij} + \left (v^j \right)^2 \right)^2 }{(N-5) \sum_{j=1}^N z_{ij} ^2 }}
+\end{equation}
+
+
+
+
+%
+%
+%
+%\begin{table}[]
+%\centering
+%\label{tab:logkernel}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+%\hline
+%0.0046  & 0.0034  & 0.0013  & -0.0008 & -0.0016 & -0.0008 & 0.0013  & 0.0034  & 0.0046  \\ \hline
+%0.0034  & 0       & -0.0048 & -0.009  & -0.0107 & -0.009  & -0.0048 & 0       & 0.0034  \\ \hline
+%0.0013  & -0.0048 & -0.0126 & -0.0193 & -0.022  & -0.0193 & -0.0126 & -0.0048 & 0.0013  \\ \hline
+%-0.0008 & -0.009  & -0.0193 & -0.0281 & -0.0316 & -0.0281 & -0.0193 & -0.009  & -0.0008 \\ \hline
+%-0.0016 & -0.0107 & -0.022  & -0.0316 & -0.0354 & -0.0316 & -0.022  & -0.0107 & -0.0016 \\ \hline 
+%-0.0008 & -0.009  & -0.0193 & -0.0281 & -0.0316 & -0.0281 & -0.0193 & -0.009  & -0.0008 \\ \hline
+%0.0013  & -0.0048 & -0.0126 & -0.0193 & -0.022  & -0.0193 & -0.0126 & -0.0048 & 0.0013  \\ \hline
+%0.0034  & 0       & -0.0048 & -0.009  & -0.0107 & -0.009  & -0.0048 & 0       & 0.0034  \\ \hline
+%0.0046  & 0.0034  & 0.0013  & -0.0008 & -0.0016 & -0.0008 & 0.0013  & 0.0034  & 0.0046  \\\hline
+%\end{tabular}
+%\caption{ $\sigma$  = 1.4 paraméterű Gauss függvény Laplace-transzformáltja.  }
+%\end{table}
 
 
 

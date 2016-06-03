@@ -12,6 +12,12 @@ M.~Harris.
   {http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf}.
 \newblock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
 
+\bibitem{ellipse}
+K.~T. McDonald.
+\newblock Error estimation in fitting of ellipses.
+\newblock {http://www.physics.princeton.edu/mumu/target/ellipse.pdf}.
+\newblock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+
 \bibitem{noo}
 F.~Noo, R.~Clackdoyle, C.~Mennessier, T.~A. White, and T.~J. Roney.
 \newblock Analytic method based on identification of ellipse parameters for

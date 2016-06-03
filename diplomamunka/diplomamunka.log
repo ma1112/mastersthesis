@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  2 JUN 2016 15:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  3 JUN 2016 15:57
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -477,7 +477,11 @@ Package: subfig 2005/06/28 ver: 1.3 subfig package
 \sf@nearskip=\skip51
 \sf@top=\skip52
 \sf@bottom=\skip53
-) (diplomamunka.aux)
+) (diplomamunka.aux
+
+LaTeX Warning: Label `fig:geomfantom_plexi' multiply defined.
+
+)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
 LaTeX Font Info:    ... okay on input line 31.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 31.
@@ -762,18 +766,101 @@ Package pdftex.def Info: abrak/geomui.jpg used on input line 539.
 (pdftex.def)             Requested size: 352.81552pt x 284.08934pt.
 
 [24 <./abrak/geomui.jpg>] [25]
-<abrak/houghcircles.jpg, id=142, 652.4375pt x 652.4375pt>
+
+LaTeX Warning: Reference `fig:houghcircles' on page 26 undefined on input line 
+582.
+
+[26] <abrak/houghcircles.jpg, id=145, 652.4375pt x 652.4375pt>
 File: abrak/houghcircles.jpg Graphic file (type jpg)
 
 <use abrak/houghcircles.jpg>
-Package pdftex.def Info: abrak/houghcircles.jpg used on input line 589.
-(pdftex.def)             Requested size: 264.61333pt x 264.624pt.
+Package pdftex.def Info: abrak/houghcircles.jpg used on input line 586.
+(pdftex.def)             Requested size: 216.1011pt x 216.10147pt.
+ [27 <./abrak/houghcircles.jpg>]
+<abrak/kisgolyo.jpg, id=149, 696.6025pt x 528.97626pt>
+File: abrak/kisgolyo.jpg Graphic file (type jpg)
 
+<use abrak/kisgolyo.jpg>
+Package pdftex.def Info: abrak/kisgolyo.jpg used on input line 612.
+(pdftex.def)             Requested size: 216.1011pt x 164.09393pt.
 
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 597.
+<abrak/kisgolyo_intenzitas.jpeg, id=150, 376.40625pt x 286.06876pt>
+File: abrak/kisgolyo_intenzitas.jpeg Graphic file (type jpg)
 
-[26] [27 <./abrak/houghcircles.jpg>] (diplomamunka.bbl
+<use abrak/kisgolyo_intenzitas.jpeg>
+Package pdftex.def Info: abrak/kisgolyo_intenzitas.jpeg used on input line 613.
+
+(pdftex.def)             Requested size: 216.1011pt x 164.23944pt.
+
+<abrak/gradiens_kisgolyo.jpg, id=151, 504.88625pt x 401.5pt>
+File: abrak/gradiens_kisgolyo.jpg Graphic file (type jpg)
+
+<use abrak/gradiens_kisgolyo.jpg>
+Package pdftex.def Info: abrak/gradiens_kisgolyo.jpg used on input line 621.
+(pdftex.def)             Requested size: 216.1011pt x 171.85132pt.
+ [28 <./abrak/kisgolyo.jpg> <./abrak/kisgolyo_intenzitas.jpeg>] <abrak/logkerne
+l.jpg, id=155, 1606.0pt x 785.93625pt>
+File: abrak/logkernel.jpg Graphic file (type jpg)
+
+<use abrak/logkernel.jpg>
+Package pdftex.def Info: abrak/logkernel.jpg used on input line 638.
+(pdftex.def)             Requested size: 216.1011pt x 105.74902pt.
+ [29 <./abrak/gradiens_kisgolyo.jpg> <./abrak/logkernel.jpg>] <abrak/242_zerocr
+oss_vagott.jpg, id=161, 198.7425pt x 372.39125pt>
+File: abrak/242_zerocross_vagott.jpg Graphic file (type jpg)
+
+<use abrak/242_zerocross_vagott.jpg>
+Package pdftex.def Info: abrak/242_zerocross_vagott.jpg used on input line 648.
+
+(pdftex.def)             Requested size: 145.53665pt x 272.70705pt.
+
+<abrak/0242_gradienttreshold.jpg, id=162, 198.7425pt x 372.39125pt>
+File: abrak/0242_gradienttreshold.jpg Graphic file (type jpg)
+
+<use abrak/0242_gradienttreshold.jpg>
+Package pdftex.def Info: abrak/0242_gradienttreshold.jpg used on input line 649
+.
+(pdftex.def)             Requested size: 145.53665pt x 272.70705pt.
+
+Overfull \hbox (34.83128pt too wide) in paragraph at lines 655--656
+[]\T1/cmr/m/n/12 A Laplace-transzformált se-gít-sé-gé-vel el®-ál-lí-tott él-pi-
+xe-le-ket ez-után Hough-transzformáltam.
+ []
+
+[30 <./abrak/242_zerocross_vagott.jpg> <./abrak/0242_gradienttreshold.jpg>]
+<abrak/242_max_cropped2.jpg, id=167, 250.9375pt x 372.39125pt>
+File: abrak/242_max_cropped2.jpg Graphic file (type jpg)
+
+<use abrak/242_max_cropped2.jpg>
+Package pdftex.def Info: abrak/242_max_cropped2.jpg used on input line 668.
+(pdftex.def)             Requested size: 183.90767pt x 272.93433pt.
+
+<abrak/0242_korok.jpg, id=168, 149.05687pt x 279.29344pt>
+File: abrak/0242_korok.jpg Graphic file (type jpg)
+
+<use abrak/0242_korok.jpg>
+Package pdftex.def Info: abrak/0242_korok.jpg used on input line 669.
+(pdftex.def)             Requested size: 145.53665pt x 272.71272pt.
+ [31 <./abrak/242_max_cropped2.jpg> <./abrak/0242_korok.jpg>] <abrak/ellipse1.j
+peg, id=172, 1204.5pt x 562.35094pt>
+File: abrak/ellipse1.jpeg Graphic file (type jpg)
+
+<use abrak/ellipse1.jpeg>
+Package pdftex.def Info: abrak/ellipse1.jpeg used on input line 683.
+(pdftex.def)             Requested size: 436.60997pt x 203.84485pt.
+
+<abrak/ellipse2.jpeg, id=173, 1204.5pt x 562.35094pt>
+File: abrak/ellipse2.jpeg Graphic file (type jpg)
+
+<use abrak/ellipse2.jpeg>
+Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 684.
+(pdftex.def)             Requested size: 436.60997pt x 203.84485pt.
+ [32] [33 <./abrak/ellipse1.jpeg> <./abrak/ellipse2.jpeg>]
+
+Package amsmath Warning: Cannot use `split' here;
+(amsmath)                trying to recover with `aligned' on input line 714.
+
+[34] (diplomamunka.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 9--14
 []\T1/cmr/m/n/12 M. Har-ris.  Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
@@ -784,18 +871,33 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--14
 uction.pdf.
  []
 
-) [28
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--20
+[]\T1/cmr/m/n/12 K. T. Mc-Do-nald.  Er-ror est-ima-ti-on in fitt-ing of el-lip-
+ses.
+ []
+
+
+Underfull \hbox (badness 6842) in paragraph at lines 16--20
+\T1/cmr/m/n/12 http://www.physics.princeton.edu/mumu/target/ellipse.pdf.  [On-l
+ine; utol-só
+ []
+
+) [35
 
 ] (diplomamunka.aux)
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 6629 strings out of 493673
- 100006 string characters out of 3143954
- 199233 words of memory out of 3000000
- 9855 multiletter control sequences out of 15000+200000
+ 6703 strings out of 493673
+ 101779 string characters out of 3143954
+ 198342 words of memory out of 3000000
+ 9917 multiletter control sequences out of 15000+200000
  15256 words of font info for 40 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -810,15 +912,17 @@ Users\ÃrpÃ¡d\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1
 440.pk> <C:\Users\ÃrpÃ¡d\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\
 dpi600\ecrm1728.pk><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
 cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.p
-fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (29 pages, 8546522 bytes).
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
+msy8.pfb>
+Output written on diplomamunka.pdf (36 pages, 9632233 bytes).
 PDF statistics:
- 523 PDF objects out of 1000 (max. 8388607)
+ 569 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 101 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 151 words of extra memory for PDF output out of 10000 (max. 10000000)
 
