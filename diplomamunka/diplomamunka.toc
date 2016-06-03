@@ -1,19 +1,22 @@
 \select@language {magyar} \contentsline {section}{\numberline {1}Bevezet\IeC {\'e}s}{4}
-\select@language {magyar} \contentsline {section}{\numberline {2}Gain korrekci\IeC {\'o}}{4}
-\select@language {magyar} \contentsline {subsection}{\numberline {2.1}A gain korrekci\IeC {\'o} \IeC {\'a}ltal jav\IeC {\'\i }tott artefaktumok bemutat\IeC {\'a}sa}{4}
-\select@language {magyar} \contentsline {subsection}{\numberline {2.2}A gain korrekci\IeC {\'o} algoritmusai}{7}
-\select@language {magyar} \contentsline {subsection}{\numberline {2.3}A gain kalibr\IeC {\'a}ci\IeC {\'o} haszn\IeC {\'a}lata}{10}
-\select@language {magyar} \contentsline {subsection}{\numberline {2.4}A gain kalibr\IeC {\'a}ci\IeC {\'o} implement\IeC {\'a}l\IeC {\'a}sa \IeC {\'e}s a sz\IeC {\"u}ks\IeC {\'e}ges m\IeC {\'e}r\IeC {\'e}sek le\IeC {\'\i }r\IeC {\'a}sa}{11}
-\select@language {magyar} \contentsline {section}{\numberline {3}A geometria kalibr\IeC {\'a}ci\IeC {\'o}}{14}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.1}A s\IeC {\'\i }kpaneles CBCT geometri\IeC {\'a}ja}{15}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.2}A geometriai param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}s\IeC {\'a}nak elm\IeC {\'e}lete}{16}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.1}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Noo\cite {noo} cikke alapj\IeC {\'a}n}{16}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.2}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Wu\cite {wu} cikke alapj\IeC {\'a}n}{19}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.3}A geometriai kalibr\IeC {\'a}l\IeC {\'o} m\IeC {\'e}r\IeC {\'e}s kivitelez\IeC {\'e}se}{21}
-\select@language {magyar} \contentsline {subsection}{\numberline {3.4}A geometriai kalibr\IeC {\'a}ci\IeC {\'o} megval\IeC {\'o}s\IeC {\'\i }t\IeC {\'a}sa}{22}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.1} A folyamat \IeC {\'a}ttekint\IeC {\'e}se \IeC {\'e}s a felhaszn\IeC {\'a}l\IeC {\'o}t\IeC {\'o}l k\IeC {\'e}rt adatok. }{23}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.2}Teljes k\IeC {\"o}rbefordul\IeC {\'a}s meghat\IeC {\'a}roz\IeC {\'a}sa}{24}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.3}A goly\IeC {\'o}k k\IeC {\"o}z\IeC {\'e}ppontj\IeC {\'a}nak meghat\IeC {\'a}roz\IeC {\'a}sa}{26}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.4}Ellipszis illeszt\IeC {\'e}s}{33}
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.5}A geometriai param\IeC {\'e}terek kisz\IeC {\'a}mol\IeC {\'a}sa}{35}
-\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{37}
+\select@language {magyar} \contentsline {subsection}{\numberline {1.1}A Cone-Beam CT m\IeC {\H u}k\IeC {\"o}d\IeC {\'e}se }{4}
+\select@language {magyar} \contentsline {subsection}{\numberline {1.2}A tansz\IeC {\'e}ken rendelkez\IeC {\'e}sre \IeC {\'a}ll\IeC {\'o} eszk\IeC {\"o}z\IeC {\"o}k}{5}
+\select@language {magyar} \contentsline {section}{\numberline {2}Gain korrekci\IeC {\'o}}{6}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.1}A gain korrekci\IeC {\'o} \IeC {\'a}ltal jav\IeC {\'\i }tott artefaktumok bemutat\IeC {\'a}sa}{6}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.2}A gain korrekci\IeC {\'o} algoritmusai}{9}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.3}A gain kalibr\IeC {\'a}ci\IeC {\'o} haszn\IeC {\'a}lata}{12}
+\select@language {magyar} \contentsline {subsection}{\numberline {2.4}A gain kalibr\IeC {\'a}ci\IeC {\'o} implement\IeC {\'a}l\IeC {\'a}sa \IeC {\'e}s a sz\IeC {\"u}ks\IeC {\'e}ges m\IeC {\'e}r\IeC {\'e}sek le\IeC {\'\i }r\IeC {\'a}sa}{13}
+\select@language {magyar} \contentsline {section}{\numberline {3}A geometria kalibr\IeC {\'a}ci\IeC {\'o}}{16}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.1}A s\IeC {\'\i }kpaneles CBCT geometri\IeC {\'a}ja}{17}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.2}A geometriai param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}s\IeC {\'a}nak elm\IeC {\'e}lete}{18}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.1}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Noo\cite {noo} cikke alapj\IeC {\'a}n}{18}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.2.2}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Wu\cite {wu} cikke alapj\IeC {\'a}n}{21}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.3}A geometriai kalibr\IeC {\'a}l\IeC {\'o} m\IeC {\'e}r\IeC {\'e}s kivitelez\IeC {\'e}se}{23}
+\select@language {magyar} \contentsline {subsection}{\numberline {3.4}A geometriai kalibr\IeC {\'a}ci\IeC {\'o} megval\IeC {\'o}s\IeC {\'\i }t\IeC {\'a}sa}{24}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.1} A folyamat \IeC {\'a}ttekint\IeC {\'e}se \IeC {\'e}s a felhaszn\IeC {\'a}l\IeC {\'o}t\IeC {\'o}l k\IeC {\'e}rt adatok. }{25}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.2}Teljes k\IeC {\"o}rbefordul\IeC {\'a}s meghat\IeC {\'a}roz\IeC {\'a}sa}{26}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.3}A goly\IeC {\'o}k k\IeC {\"o}z\IeC {\'e}ppontj\IeC {\'a}nak meghat\IeC {\'a}roz\IeC {\'a}sa}{28}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.4}Ellipszis illeszt\IeC {\'e}s}{35}
+\select@language {magyar} \contentsline {subsubsection}{\numberline {3.4.5}A geometriai param\IeC {\'e}terek sz\IeC {\'a}m\IeC {\'\i }t\IeC {\'a}sa}{36}
+\select@language {magyar} \contentsline {section}{\numberline {4}Eredm\IeC {\'e}nyek}{38}
+\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{40}

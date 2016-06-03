@@ -1261,7 +1261,18 @@ std::cout << "R : " << R << std::endl;
         int* u1 = new int[lastIndex - firstIndex]();
         int* v1 = new int[lastIndex - firstIndex]();
 
+
+
         geomcorr.coordinatesToCPU(u1,v1,i);
+
+        for(int k=0; k<lastIndex - firstIndex; k++)
+        {
+            double eta = geomcorr.getEta();
+            double u0 = u1[k];
+            double v0  =v1[k];
+            u1[k] = u0 * cos(eta) - v0* sin(eta);
+            v1[k] = u0 * sin(eta) + v0 * cos(eta);
+        }
 
 
 
@@ -1292,6 +1303,19 @@ std::cout << "R : " << R << std::endl;
             int* v2 = new int[lastIndex - firstIndex]();
 
             geomcorr.coordinatesToCPU(u2,v2,j);
+
+            for(int k=0; k<lastIndex - firstIndex; k++)
+            {
+                double eta = geomcorr.getEta();
+
+                double u0 =u2[k];
+                double v0  =v2[k];
+
+                u2[k] =  u0 * cos(eta) - v0* sin(eta);
+                v2[k] = u0 * sin(eta) + v0 * cos(eta);
+            }
+
+
             long double doverR2 =0.0;
             long double d2doverR2 = 0.0;
 
@@ -1307,22 +1331,15 @@ std::cout << "R : " << R << std::endl;
 
                 //Corrigating by eta:
 
-                double eta = geomcorr.getEta();
-                double u0 = u1[k];
-                double v0  =v1[k];
-                u1[k] = u0 * cos(eta) - v0* sin(eta);
-                v1[k] = u0 * sin(eta) + v0 * cos(eta);
-                u0 = u2[k];
-                v0 = v2[k];
-                u2[k] =  u0 * cos(eta) - v0* sin(eta);
-                v2[k] = u0 * sin(eta) + v0 * cos(eta);
+
+
 
 
                 doverR2 +=pow(xsi[i] * (u1[k] - u0star) / (v1[k] - v0star) - xsi[j] * (u2[k] - u0star) / (v2[k] - v0star) ,2 ) + pow((D*xsi[i] / (v1[k] - v0star)  - D * xsi[j] / (v2[k] - v0star)) ,2) + pow(xsi[i] - xsi[j],2);
 
 
-                d2doverR2Part1 +=pow(xsi[i] * (u1[k] - u0star) / (v1[k] - v0star) - xsi[j] * (u2[k] - u0star) / (v2[k] - v0star) ,2 );
-                d2doverR2Part2 += pow((D*xsi[i] / (v1[k] - v0star)  - D * xsi[j] / (v2[k] - v0star)) ,2);
+                d2doverR2Part1 +=pow( abs ( xsi[i] * (u1[k] - u0star) / (v1[k] - v0star)) - abs( xsi[j] * (u2[k] - u0star) / (v2[k] - v0star)) ,2 );
+                d2doverR2Part2 += pow(( abs(D*xsi[i] / (v1[k] - v0star))  - abs( D * xsi[j] / (v2[k] - v0star))) ,2);
                     d2doverR2Part3 += pow(xsi[i] - xsi[j],2);
 
                 d2doverR2 += (

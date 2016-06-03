@@ -83,6 +83,54 @@ Budapest, 2016.\ június 6.
 %BEVEZETÉS------------------------------------------------------
 \section{Bevezetés}
 
+
+A CT, avagy Computed Tomograpgy -- magyarul komputertomográfia vagy számítógépes tomográfia -- a modern orvosi képalkotó eljárások  aktívan kutatott, esetenként megkerülhetetlen eszköze, amely a vizsgált páciens testének belső szerkezetéről ad információt. Az orvosi alkalmazások mellett  gyakran használják a technikát állatok vizsgálatához, valamint élettelen tárgyak roncsolásmentes vizsgálatához is. A BME Nukleáris Technika Intézetében 2013--2014 között került sor egy kis méretű kúpsugaras -- ún.~ Cone-Beam, vagy röviden CB-- CT berendezés beüzemelésére, a hallgatók aktív közreműködése mellett. Jelen diplomamunkában ezt a munkafolyamatot folytatva tökéletesítem a megalkotott eszközöket, illetve dolgozok ki új metódusokat az eddig nem orvosolt problémák megoldására. Diplomamunkám elején röviden összefoglalom a CT működési hátterét, ismertetem a tanszéken rendelkezésre álló eszközöket és a rendszer eddig megtervezett részeit. Ez után összegzem a jelen diplomamunkában kitűzött feladatokat és ismertetem a megvalósításukhoz használt eszközöket.
+
+\subsection{A Cone-Beam CT működése } 
+
+
+A  CT felvételek elkészítésekor röntgensugárzással világítjuk át a vizsgált objektumot, hogy információt szerezzünk annak belső működéséről. A Cone-Beam megjelölés arra utal, hogy a pontszerű röntgenforrás mellett síkdetektort használunk, így a detektorra érkező sugárzás egy kúp mentén halad át a vizsgált objektumon. Egy ilyen elrendezés vázlatos rajza látható \aref{fig:cbct}.~ábrán.  A teljes vizsgálat során a detektort és a forrást $360^\circ$-ban körbeforgatják a vizsgált objektum körül, vagy mint ahogy az általunk használt berendezésnél történik, az objektumot forgatják körbe, miközben a többi berendezés nem mozdul. A detektorból kiolvasott képeket hívjuk az adott elfordulás mellett kapott projekciónak. Ezen képen a kibocsátott sugárzás azon hányadával arányos intenzitásérték jelenik meg, amely hányad az objektumban nem nyelődött el. Az objektum elnyelési képességét jellemző $\mu(\underline{r})$ helyfüggő lineáris gyengítési együttható segítségével a detektort érő sugárzás $I$ intenzitása felírható a Beer-Lambert (\ref{eq:BL}) törvény segítségével, ahol $I_0$ jelöli a röntgenforrásból az adott pixel térszögébe irányuló sugárzás intenzitását, az integrálás pedig a forrást a detektor adott pixelével összekötő $L$ egyenes mentén történik. A képletben, és az analitikus Cone-Beam rekonstrukció során általában elhanyagolásra kerül többek között a gyengítési együttható és a sugárzás intenzitásának energiafüggése, valamint a különböző szórási folyamatok.  
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.6\textwidth]{abrak/cbct}
+\caption{A Cone-Beam CT vázlatos rajza\cite{noo}.}
+\label{fig:cbct}
+\end{figure}
+
+
+
+\begin{equation}
+\label{eq:BL}
+I=I_0 \cdot e^{-\int_L \mu(\underline{r}) d\underline{r}}
+\end{equation}
+
+
+Mivel a röntgenforrás intenzitása ismert, vagy meghatározható, az átvilágítás során fizikai információt a fenti egyenlet átrendezéséből (\ref{eq:BLmu}) kapható kifejezés jelenti, amely az objektum lineáris gyengítési együtthatója egy adott egyenes mentén integrálva.
+
+
+
+\begin{equation}
+\label{eq:BLmu}
+{\int_L \mu(\underline{r}) d\underline{r}} = -\ln \left(\frac{I}{I_0} \right)
+\end{equation}
+
+A CT vizsgálat feladata a gyengítési együttható különböző egyenesek mentén integrált értékeiből visszaállítani annak 3 dimenziós eloszlását. Ezt a lépést visszavetítésnek hívjuk, és megvalósítása a projekciók inverz Radon-transzformálásával történik. 
+
+\subsection{A tanszéken rendelkezésre álló eszközök}
+
+Az egyetem reaktorépületében beüzemelt CT képalkotó berendezés a következő elemekből áll. 
+\begin{itemize}
+\item Röntgenforrásként egy \emph{Source Ray SB-80-1k}  típusú mikrofókuszos röntgencsövet használunk, amely kis méretű fókuszfolttal( min.\ $33\mu m$) rendelkezik, $35--80$~kV közötti gyorsítófeszültséggel és $20--1000$~mA közötti áramerősséggel üzemeltethető.  
+\item Detektorként egy \emph{Dexela 1207}  síkdetektort használunk, amely $114,\!9$ x $64,\!6~\text{mm}^2$ érzékeny felülettel rendelkezik, amellyel $12--130$~kV közötti Röntgen-energiákat tud érzékelni. Pixeleinek élhossza $74,\!8~\mu\text{m}$, így a felbontása $1536 x 864$~pixel.  
+\item A vizsgált objektum forgatásáért egy \emph{PHI Instruments} gyártmányú rotációs asztal felel, amelyet két \emph{RDM 564/50, BERGER LAHR} típusú léptetőmotor hajt, minimálisan  $0,\!72^\circ$-os lépésközzel.
+\end{itemize}
+
+%TODO ITT tartok.
+A teljes CT vizsgálat 
+
+
 \section{Gain korrekció}
 
 
@@ -677,18 +725,6 @@ Az így kapott Hough-transzformált kép egy részlete \aref{fig:242_hough}.~áb
 A középpontok kereséséhez használt összes képtranszformációt grafikus kártyán valósítottam meg, így azok párhuzamosan futva, gyorsan dolgozzák fel a képeket. A feldolgozás során kiszűrésre kerülnek az egyes projekción a transzformált kép maximum értékeinek helyei. Szám szerint annyi ilyen pont kerül meghatározásra, amennyit a felhasználó előzetesen megadott, beleértve azon golyók számát is, amiket a felhasználó megjelölt, mint a felvételek valamelyikén a detektor látóteréből kilépő golyó. Így a felvételek azon részén, ahol nem esik minden golyó képe a detektorra,  olyan pixeleket is azonosíthat az algoritmus golyó középpontnak, ahol valójában nincs is golyó. Ez a képek feldolgozását nem zavarja, ugyanis az egyes ellipszisekhez tartozó koordinátákat a következőképp gyűjtöm össze. A felhasználó által kijelölt első projekción meghatározásra kerülnek azon golyók középpontjai, amelyek azon a képen láthatóak. Így fontos kérés a felhasználó felé, hogy kezdetben olyan képet adjon meg, amelyen nincs olyan golyó, amely bármikor is eltűnik a detektorról. Ezen golyók középpontjai -- amelyet a felhasználó a további feldolgozás előtt ellenőriz és jóváhagy -- mellé fogja gyűjteni a szoftver az ellipszispálya további pontjait, úgy, hogy minden projekcióról választ egy pontot, mint az adott ellipszishez tartozó pont. Alapvetően a Hough-transzformált képen található  maximális intenzitású pixeleket rendeli a szoftver az egyes ellipszisekhez, úgy, hogy egy adott ellipszis adatsorához az előző projekción megtalált pixelhez legközelebb eső Hough-maximumot rendeli. Amennyiben valamely ellipszis adatsorához olyan pozíciót rendelnénk, amely az előzőtől jócskán eltér -- önkényesen megadva:  függőlegesen több, mint $15$ pixellel, illetve vízszintesen több, mint $100$ pixellel --, úgy az előző projekción meghatározott pozíció közvetlen környezetéből választok koordinátát az adott ellipszishez, aszerint, hogy az adott környezetben az új képen hol a legnagyobb a Hough-transzformált értéke. Ilyen eset akkor fordulhat elő, ha valamiért nem sikerült megtalálni egy golyót az adott felvételen. Az eljárás meggátolja a szoftvert, hogy ilyenkor túlságosan kiszóró pontot adjon hozzá valamelyik ellipszis koordináta-halmazához.
 
 
-A teljes körbefordulás alatt összegyűjtött koordináták közül két ellipszishez tartozót ábrázoltam \aref{fig:ellipses}.~ábrán. Az ábrákon fekete színnel láthatóak azok a koordináták, amelyeket az én algoritmusom határozott meg. Piros színnel látható a kísérleti algoritmus által meghatározott koordináták, ugyan azon projekciókból. Bár az én algoritmusom csak egész koordinátákban tudja meghatározni az egyes projekciókon a golyók középpontját, a jóval pontosabb alakzatfelismerés miatt ez nem ront az adatsor minőségén. Az ábrákon látható, hogy az általam használt módszer kevesebb kiszóró pontot eredményez, és a kiszórás mértéke is alacsonyabb, mint a kísérleti algoritmusban megvalósított módszernél. A felső képnél alsó részén például láthatjuk, hogy a pálya középén, épp akkor, amikor a plexi lap jelentős elsötétedést okoz a képen, a kísérleti algoritmus által meghatározott koordináták jelentősen eltérnek a valódi pályától. Az alsó képen, amelyen egy sokkal kisebb kistengelyű ellipszis látható, észrevehetjük, hogy a kísérleti algoritmus által kiolvasott koordináták bár nem egész számok, hibájuk nagyobb, mint $1$ pixel: a adatsort egy periodikus ingadozás terheli, a jobb szélen jelentős mennyiségű kiszóró ponttal. 
-
-
-\begin{figure}[htbp]
-\center
-\includegraphics[width=0.9\textwidth]{abrak/ellipse1}
-\includegraphics[width=0.9\textwidth]{abrak/ellipse2}
-\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, két ellipszis mentén. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
-\label{fig:ellipses}
-\end{figure}
-
-
 
 
 \subsubsection{Ellipszis illesztés}
@@ -701,7 +737,7 @@ Az egyes ellipszisekhez tartozó adatsorokhoz meg kell határozni a rájuk illes
 p_0 (u^i)^2 - 2p_1u^i - 2p_2v^i + 2p_3u^iv^i + p_4 = -(v^i)^2 \hskip10pt i=1..N
 \end{equation}
 
-A legkisebb négyzetek probléma megoldását a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével állítottam elő. Ezen paraméterekből az  a további feldolgozás szempontjából lényeges, (\ref{eq:ellipse})~egyenletben bevezetett $a,b,c,\overline{u},\overline{v}$ együtthatókat \aref({eq:ellipsefitparameters}) egyenletekkel lehet megkapni. Bár a paraméterek meghatározása a két vizsgált cikkben eltérő módon van megvalósítva, az ellipszis illesztést a fent leírtak szerint, Noo\cite[noo] cikke alapján végeztem el. A Wu\cite[wu] cikkben leírtak alapján csak az ellipszis $c$ paramétere van elhanyagolva, amely igen jó közelítéssel már a fenti illesztésből is következik. 
+A legkisebb négyzetek probléma megoldását a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével állítottam elő. Ezen paraméterekből az  a további feldolgozás szempontjából lényeges, (\ref{eq:ellipse})~egyenletben bevezetett $a,b,c,\overline{u},\overline{v}$ együtthatókat \aref({eq:ellipsefitparameters}) egyenletekkel lehet megkapni. Bár a paraméterek meghatározása a két vizsgált cikkben eltérő módon van megvalósítva, az ellipszis illesztést a fent leírtak szerint, Noo\cite[noo] cikke alapján végeztem el. A Wu\cite{wu} cikkben leírtak alapján csak az ellipszis $c$ paramétere van elhanyagolva, amely igen jó közelítéssel már a fenti illesztésből is következik. 
 
 
 \begin{equation}
@@ -757,7 +793,33 @@ b&=\frac{S\cdot S_{xy} - S_x \cdot S_y}{\Delta}\\
 \end{equation}
 
 
-Bár a fenti módszer matematikailag csak abban az esetben korrekt, ha  csak az  $y_i$ paramétereket terheli a $\sigma_i$ hiba, jelen esetben  a módszer fizikailag releváns eredményt ad, hiszen valójában az egyes mérési pontok súlyozása történik a mért hiba inverzének négyzetével. A képletekben $x,y$ és $\sigma$ helyére az $\hat{u}_k, \hat{v}_k$ és $\hat{\sigma}_k$ értékeket helyettesítve az illesztett egyenes meredeksége megadja $\tan \eta$ értékét, annak hibájával együtt. Ebből számolom a program futása során az $\eta$ paramétert, annak hibájával együtt. Minthogy mind az $\eta$ szög, mind annak hibája igen kicsi érték ( $\approx 1\pm 0\!,1$ fok), a hibát a további számolás során elhanyagolom, azt csupán a felhasználó számára írom ki. 
+Bár a fenti módszer matematikailag csak abban az esetben korrekt, ha  csak az  $y_i$ paramétereket terheli a $\sigma_i$ hiba, jelen esetben  a módszer fizikailag releváns eredményt ad, hiszen valójában az egyes mérési pontok súlyozása történik a mért hiba inverzének négyzetével. A képletekben $x,y$ és $\sigma$ helyére az $\hat{u}_k, \hat{v}_k$ és $\hat{\sigma}_k$ értékeket helyettesítve az illesztett egyenes meredeksége megadja $\tan \eta$ értékét, annak hibájával együtt. Ebből számolom a program futása során az $\eta$ paramétert, annak hibájával együtt. Minthogy mind az $\eta$ szög, mind annak hibája igen kicsi érték ( $\approx 1\pm 0\!,1$ fok), a hibát a további számolás során elhanyagolom, azt csupán a felhasználó számára írom ki. Az $\eta$ paramétert pedig felhasználom arra, hogy a mért koordinátákat a detektor ferdeségével korrigáljam, azaz elforgassam azokat.
+
+
+A további paramétereket a program a két cikk alapján külön --külön számolja. 
+
+Noo metódusa szerint a fennmaradó paraméterek egy--egy ellipszis ($v_0^*$), illetve egy--egy ellipszis pár ($D, u_0^*, \phi, R$) alapján határozhatók meg.  Mindegyik paraméter esetében úgy jártam el, hogy kiszámoltam a paraméter értékét az adott ellipszisre vagy ellipszispárra, valamint kiszámoltam a paraméter hibáját is, az ellipszis illesztése során meghatározott hibák alapján kvadratikus hibaterjedéssel. Majd a geometriai paraméter végső értékét úgy számoltam ki, hogy az egyes részeredményeket azok hibájának inverzének négyzetével súlyoztam, és átlagoltam az értékeket. Ellipszispárok esetében a párok alapján számolt részeredmények közötti korrelációt nem vettem figyelembe a számítások során, mindenhol az összes ellipszispárból számolt eredményeket átlagoltam, a hibájuk alapján súlyozva.
+
+Wu metódusa eleve több ellipszist feltételez, így például D és $v_0^*$ értékét is egyenes illesztéssel határozza meg, ahogy azt \aref({eq:wu_d})~egyenlet leírja. Itt szintén az $\eta$ meghatározása során használt módszert alkalmaztam, azaz a hibával terhelt mérésekre vonatkozó (\ref{eq:illeszteshibaval1}) és (\ref{eq:illeszteshibaval2}) egyenletek alapján illesztettem egyenest. Az illesztés során figyelembe vett hibát \aref({eq:wu_d})~egyenlet függő változójának (bal oldal) hibájával becssültem.  Mivel $u_0^*$ ennél a módszernél az illesztett $\overline{u}_k$ paraméterek átlagolásával történik, a hibaszámítással figyelembe vett, hiba inverzének négyzetével való súlyozással kapott átlag itt teljesen korrekt módszerként használtam. A Wu módszer egyetlen ellipszispáronként számolt paramétere  \Aref({eq:wu_r}) egyenlet alapján számolt $R$ paraméter, vagyis a forrás és a forgástengely távolsága. Itt szintén ellipszis páronként határoztam meg az $R$ értéket és az adott ellipszispárra kapott hiba négyzetének inverzével súlyozva  kaptam a paraméter becslését az összes ellipszis adatainak felhasználásával. 
+
+
+A geometriai paraméterek számolása során tehát mindvégig számoltam a paraméterek hibáját, és a végső paraméterek számolásához az összes ellipszis adatát felhasználva kaptam meg. A kísérleti algoritmusban az átlagolás az ellipszispárokra súlyozás nélkül történt, én azonban a köztes paraméterek hibáját felhasználva, az alapján súlyozva határoztam meg a keresett geometriai paramétereket. Így amennyiben valamely ellipszis pontjai pontatlanul kerülnek meghatározásra, az a végeredményt nem torzítja el, hiszen ez esetben az ellipszis illesztésekor annak paraméterei nagy hibával kerülnek meghatározásra, így az adott ellipszis kis súllyal fogja befolyásolni a kimeneti paramétereket. A szoftver tehát felhasználói beavatkozás nélkül figyelembe veszi az adatsorok jóságát és azok alapján számítja ki a geometriai adatokat.
+
+
+\section{Eredmények}
+
+
+
+A teljes körbefordulás alatt összegyűjtött koordináták közül két ellipszishez tartozót ábrázoltam \aref{fig:ellipses}.~ábrán. Az ábrákon fekete színnel láthatóak azok a koordináták, amelyeket az én algoritmusom határozott meg. Piros színnel látható a kísérleti algoritmus által meghatározott koordináták, ugyan azon projekciókból. Bár az én algoritmusom csak egész koordinátákban tudja meghatározni az egyes projekciókon a golyók középpontját, a jóval pontosabb alakzatfelismerés miatt ez nem ront az adatsor minőségén. Az ábrákon látható, hogy az általam használt módszer kevesebb kiszóró pontot eredményez, és a kiszórás mértéke is alacsonyabb, mint a kísérleti algoritmusban megvalósított módszernél. A felső képnél alsó részén például láthatjuk, hogy a pálya középén, épp akkor, amikor a plexi lap jelentős elsötétedést okoz a képen, a kísérleti algoritmus által meghatározott koordináták jelentősen eltérnek a valódi pályától. Az alsó képen, amelyen egy sokkal kisebb kistengelyű ellipszis látható, észrevehetjük, hogy a kísérleti algoritmus által kiolvasott koordináták bár nem egész számok, hibájuk nagyobb, mint $1$ pixel: a adatsort egy periodikus ingadozás terheli, a jobb szélen jelentős mennyiségű kiszóró ponttal. 
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.9\textwidth]{abrak/ellipse1}
+\includegraphics[width=0.9\textwidth]{abrak/ellipse2}
+\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, két ellipszis mentén. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
+\label{fig:ellipses}
+\end{figure}
 
 
 
