@@ -728,9 +728,39 @@ A paraméterek kiszámolásán túl kiszámoltam azok hibáját is. Ehhez \acite
 \end{equation}
 
 
-\subsubsection{A geometriai paraméterek kiszámolása}
+\subsubsection{A geometriai paraméterek számítása}
 
-Az illesztett ellipszis paraméterei alapján a geometriai paramétereket  \aref{sec:noo} és \aref{sec:wu} fejezetben bemutatott képletek segítségével számoltam. Mivel az előbbi módszer csak két golyóval rendelkező fantomra van kiszámítva, a paramétereket kiszámoltam az összes lehetséges golyópárra. A számolás kvadratikus hibaterjedéssel figyelembe vettem az ellipszis paramétereinek hibáit, így minden golyópár pályája alapján számított geometriai értékhez megkaptam annak hibáját is. A két ellipszis alapján kapott paramétereket ez után azok hibájának inverzének négyzetével súlyoztam, és ezen súlyokkal számoltam ki átlagukat. 
+Az illesztett ellipszis  $a,b,c,\overline{u},\overline{v}$ paraméterei alapján a geometriai paramétereket  \aref{sec:noo} és \aref{sec:wu} fejezetben bemutatott képletek segítségével számoltam.
+
+Először kiszámításra kerül a detektor ferdeségét jellemző $\eta$ paraméter. A két cikk hasonló módszerrel számolja ezt, az egyetlen különbség, hogy Wu cikke elve több golyóval számol, így egyenest illeszt a tengely vetített képeire. Épp ezért a számítások során az $\eta$ paramétert egyféleképpen, egyenes illesztéssel határoztam meg. A $k$. golyó forgástengelyének vetített  $\hat{u}_k, \hat{v}_k$ koordinátáit \aref({eq:etameghat1}) képlet szerint lineáris regresszióval határoztam meg, szintén a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével. Mivel az egyes koordináták hibája nem ismert, itt az illesztés négyzetes hibájával tudom jellemezni a kapott  $\hat{u}_k, \hat{v}_k$  paraméterek jóságát, amit a továbbiakban $\hat{\sigma}_k$-val jelölök.  Ezen paraméterek segítségével $\tan \eta$ értékét a hibával terhelt mérésekre vonatkozó egyenes illesztés képleteivel számolom. Általános esetben az egyenletek az $y=a\cdot x + b$ egyenletű egyenes $a,b$ paramétereit határozzák meg az $x_i,y_i$ mért pontokból, ahol $\sigma_i$ az $y_i$ paraméter hibája. A keresett paraméterek és hibáik \aref({eq:illeszteshibaval1})~jelöléseket használva \aref({eq:illeszteshibaval2})~egyenletek alapján történhet. 
+
+
+\begin{equation}
+\label{eq:illeszteshibaval1}
+\left .
+\begin{split}
+S = \sum \frac{1}{\sigma_i^2}, \hskip10pt S_x = \sum \frac{x_i}{\sigma_i^2}, \hskip10pt S_y = \sum \frac{y_i}{\sigma_i^2} \\
+ S_{xx} = \sum \frac{x_i^2}{\sigma_i^2}, \hskip10pt S_{xy} = \frac{x_iy_i}{\sigma_i^2}, \hskip10pt \Delta = S\cdot S_{xx}  - \left(S_x \right) ^2
+ \end{split}
+ \right \}
+\end{equation}
+
+\begin{equation}
+\label{eq:illeszteshibaval2}
+\left .
+\begin{split}
+a&=\frac{S_{xx} \cdot S_y - S_x \cdot S_xy }{\Delta}\\
+b&=\frac{S\cdot S_{xy} - S_x \cdot S_y}{\Delta}\\
+\sigma_a^2 & = \frac{S_{xx}}{\Delta },  \hskip10pt \sigma_b^2 = \frac{S}{\Delta}
+\end{split}
+\right \}
+\end{equation}
+
+
+Bár a fenti módszer matematikailag csak abban az esetben korrekt, ha  csak az  $y_i$ paramétereket terheli a $\sigma_i$ hiba, jelen esetben  a módszer fizikailag releváns eredményt ad, hiszen valójában az egyes mérési pontok súlyozása történik a mért hiba inverzének négyzetével. A képletekben $x,y$ és $\sigma$ helyére az $\hat{u}_k, \hat{v}_k$ és $\hat{\sigma}_k$ értékeket helyettesítve az illesztett egyenes meredeksége megadja $\tan \eta$ értékét, annak hibájával együtt. Ebből számolom a program futása során az $\eta$ paramétert, annak hibájával együtt. Minthogy mind az $\eta$ szög, mind annak hibája igen kicsi érték ( $\approx 1\pm 0\!,1$ fok), a hibát a további számolás során elhanyagolom, azt csupán a felhasználó számára írom ki. 
+
+
+
 
 
 

@@ -1033,7 +1033,7 @@ void Geomcorr::calculateEta()
     }
 
     //fitting eta:
-
+/*
     double xmean =0;
     double ymean = 0;
     double x2mean =0;
@@ -1049,10 +1049,39 @@ void Geomcorr::calculateEta()
     ymean/=n;
     x2mean /=n;
     xymean/=n;
-    eta = std::atan((xymean - xmean * ymean) / ( x2mean - xmean * xmean ));
+    */
+
+    long double S = 0.0;
+    long double Sx = 0.0;
+    long double Sy = 0.0;
+    long double Sxx = 0.0;
+    long double Sxy = 0.0;
+    long double delta = 0.0;
+
+
+    for(int i=0; i<n; i++)
+    {
+        long double oos2 = pow(1.0/ norm[i],2); //one over sigma ^2
+        S+=  oos2;
+        Sx += vhat[i] * oos2;
+        Sy += uhat[i] *  oos2;
+        Sxx += vhat[i] * vhat[i] *  oos2;
+        Sxy += uhat[i] * vhat[i] *  oos2;
+
+
+    }
+
+    delta = S*Sxx - Sx*Sx;
+
+    long double taneta = (S*Sxy - Sx * Sy) / delta;
+    eta = std::atan(taneta);
+    long double dtaneta = sqrt(S/delta) ;
+    long double deta = 1 / (dtaneta * dtaneta + 1);
 
     std::cout << "eta is " << eta << " radian that is "
               << eta * 0.5 / 3.1415926535897932384626433 * 360.0 << " degree. " << std::endl;
+    std::cout << "error of eta is " << deta<< " radian that is "              << deta *100.0 / eta << " percent " << std::endl << std::endl;
+
 
 
 
