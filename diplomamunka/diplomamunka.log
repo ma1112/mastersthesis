@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  4 JUN 2016 19:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  4 JUN 2016 20:39
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -654,102 +654,111 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 125.
- [5 <./abrak/cbct.jpg>] [6] [7] [8] [9] [10]
-<abrak/gaingrafikon.jpg, id=79, 1204.5pt x 562.35094pt>
+ [5 <./abrak/cbct.jpg>] [6] [7] [8] [9]
+<abrak/gaingrafikon.jpg, id=76, 1204.5pt x 562.35094pt>
 File: abrak/gaingrafikon.jpg Graphic file (type jpg)
 
 <use abrak/gaingrafikon.jpg>
-Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 207.
+Package pdftex.def Info: abrak/gaingrafikon.jpg used on input line 205.
 (pdftex.def)             Requested size: 352.81552pt x 164.71652pt.
-
+ [10]
 <abrak/gainnelkul2.jpg, id=80, 1541.76pt x 867.24pt>
 File: abrak/gainnelkul2.jpg Graphic file (type jpg)
 
 <use abrak/gainnelkul2.jpg>
-Package pdftex.def Info: abrak/gainnelkul2.jpg used on input line 219.
+Package pdftex.def Info: abrak/gainnelkul2.jpg used on input line 217.
 (pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
- [11 <./abrak/gaingrafikon.jpg>]
-<abrak/gainnel.png, id=84, 1541.76pt x 867.24pt>
+ <abrak/gainnel.png, id=81, 1541.76pt x 867.24pt>
 File: abrak/gainnel.png Graphic file (type png)
- <use abrak/gainnel.png>
-Package pdftex.def Info: abrak/gainnel.png used on input line 228.
-(pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
 
-[12 <./abrak/gainnelkul2.jpg>] [13 <./abrak/gainnel.png (PNG copy)>] [14]
-[15] <abrak/offsetslope.jpg, id=99, 1541.76pt x 867.24pt>
+<use abrak/gainnel.png>
+Package pdftex.def Info: abrak/gainnel.png used on input line 226.
+(pdftex.def)             Requested size: 441.01773pt x 248.06581pt.
+ [11 <./abrak/gaingrafikon.jpg>] [12 <./abrak/gainnelkul2.jpg> <./abrak/gainnel
+.png (PNG copy)>] [13] [14]
+<abrak/offsetslope.jpg, id=96, 1541.76pt x 867.24pt>
 File: abrak/offsetslope.jpg Graphic file (type jpg)
 
 <use abrak/offsetslope.jpg>
-Package pdftex.def Info: abrak/offsetslope.jpg used on input line 317.
+Package pdftex.def Info: abrak/offsetslope.jpg used on input line 315.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
-<abrak/offsetintercept.jpg, id=100, 1541.76pt x 867.24pt>
+<abrak/offsetintercept.jpg, id=97, 1541.76pt x 867.24pt>
 File: abrak/offsetintercept.jpg Graphic file (type jpg)
 
 <use abrak/offsetintercept.jpg>
-Package pdftex.def Info: abrak/offsetintercept.jpg used on input line 318.
+Package pdftex.def Info: abrak/offsetintercept.jpg used on input line 316.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
-<abrak/slope50.jpg, id=101, 1541.76pt x 867.24pt>
+<abrak/slope50.jpg, id=98, 1541.76pt x 867.24pt>
 File: abrak/slope50.jpg Graphic file (type jpg)
  <use abrak/slope50.jpg>
-Package pdftex.def Info: abrak/slope50.jpg used on input line 327.
+Package pdftex.def Info: abrak/slope50.jpg used on input line 325.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
 
-<abrak/intercept50.jpg, id=102, 1541.76pt x 867.24pt>
+<abrak/intercept50.jpg, id=99, 1541.76pt x 867.24pt>
 File: abrak/intercept50.jpg Graphic file (type jpg)
 
 <use abrak/intercept50.jpg>
-Package pdftex.def Info: abrak/intercept50.jpg used on input line 328.
+Package pdftex.def Info: abrak/intercept50.jpg used on input line 326.
 (pdftex.def)             Requested size: 216.1011pt x 121.5451pt.
- [16 <./abrak/offsetslope.jpg> <./abrak/offsetintercept.jpg> <./abrak/slope50.j
-pg> <./abrak/intercept50.jpg>] [17] [18] [19]
-<abrak/geom1.jpg, id=116, 918.43124pt x 591.20876pt>
+ [15] [16 <./abrak/offsetslope.jpg> <./abrak/offsetintercept.jpg> <./abrak/slop
+e50.jpg> <./abrak/intercept50.jpg>] [17] [18]
+[19] <abrak/geom1.jpg, id=116, 918.43124pt x 591.20876pt>
 File: abrak/geom1.jpg Graphic file (type jpg)
- <use abrak/geom1.jpg>
-Package pdftex.def Info: abrak/geom1.jpg used on input line 388.
-(pdftex.def)             Requested size: 220.50887pt x 141.9381pt.
 
-[20 <./abrak/geom1.jpg>] <abrak/geom2.jpg, id=120, 917.4275pt x 501.875pt>
+<use abrak/geom1.jpg>
+Package pdftex.def Info: abrak/geom1.jpg used on input line 386.
+(pdftex.def)             Requested size: 220.50887pt x 141.9381pt.
+ <abrak/geom2.jpg, id=117, 917.4275pt x 501.875pt>
 File: abrak/geom2.jpg Graphic file (type jpg)
 
 <use abrak/geom2.jpg>
-Package pdftex.def Info: abrak/geom2.jpg used on input line 402.
+Package pdftex.def Info: abrak/geom2.jpg used on input line 400.
 (pdftex.def)             Requested size: 220.50887pt x 120.62859pt.
- [21 <./abrak/geom2.jpg>]
+ [20 <./abrak/geom1.jpg>] [21 <./abrak/geom2.jpg>]
 <abrak/etameghat.jpg, id=124, 722.7pt x 591.20876pt>
 File: abrak/etameghat.jpg Graphic file (type jpg)
  <use abrak/etameghat.jpg>
-Package pdftex.def Info: abrak/etameghat.jpg used on input line 431.
+Package pdftex.def Info: abrak/etameghat.jpg used on input line 429.
 (pdftex.def)             Requested size: 220.50887pt x 180.38606pt.
 
 [22 <./abrak/etameghat.jpg>]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 488.
+(amsmath)                trying to recover with `aligned' on input line 486.
 
 [23]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 503.
+(amsmath)                trying to recover with `aligned' on input line 501.
 
 [24] [25]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 565.
+(amsmath)                trying to recover with `aligned' on input line 563.
 
 <abrak/geomfantom.jpg, id=139, 1441.385pt x 1308.89pt>
 File: abrak/geomfantom.jpg Graphic file (type jpg)
 
 <use abrak/geomfantom.jpg>
-Package pdftex.def Info: abrak/geomfantom.jpg used on input line 577.
+Package pdftex.def Info: abrak/geomfantom.jpg used on input line 575.
 (pdftex.def)             Requested size: 352.81552pt x 320.37129pt.
- [26 <./abrak/geomfantom.jpg>]
+
+
+LaTeX Warning: Reference `fig:geomfantom_plexi1' on page 26 undefined on input 
+line 581.
+
+
+LaTeX Warning: Reference `fig:geomfantom_plexi2' on page 26 undefined on input 
+line 581.
+
+[26 <./abrak/geomfantom.jpg>]
 <abrak/geomfantom_meroleges.jpg, id=143, 1541.76pt x 867.24pt>
 File: abrak/geomfantom_meroleges.jpg Graphic file (type jpg)
 
 <use abrak/geomfantom_meroleges.jpg>
-Package pdftex.def Info: abrak/geomfantom_meroleges.jpg used on input line 594.
+Package pdftex.def Info: abrak/geomfantom_meroleges.jpg used on input line 591.
 
 (pdftex.def)             Requested size: 352.81552pt x 198.45529pt.
 
@@ -757,37 +766,37 @@ Package pdftex.def Info: abrak/geomfantom_meroleges.jpg used on input line 594.
 File: abrak/geomfantom_parhuzamos.jpg Graphic file (type jpg)
 
 <use abrak/geomfantom_parhuzamos.jpg>
-Package pdftex.def Info: abrak/geomfantom_parhuzamos.jpg used on input line 595
+Package pdftex.def Info: abrak/geomfantom_parhuzamos.jpg used on input line 598
 .
 (pdftex.def)             Requested size: 352.81552pt x 198.45529pt.
- [27] [28 <./abrak/geomfantom_meroleges.jpg> <./abrak/geomfantom_parhuzamos.jpg
->] [29]
-<abrak/geomui.jpg, id=154, 886.31125pt x 713.66624pt>
+ [27 <./abrak/geomfantom_meroleges.jpg>]
+[28 <./abrak/geomfantom_parhuzamos.jpg>]
+<abrak/geomui.jpg, id=151, 886.31125pt x 713.66624pt>
 File: abrak/geomui.jpg Graphic file (type jpg)
  <use abrak/geomui.jpg>
-Package pdftex.def Info: abrak/geomui.jpg used on input line 637.
+Package pdftex.def Info: abrak/geomui.jpg used on input line 641.
 (pdftex.def)             Requested size: 352.81552pt x 284.08934pt.
 
-[30 <./abrak/geomui.jpg>] [31]
-<abrak/houghcircles.jpg, id=162, 652.4375pt x 652.4375pt>
+[29] [30 <./abrak/geomui.jpg>] [31] [32]
+<abrak/houghcircles.jpg, id=165, 652.4375pt x 652.4375pt>
 File: abrak/houghcircles.jpg Graphic file (type jpg)
 
 <use abrak/houghcircles.jpg>
-Package pdftex.def Info: abrak/houghcircles.jpg used on input line 684.
+Package pdftex.def Info: abrak/houghcircles.jpg used on input line 688.
 (pdftex.def)             Requested size: 216.1011pt x 216.10147pt.
- [32] [33 <./abrak/houghcircles.jpg>]
+ [33 <./abrak/houghcircles.jpg>]
 <abrak/kisgolyo.jpg, id=169, 696.6025pt x 528.97626pt>
 File: abrak/kisgolyo.jpg Graphic file (type jpg)
 
 <use abrak/kisgolyo.jpg>
-Package pdftex.def Info: abrak/kisgolyo.jpg used on input line 710.
+Package pdftex.def Info: abrak/kisgolyo.jpg used on input line 714.
 (pdftex.def)             Requested size: 216.1011pt x 164.09393pt.
 
 <abrak/kisgolyo_intenzitas.jpeg, id=170, 376.40625pt x 286.06876pt>
 File: abrak/kisgolyo_intenzitas.jpeg Graphic file (type jpg)
 
 <use abrak/kisgolyo_intenzitas.jpeg>
-Package pdftex.def Info: abrak/kisgolyo_intenzitas.jpeg used on input line 711.
+Package pdftex.def Info: abrak/kisgolyo_intenzitas.jpeg used on input line 715.
 
 (pdftex.def)             Requested size: 216.1011pt x 164.23944pt.
 
@@ -795,22 +804,21 @@ Package pdftex.def Info: abrak/kisgolyo_intenzitas.jpeg used on input line 711.
 File: abrak/gradiens_kisgolyo.jpg Graphic file (type jpg)
 
 <use abrak/gradiens_kisgolyo.jpg>
-Package pdftex.def Info: abrak/gradiens_kisgolyo.jpg used on input line 719.
+Package pdftex.def Info: abrak/gradiens_kisgolyo.jpg used on input line 723.
 (pdftex.def)             Requested size: 216.1011pt x 171.85132pt.
- [34 <./abrak/kisgolyo.jpg> <./abrak/kisgolyo_intenzitas.jpeg> <./abrak/gradien
-s_kisgolyo.jpg>]
-<abrak/logkernel.jpg, id=175, 1606.0pt x 785.93625pt>
+ [34 <./abrak/kisgolyo.jpg> <./abrak/kisgolyo_intenzitas.jpeg>] <abrak/logkerne
+l.jpg, id=175, 1606.0pt x 785.93625pt>
 File: abrak/logkernel.jpg Graphic file (type jpg)
 
 <use abrak/logkernel.jpg>
-Package pdftex.def Info: abrak/logkernel.jpg used on input line 736.
+Package pdftex.def Info: abrak/logkernel.jpg used on input line 740.
 (pdftex.def)             Requested size: 216.1011pt x 105.74902pt.
- [35 <./abrak/logkernel.jpg>]
-<abrak/242_zerocross_vagott.jpg, id=180, 198.7425pt x 372.39125pt>
+ [35 <./abrak/gradiens_kisgolyo.jpg> <./abrak/logkernel.jpg>] <abrak/242_zerocr
+oss_vagott.jpg, id=180, 198.7425pt x 372.39125pt>
 File: abrak/242_zerocross_vagott.jpg Graphic file (type jpg)
 
 <use abrak/242_zerocross_vagott.jpg>
-Package pdftex.def Info: abrak/242_zerocross_vagott.jpg used on input line 747.
+Package pdftex.def Info: abrak/242_zerocross_vagott.jpg used on input line 751.
 
 (pdftex.def)             Requested size: 145.53665pt x 272.70705pt.
 
@@ -818,7 +826,7 @@ Package pdftex.def Info: abrak/242_zerocross_vagott.jpg used on input line 747.
 File: abrak/0242_gradienttreshold.jpg Graphic file (type jpg)
 
 <use abrak/0242_gradienttreshold.jpg>
-Package pdftex.def Info: abrak/0242_gradienttreshold.jpg used on input line 748
+Package pdftex.def Info: abrak/0242_gradienttreshold.jpg used on input line 752
 .
 (pdftex.def)             Requested size: 145.53665pt x 272.70705pt.
  [36 <./abrak/242_zerocross_vagott.jpg> <./abrak/0242_gradienttreshold.jpg>]
@@ -826,45 +834,45 @@ Package pdftex.def Info: abrak/0242_gradienttreshold.jpg used on input line 748
 File: abrak/242_max_cropped2.jpg Graphic file (type jpg)
 
 <use abrak/242_max_cropped2.jpg>
-Package pdftex.def Info: abrak/242_max_cropped2.jpg used on input line 767.
+Package pdftex.def Info: abrak/242_max_cropped2.jpg used on input line 771.
 (pdftex.def)             Requested size: 183.90767pt x 272.93433pt.
 
 <abrak/0242_korok.jpg, id=187, 149.05687pt x 279.29344pt>
 File: abrak/0242_korok.jpg Graphic file (type jpg)
 
 <use abrak/0242_korok.jpg>
-Package pdftex.def Info: abrak/0242_korok.jpg used on input line 768.
+Package pdftex.def Info: abrak/0242_korok.jpg used on input line 772.
 (pdftex.def)             Requested size: 145.53665pt x 272.71272pt.
  [37 <./abrak/242_max_cropped2.jpg> <./abrak/0242_korok.jpg>]
 
-LaTeX Warning: Citation `c' on page 38 undefined on input line 789.
-
-
-Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 801.
+LaTeX Warning: Citation `c' on page 38 undefined on input line 793.
 
 [38]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 829.
+(amsmath)                trying to recover with `aligned' on input line 805.
 
 [39]
 
 Package amsmath Warning: Cannot use `split' here;
-(amsmath)                trying to recover with `aligned' on input line 840.
+(amsmath)                trying to recover with `aligned' on input line 833.
+
+
+Package amsmath Warning: Cannot use `split' here;
+(amsmath)                trying to recover with `aligned' on input line 844.
 
 [40] <abrak/ellipse1.jpeg, id=200, 1204.5pt x 562.35094pt>
 File: abrak/ellipse1.jpeg Graphic file (type jpg)
 
 <use abrak/ellipse1.jpeg>
-Package pdftex.def Info: abrak/ellipse1.jpeg used on input line 867.
+Package pdftex.def Info: abrak/ellipse1.jpeg used on input line 871.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
 
 <abrak/ellipse2.jpeg, id=201, 1204.5pt x 562.35094pt>
 File: abrak/ellipse2.jpeg Graphic file (type jpg)
 
 <use abrak/ellipse2.jpeg>
-Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 868.
+Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 872.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
  [41] [42 <./abrak/ellipse1.jpeg> <./abrak/ellipse2.jpeg>] (diplomamunka.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 117--122
@@ -905,12 +913,15 @@ thy A
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 6769 strings out of 493673
- 103017 string characters out of 3143954
+ 6773 strings out of 493673
+ 103127 string characters out of 3143954
  195417 words of memory out of 3000000
- 9978 multiletter control sequences out of 15000+200000
+ 9982 multiletter control sequences out of 15000+200000
  15569 words of font info for 41 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -935,9 +946,9 @@ s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2
 ype1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
 lic/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
 nts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (44 pages, 11275867 bytes).
+Output written on diplomamunka.pdf (44 pages, 11275532 bytes).
 PDF statistics:
- 663 PDF objects out of 1000 (max. 8388607)
+ 661 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  156 words of extra memory for PDF output out of 10000 (max. 10000000)
 
