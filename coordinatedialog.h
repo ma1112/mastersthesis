@@ -19,10 +19,10 @@ public:
     void setX(int x);
     void setY(int y);
     void execute();
-    void getx(int* there);
-    void gety(int* there);
-    void setXDestination(int* xPointer);
-    void setYDestination(int* yPointer);
+    void getx(float* there);
+    void gety(float* there);
+    void setXDestination(float *xPointer);
+    void setYDestination(float* yPointer);
     void setLabel( QString string );
 
 private slots:
@@ -30,9 +30,9 @@ private slots:
 
 private:
     Ui::CoordinateDialog *ui;
-    int x,y;
-    int* putXHere;
-    int* putYHere;
+    float x,y;
+    float* putXHere;
+    float* putYHere;
 };
 
 #endif // COORDINATEDIALOG_H

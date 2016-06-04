@@ -48,12 +48,12 @@ void CoordinateDialog::execute()
 
 }
 
-void CoordinateDialog:: getx( int* there )
+void CoordinateDialog:: getx( float* there )
 {
     *there = x;
 }
 
-void CoordinateDialog:: gety(int* there)
+void CoordinateDialog:: gety(float *there)
 {
     *there = y;
 }
@@ -72,5 +72,5 @@ void CoordinateDialog::on_buttonBox_accepted()
     ui->spinBox_2->setDisabled(true);
 }
 
-void CoordinateDialog::setXDestination(int* xPointer) {putXHere = xPointer; }
-void CoordinateDialog::setYDestination(int* yPointer){putYHere = yPointer; }
+void CoordinateDialog::setXDestination(float* xPointer) {putXHere = xPointer; }
+void CoordinateDialog::setYDestination(float *yPointer){putYHere = yPointer; }

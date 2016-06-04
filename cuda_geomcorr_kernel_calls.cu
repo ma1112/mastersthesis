@@ -582,11 +582,11 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     kernel_convolve_image<<<gridSize,blockSize>>>(image.gpu_im,convolvedImage.reserve_on_GPU(),d_filter,4,image.width,image.height);
 
     convolvedImage.calculate_meanvalue_on_GPU();
-    /*
-    convolvedImage.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_convolved.jpg");
-    convolvedImage.writetofloatfile("C:/awing/hough/" + image.getid()  +"_convolved.binf");
+
+    //convolvedImage.saveAsJPEG("C:/awing/hough/kozeli/" + image.getid()  +"_convolved.jpg");
+    //convolvedImage.writetofloatfile("C:/awing/hough/kozeli/" + image.getid()  +"_convolved.binf");
     std::string id = image.getid();
-*/
+
 
     const dim3 newblockSize(16,16);
     const dim3 newgridSize(96,54);
@@ -594,9 +594,9 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
    kernel_zero_crossing_extractor<<<newgridSize,newblockSize>>>(convolvedImage.reserve_on_GPU(), zeroCrossImage.reserve_on_GPU(), zeroCrossImage.width, zeroCrossImage.height, convolvedImage.getstdev() * 0.5f);
 
 
-  /* zeroCrossImage.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_zerocross.jpg");
-   zeroCrossImage.writetofloatfile("C:/awing/hough/" + image.getid()  +"_zerocross.binf");
-*/
+   //zeroCrossImage.saveAsJPEG("C:/awing/hough/kozeli/" + image.getid()  +"_zerocross.jpg");
+   //zeroCrossImage.writetofloatfile("C:/awing/hough/kozeli/" + image.getid()  +"_zerocross.binf");
+
 
 
    //DEBUG
@@ -604,8 +604,8 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
 
    kernel_vertical_line_remover<<<newgridSize,newblockSize>>>(zeroCrossImage.reserve_on_GPU(),cleanZeroCrossing.reserve_on_GPU(), cleanZeroCrossing.width,cleanZeroCrossing.height);
 
-   //cleanZeroCrossing.saveAsJPEG("C:/awing/hough/" + image.getid()  +"_cleanzerocross.jpg");
-   //cleanZeroCrossing.writetofloatfile("C:/awing/hough/" + image.getid()  +"_cleanzerocross.binf");
+   //cleanZeroCrossing.saveAsJPEG("C:/awing/hough/kozeli/" + image.getid()  +"_cleanzerocross.jpg");
+   //cleanZeroCrossing.writetofloatfile("C:/awing/hough/kozeli/" + image.getid()  +"_cleanzerocross.binf");
 
 
     //Executing Hough tranformations with multiple r values
@@ -624,8 +624,8 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
             char str[3];
             sprintf(str,"%d",i);
 
-           // transformedImage.writetofloatfile("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".binf");
-           // transformedImage.saveAsJPEG("C:/awing/hough/proba/"  + image.getid() + "_r_" + str +".jpg");
+           // transformedImage.writetofloatfile("C:/awing/hough/kozeli/"  + image.getid() + "_r_" + str +".binf");
+           // transformedImage.saveAsJPEG("C:/awing/hough/kozeli/"  + image.getid() + "_r_" + str +".jpg");
             maxImg.equalmax(transformedImage);
 
 
@@ -641,10 +641,10 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
     {
         image = maxImg;
     }
-/*
-    maxImg.saveAsJPEG("C:/awing/hough/" + id  +"_max.jpg");
-    maxImg.writetofloatfile("C:/awing/hough/" + id  +"_max.binf");
-*/
+
+   // maxImg.saveAsJPEG("C:/awing/hough/kozeli/" + id  +"_max.jpg");
+    //maxImg.writetofloatfile("C:/awing/hough/kozeli/" + id  +"_max.binf");
+
 
     //Extracting maximums
 

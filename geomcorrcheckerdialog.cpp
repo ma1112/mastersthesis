@@ -332,8 +332,8 @@ void geomCorrCheckerDialog::calculate()
 
 
     //Asking for distances.
-        int *x_balls = new int[n]();
-        int *y_balls = new int[n]();
+        float *x_balls = new float[n]();
+        float *y_balls = new float[n]();
 
     int distanceReadFromFiles = 0;
 
@@ -349,8 +349,12 @@ void geomCorrCheckerDialog::calculate()
                continue;
            }
 
-            x_balls[distanceReadFromFiles] = i.section(",",0,0).toInt();
-            y_balls[distanceReadFromFiles] = i.section(",",1,1).toInt();
+           std::cout << "Full line " << i.toStdString() << std::endl;
+           std::cout << "x " << i.section(",",0,0).toStdString();
+           std::cout << "  ,   y " << i.section(",",1,1).toStdString() <<std::endl;
+
+            x_balls[distanceReadFromFiles] = i.section(",",0,0).toFloat();
+            y_balls[distanceReadFromFiles] = i.section(",",1,1).toFloat();
             distanceReadFromFiles++;
             std::cout << "Ball " << distanceReadFromFiles << " coorcinates from file: x: "<< x_balls[distanceReadFromFiles-1] <<" and y = " << y_balls[distanceReadFromFiles-1] << std::endl;
         }
