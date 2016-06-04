@@ -1,33 +1,148 @@
+\makeatletter \ifx\bibEarlyBegin\hfuzz
+  \def\bibEarlyBegin{\begingroup\everypar{}\sloppy\hbadness10000
+    \def\Hy@colorlink##1{\begingroup}
+    \def\Hy@endcolorlink{\endgroup}
+    \def\@inpenc@loop##1##2{}
+    \def\thebibliography##1{}
+    \def\endthebibliography{\skip@egroup\aftergroup\bibEarlyEnd}%
+    \def\inputencoding##1{}\c@enumi\z@
+    \def\bibitem{\skip@egroup \let\skip@egroup\egroup
+      \advance\c@enumi\@ne\@ifnextchar[\@lbibitem\@bibitem}%
+    \def\@lbibitem[##1]##2{\bibcite{##2}{##1}%
+      \setbox0\vbox\bgroup}% avoid emitting boxes
+    \def\@bibitem##1{\expandafter\skip@bibcite\expandafter
+      {\the\c@enumi}{##1}\setbox0\vbox\bgroup}% avoid emitting boxes
+    \def\skip@bibcite##1##2{\bibcite{##2}{##1}}%
+    \catcode11=9 % ignored
+    \@tempcnta  1 \loop\catcode\@tempcnta=9
+      \ifnum\@tempcnta<  8 \advance\@tempcnta\@ne\repeat
+    \@tempcnta 14 \loop\catcode\@tempcnta=9
+      \ifnum\@tempcnta< 31 \advance\@tempcnta\@ne\repeat
+    \@tempcnta127 \loop\catcode\@tempcnta=9
+      \ifnum\@tempcnta<255 \advance\@tempcnta\@ne\repeat
+    \let\skip@egroup\relax}
+  \def\bibEarlyEnd{\endgroup \let\bibcite\@gobbletwo
+    \global\let\bibEarlyRead\relax}
+  \bibEarlyBegin
+\else \let\bibEarlyEnd\relax \fi
+
 \begin{thebibliography}{1}
+\frenchspacing
+\makeatletter
+\global\def\bibIE@lowc{%
+  \expandafter\ifx\csname inputencoding\endcsname\relax
+    \def\NeedsTeXFormat##1]{}%
+    \def\ProvidesPackage##1]{}%
+    \def\DeclareOption##1##2{}%
+    \def\ProcessOptions{\@ifstar\@gobble\@empty}%
+    \input inputenc.sty
+    \let\NeedsTeXFormat \@notprerr
+    \let\ProvidesPackage\@notprerr
+    \let\DeclareOption  \@notprerr
+    \let\ProcessOptions \@notprerr
+  \fi
+  \global\let\bibIE@lowc\relax}
+\def\bibIE@lowa#1#2{%
+  \global\def\bibResetInputEncoding{\bibIE@lowb{ascii}}% anti-warning
+  \ifx#1\relax\else
+  \ifx#1\@inpenc@undefined@\@empty
+    \global\def\bibResetInputEncoding{\bibIE@lowb{#2}}%
+    \ifx\bibResetInputEncoding\reserved@a% keep old encoding
+      \global\let\bibResetInputEncoding\@empty \let\reserved@a\@empty \fi
+  \fi\fi}
+\let\bibIE@input\input
+\def\bibIE@ascii{ascii}
+\def\bibIE@lowb#1{%
+  \def\reserved@a{#1}\ifx\reserved@a\bibIE@ascii
+    \gdef\@inpenc@test{\global\let\@inpenc@test\relax}%
+    \edef\@inpenc@undefined{\noexpand\@inpenc@undefined@{ascii}}%
+    \@inpenc@loop\^^A\^^H\@inpenc@loop\^^K\^^K%
+    \@inpenc@loop\^^N\^^_\@inpenc@loop\^^?\^^ff%
+\else\def\input{\global\let\@inpenc@test\relax \bibIE@input}% no {ascii} warn
+  \inputencoding{#1}\fi}%
+\def\bibInputEncoding#1{%
+  \bibIE@lowc
+  \def\reserved@a{\bibIE@lowb{#1}}%
+  % vvv \@inpenc@undefined -> `\@inpenc@undefined@{latin2}' or undefined
+  \expandafter\expandafter\expandafter\bibIE@lowa\csname
+    @inpenc@undefined\endcsname\relax
+  \reserved@a}
+
+\def\leftflushbreak{\ifx\\\@centercr\penalty100 \else
+  \unpenalty\unpenalty{\@tempdima\lastskip\unskip\nobreak
+  \hskip\@tempdima plus1fil}\null\penalty100 \hskip0pt plus-1fil\relax\fi}
+\begingroup\lccode\string`~=\string`\^^M
+  \lowercase{\endgroup\def\verb@eol@error{\obeylines\def~{\bibVerbNoSp}}}
+\begingroup\lccode\string`~=\string`\ \relax
+  \lowercase{\endgroup\def\bibVerbNoSp#1{\ifx#1~\expandafter\bibVerbNoSp
+  \else\expandafter#1\fi}}
+\expandafter\ifx\csname bibUrll\endcsname\relax
+\expandafter\ifx\csname url\endcsname\relax
+     \def\bibUrll#1>{\leavevmode\leftflushbreak #1~\verb>}
+\else\def\bibUrll#1>{\leavevmode\leftflushbreak#1~\begingroup
+       \catcode\string`\%=12 \catcode\string`\#=12 \bibUrlll}
+     \def\bibUrlll#1>{\url{#1}\endgroup}\fi
+\fi
+\def\bibHU@mix#1{\egroup#1}
+\def\bibAnd#1{\nobreak\,\nobreak\hbox{--}\,}
+\def\bibEtAl#1{ \'es m\'asok}
+\def\bibEd#1{ (szerk.)}
+\def\bibNewBlock{\unskip\space}
+\def\bibVolume#1#2{#1 k\"ot.} \let\bibNumVolumes\bibVolume
+\def\bibTechRep#1{Jelent\'{e}s}
+\def\bibInSelf#1{In u\H{o}: }
+\csname bibOverride\endcsname
 
 \bibitem{botond}
-T.~Botond.
-\newblock Röntgen ct készülék építése.
-\newblock {\em Diplomamunka, BME NTI}, 2014.
+Tölgyesi Botond:
+\bibNewBlock Röntgen ct készülék építése.
+\bibNewBlock {Diplomamunka} (BME NTI).
+\bibNewBlock 2014.
+
+\bibitem{deli}
+Deli Gábor:
+\bibNewBlock Általános tomográfiás rekonstrukciós szoftver fejlesztése
+  gpu-ra.
+\bibNewBlock {Diplomamunka} (BME NTI).
+\bibNewBlock 2014.
+
+\bibitem{kleizer}
+Kleizer Gábor:
+\bibNewBlock Mechatronikai rendszer összekapcsolása nukleáris adatgyűjtő
+  rendszerekkel.
+\bibNewBlock {Diplomamunka} (BME NTI).
+\bibNewBlock 2011.
 
 \bibitem{reduce}
-M.~Harris.
-\newblock {Optimizing Parallel Reduction in CUDA}.
-\newblock
+Mark Harris:
+\bibNewBlock {Optimizing Parallel Reduction in CUDA}.
+\bibNewBlock
   {http://docs.nvidia.com/cuda/samples/6\_Advanced/reduction/doc/reduction.pdf}.
-\newblock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+\bibNewBlock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
 
 \bibitem{ellipse}
-K.~T. McDonald.
-\newblock Error estimation in fitting of ellipses.
-\newblock {http://www.physics.princeton.edu/mumu/target/ellipse.pdf}.
-\newblock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+Kirk~T. McDonald:
+\bibNewBlock Error estimation in fitting of ellipses.
+\bibNewBlock {http://www.physics.princeton.edu/mumu/target/ellipse.pdf}.
+\bibNewBlock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
 
 \bibitem{noo}
-F.~Noo, R.~Clackdoyle, C.~Mennessier, T.~A. White, and T.~J. Roney.
-\newblock Analytic method based on identification of ellipse parameters for
+Frédéric Noo\bibAnd 0Rolf Clackdoyle\bibAnd 0Catherine Mennessier\bibAnd
+  0Timothy~A White\bibAnd 2Timothy~J Roney:
+\bibNewBlock Analytic method based on identification of ellipse parameters for
   scanner calibration in cone-beam tomography.
-\newblock {\em Physics in Medicine and Biology}, 45(11):3489, 2000.
+\bibNewBlock {\em Physics in Medicine and Biology}, 45. \'evf. (2000) 11. sz.,
+  3489.~p.
+\bibNewBlock
+\bibUrll{URL} >http://stacks.iop.org/0031-9155/45/i=11/a=327>.
 
 \bibitem{wu}
-D.~Wu, L.~Li, L.~Zhang, Y.~Xing, Z.~Chen, and Y.~Xiao.
-\newblock Geometric calibration of cone-beam ct with a flat-panel detector.
-\newblock In {\em Nuclear Science Symposium and Medical Imaging Conference
-  (NSS/MIC), 2011 IEEE}, pages 2952--2955, Oct 2011.
+D.~Wu\bibAnd 0L.~Li\bibAnd 0L.~Zhang\bibAnd 0Y.~Xing\bibAnd 0Z.~Chen\bibAnd
+  2Y.~Xiao:
+\bibNewBlock Geometric calibration of cone-beam ct with a flat-panel detector.
+\bibNewBlock In {\em Nuclear Science Symposium and Medical Imaging Conference
+  (NSS/MIC), 2011 IEEE} (kon\-fe\-ren\-cia\-anyag).
+\bibNewBlock 2011.\ Oct, 2952--2955.~p.
+\bibNewBlock ISSN 1082-3654.
 
 \end{thebibliography}

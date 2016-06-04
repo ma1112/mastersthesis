@@ -127,11 +127,32 @@ Az egyetem reaktorépületében beüzemelt CT képalkotó berendezés a követke
 \item A vizsgált objektum forgatásáért egy \emph{PHI Instruments} gyártmányú rotációs asztal felel, amelyet két \emph{RDM 564/50, BERGER LAHR} típusú léptetőmotor hajt, minimálisan  $0,\!72^\circ$-os lépésközzel.
 \end{itemize}
 
-%TODO ITT tartok.
-A teljes CT vizsgálat 
+
+A rendszer által leképezhető objektum nagyságát a detektor méretei behatárolják, hiszen az objektum képe teljes szélességében a detektorra kell, hogy essen. Így a maximálisan $\approx10~\text{cm}$ átmérőjű tárgyak vizsgálhatók a berendezéssel. Az egyes elemek azonban nincsenek egymáshoz képest fixen rögzítve, azok szabadon mozgathatóak, így kisebb objektumokról is megfelelő minőségű felvételeket tudunk készíteni: minél közelebb helyezzük a tárgyat a forráshoz, annál inkább nagyított képet tudunk detektálni. Éppen az efféle szabadság miatt fontos elvárás, hogy a geometriai adatait rutinszerűen, gyorsan és pontosan lehessen meghatározni, hiszen a visszavetítéshez szükséges ezen adatok pontos ismerete. Ezt a műveletet, azaz a tárgy forgástengelyének, a forrásnak és a detektornak az egymástól való távolságának a meghatározását nevezzük geometriai kalibrációnak, amelyről részletesen \aref{sec:geomkalib}.~fejezetben írok.
+
+\subsection{A CT vizsgálathoz rendelkezésre álló szoftverek, a vizsgálat menete}
+
+
+A teljes rendszer összeszerelése és a szükséges szoftverek megalkotása is  korábbi hallgatók által lett kivitelezve. Így rendelkezésre áll egy \emph{C\#} nyelven írt, grafikus felülettel rendelkező mérésvezérlő szoftver, amely Kleizer Gábor készített, részben korábbi szagdolgozata\cite{kleizer} alapján. Ez a szoftver felelős a röntgencső vezérléséért és az ehhez kapcsolódó biztonsági berendezések működtetéséért (fényjelzés a röntgencső működése közben, stb.). Ugyancsak ez a szoftver vezérli a tárgy forgatásáért felelős léptetőmotorokat, és kommunikál a detektorral. A szoftver tehát teljes körűen levégez minden, a CT felvételek elkészítéséhez szükséges feladatot, a képeket pedig bináris formátumban a merevlemezre menti. Az elkészült képekről tudni érdemes, hogy a pixelek értékei $0$ és $  \left ( 2^{14}-1 \right ) = 16~383$ közötti egész számot vehetnek fel, amely szám a detektor adott pixelére eső sugárzás intenzitásával arányos a detektor mérési tartományában.
+
+
+A képek feldolgozására két, az előbbitől és egymástól is független szoftver áll rendelkezésre. A vizsgált tárgy 3 dimenziós képének visszaállításáért felelős szoftvert Deli Gábor\cite{deli} írta meg, diplomamunkája során. Ez a program \emph{C++} és \emph{CUDA} nyelven íródott. Utóbbi egy olyan platformot nyújt, amely segítségével a visszavetítésért felelős képműveletek párhuzamosan és igen gyorsan végezhetők el. Erről  \aref{sec:cuda}.~fejezeten írok részletesen. 
+
+
+Másrészt a geometriai kalibráció elvégzéséért, valamint a detektorpixelek eltérő tulajdonságaiból származó képhibák eltüntetéséért felel a Tölgyesi Botond által, diplomamunkája\cite{botond} keretében készített szoftver. A \emph{MATLAB} nyelven íródott program  képes \aref{sec:gainkorr}.~fejezetben bemutatott gain hibák kezelésére, valamint \aref{sec:geomkalib} .~fejezetben részletezett geometriai kalibráció elvégzésére is. Ezeket a funkciókat azonban viszonylag lassan végzi el, erőforrásigénye igen nagy (akár $10$--$20$~GB RAM). Ezen kívül a képfeldolgozás során alkalmazott módszerei nem a leghatásosabbak, eredményességük nagyban függ  a felhasználó által megadott paraméterektől és a kalibrációs adatsor minőségétől. Ugyanakkor Tölgyesi megmutatta, hogy optimális körülmények között a szoftver képes a feladatok jó minőségű elvégzésére. A képek gain korrigálás igen jó minőségben képes kivitelezni, és megfelelő paraméterek esetén a geometriai kalibrációs is helyes eredményt szolgáltat. Az alkalmazott algoritmusai tehát alapvetően helyesek, amelyeket Tölgyesi részletes tesztekkel is alátámasztott. Diplomamunkámban a Tölgyesi által megvalósított funkciókat fejlesztettem tovább,  hogy azok gyorsan és hatékonyan legyenek képesek feladatuk elvégzésére. Az elérni kívánt célokról és megvalósításukról szól a következő fejezet.
+
+
+
+\section{Célkitűzés}
+
+
+\subsection{CUDA}
+\label{sec:cuda}
+
 
 
 \section{Gain korrekció}
+\label{sec:gainkorr}
 
 
 A gain korrekció az elkészült felvételeken elsődlegesen elvégzendő korrekció, amely felelős egyrészt azért, hogy a detektorpixelek eltérő érzékenysége és zaja következtében fellépő képhibákat eltüntesse. Továbbá, hogy korrigálja a röntgennyaláb mért intenzitásában történő azon gyengülést, amely pusztán azért következik be, mert a detektorpixelek más--más távolságra vannak a forrástól.
@@ -323,6 +344,7 @@ Az alkalmazásomban is használt reduce műveletet  a CUDA hivatalos dokumentác
 %TODO A véletlenszerűen elsötétülő képeket itt is külön korrigálja a program: ha egy kép intenzitása jelentősen eltér a sorrendben mellette lévő képek átlagától, úgy az szoftvera képet a szomszédjainak átlagával helyettesíti a gain korigálás előtt.
 
 \section{A geometria kalibráció}
+\label{sec:geomkalib}
 
 A diplomaunkám során a másik fő feladatom volt a  az úgynevezett \emph{geometria kalibráció} robusztus algoritmusainak megalkotása, amely segítségével a CT-vel elkészített képek alapján állapíthatjuk meg, hogy milyen távol van egymástól a detektor, a forgatható asztal forgástengelye és a röntgencső fókuszpontja. A geometriai adatokhoz igen pontosan szükség van, amikor az elkészült projekciók alapján meghatározzuk a felvett tárgy 3 dimenziós képét, vagyis a visszavetítéskor. Ugyanakkor a geometriai paramétereket kézzel nem tudjuk igen pontosan lemérni, már csak azért sem, mert a röntgencső fókuszpontjának a helye nem hozzáférhető és nem ismert, továbbá a mérési pontatlanság is viszonylag nagy lenne. Ezért alkalmazzuk azt a módszert, hogy a berendezéssel készített képek alapján határozzuk meg a szóban forgó paramétereket. 
 
@@ -854,7 +876,7 @@ A teljes körbefordulás alatt összegyűjtött koordináták közül két ellip
 
 %\begin{thebibliography}{9}
 
-\bibliographystyle{abbrv}
+\bibliographystyle{huplain}
 \bibliography{bibfile} 
 
 
