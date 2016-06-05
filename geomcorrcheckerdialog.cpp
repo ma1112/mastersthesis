@@ -1647,7 +1647,7 @@ std::cout << "R : " << R << std::endl;
            }
            else
            {
-               std::cout << "ball " << i << "is on the left." << std::endl;
+               std::cout << "ball " << i << "is on the right." << std::endl;
 
            }
 
@@ -1658,7 +1658,7 @@ std::cout << "R : " << R << std::endl;
            }
            else
            {
-               std::cout << "ball " << j << "is on the left." << std::endl;
+               std::cout << "ball " << j << "is on the right." << std::endl;
 
            }
 
@@ -1733,7 +1733,7 @@ std::cout << "R : " << R << std::endl;
 
             std::cout << "Wu dOverR2 is " << dOverR2 << "with relative error " << 100.0 * ddOverR2 / dOverR2 << "from ellipse " << i << " and " <<  j << std::endl;
 
-            std::cout << " WU: R IS " <<R << " with relative error " << 100.0 * dR / R << "% " << "from ellipse " << i << " and " <<  j << std::endl;
+            std::cout << " WU: R IS " <<R << " with  error " << dR << " that is " << 100.0 * dR / R << "% " << "from ellipse " << i << " and " <<  j << std::endl;
 
             RWuMean += R / (dR * dR);
             RWuNorm += 1.0  / (dR * dR);

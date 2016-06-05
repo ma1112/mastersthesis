@@ -1377,8 +1377,8 @@ bool Geomcorr::coordinatesToCPU(int* h_x, int *h_y, int n)
 
     for(int i =0; i< size; i++)
     {
-        HANDLE_ERROR(cudaMemcpy(h_x+ i,d_coordinates + size * n + i * 2,sizeof(int) ,cudaMemcpyDeviceToHost));
-        HANDLE_ERROR(cudaMemcpy(h_y+ i,d_coordinates + size * n + i * 2 + 1,sizeof(int) ,cudaMemcpyDeviceToHost));
+        HANDLE_ERROR(cudaMemcpy(h_x+ i,d_coordinates + size * 2*n + i * 2,sizeof(int) ,cudaMemcpyDeviceToHost));
+        HANDLE_ERROR(cudaMemcpy(h_y+ i,d_coordinates + size * 2*n + i * 2 + 1,sizeof(int) ,cudaMemcpyDeviceToHost));
     }
 
     return true;
@@ -1391,11 +1391,20 @@ bool Geomcorr::coordinatesToCPU(int* h_x, int *h_y, int n)
 bool Geomcorr::isBallOnLeftSide(int i, float u0)
 {
     int u1;
-    HANDLE_ERROR(cudaMemcpy(&u1,d_coordinates + size * i ,sizeof(int) ,cudaMemcpyDeviceToHost));
+
+    HANDLE_ERROR(cudaMemcpy(&u1,d_coordinates + size * 2*i ,sizeof(int) ,cudaMemcpyDeviceToHost));
+    std::cout << "asking if ball " << i << " is on the left side with u = " << u1 << " and u0= " << u0 << std::endl;
+
     if( u1 < u0)
+    {
+        std::cout << "it is on the left. " << std::endl;
         return true;
+    }
     else
+    {
+        std::cout << " it is on the right. " << std::endl;
         return false;
+    }
 
 }
 
