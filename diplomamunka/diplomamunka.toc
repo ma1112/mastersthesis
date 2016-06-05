@@ -25,6 +25,6 @@
 \select@language {magyar} \contentsline {subsubsection}{\numberline {5.4.5}A geometriai param\IeC {\'e}terek sz\IeC {\'a}m\IeC {\'\i }t\IeC {\'a}sa}{39}
 \select@language {magyar} \contentsline {section}{\numberline {6}Eredm\IeC {\'e}nyek}{41}
 \select@language {magyar} \contentsline {subsection}{\numberline {6.1}Gain korrekci\IeC {\'o}}{41}
-\select@language {magyar} \contentsline {subsection}{\numberline {6.2}Geometriai kalibr\IeC {\'a}ci\IeC {\'o}}{42}
-\select@language {magyar} \contentsline {section}{\numberline {7}\IeC {\"O}sszefoglal\IeC {\'a}s \IeC {\'e}s kitekint\IeC {\'e}s}{45}
-\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{47}
+\select@language {magyar} \contentsline {subsection}{\numberline {6.2}Geometriai kalibr\IeC {\'a}ci\IeC {\'o}}{43}
+\select@language {magyar} \contentsline {section}{\numberline {7}\IeC {\"O}sszefoglal\IeC {\'a}s \IeC {\'e}s kitekint\IeC {\'e}s}{46}
+\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{48}

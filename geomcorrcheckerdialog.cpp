@@ -1508,13 +1508,13 @@ std::cout << "R : " << R << std::endl;
 
             long double dy2 =
                         pow(dv1 * (0.5 - 0.5  *(1/b[i] - 1/b[j]) /(v[i] - v[j] )) ,2)+
-                        pow(dv2 * (0.5 - 0.5  *(1/b[i] - 1/b[j]) /(v[i] - v[j] )) ,2)+
-                        pow( db1 * 0.5 * (v[i] + v[j] ) - 0.5 /(v[i] - v[j] ) * (1/b[i] / b[i] ),2 )+
-                        pow( db2 * 0.5 * (v[i] + v[j] ) - 0.5 /(v[i] - v[j] ) * (1/b[j] / b[j] ),2 )
+                        pow(dv2 * (0.5 + 0.5  *(1/b[i] - 1/b[j]) /(v[i] - v[j] )) ,2)+
+                        pow( db1 *  -0.5 /(v[i] - v[j] ) * (1/b[i] / b[i] ),2 )+
+                        pow( db2 * 0.5 /(v[i] - v[j] ) * (1/b[j] / b[j] ),2 )
                         ;
             long double x = 0.5 / (v[i] - v[j]) * (a[i] / b[i] - a[j] / b[j]);
 
-            S += 1 / dy2;
+            S += 1.0 / dy2;
             Sx += x / dy2;
             Sy += y / dy2;
             Sxx += x * x / dy2;

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  5 JUN 2016 02:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  5 JUN 2016 15:39
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -848,28 +848,28 @@ Package amsmath Warning: Cannot use `split' here;
 Package amsmath Warning: Cannot use `split' here;
 (amsmath)                trying to recover with `aligned' on input line 842.
 
-[40] [41] [42] <abrak/ellipse1.jpeg, id=207, 1204.5pt x 562.35094pt>
+[40] [41] [42] [43] <abrak/ellipse1.jpeg, id=210, 1204.5pt x 562.35094pt>
 File: abrak/ellipse1.jpeg Graphic file (type jpg)
 
 <use abrak/ellipse1.jpeg>
-Package pdftex.def Info: abrak/ellipse1.jpeg used on input line 881.
+Package pdftex.def Info: abrak/ellipse1.jpeg used on input line 918.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
 
-<abrak/ellipse2_10.jpeg, id=208, 1204.5pt x 562.35094pt>
+<abrak/ellipse2_10.jpeg, id=211, 1204.5pt x 562.35094pt>
 File: abrak/ellipse2_10.jpeg Graphic file (type jpg)
 
 <use abrak/ellipse2_10.jpeg>
-Package pdftex.def Info: abrak/ellipse2_10.jpeg used on input line 897.
+Package pdftex.def Info: abrak/ellipse2_10.jpeg used on input line 934.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
 
-<abrak/ellipse2.jpeg, id=209, 1204.5pt x 562.35094pt>
+<abrak/ellipse2.jpeg, id=212, 1204.5pt x 562.35094pt>
 File: abrak/ellipse2.jpeg Graphic file (type jpg)
 
 <use abrak/ellipse2.jpeg>
-Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 915.
+Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 952.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
- [43 <./abrak/ellipse1.jpeg>] [44 <./abrak/ellipse2_10.jpeg> <./abrak/ellipse2.
-jpeg>] [45] [46] (diplomamunka.bbl
+ [44 <./abrak/ellipse1.jpeg>] [45 <./abrak/ellipse2_10.jpeg> <./abrak/ellipse2.
+jpeg>] [46] [47] (diplomamunka.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 117--122
 []\T1/cmr/m/n/12 Mark Har-ris: Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
@@ -902,17 +902,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 130--138
 thy A
  []
 
-) [47
+) [48
 
 ] (diplomamunka.aux) ) 
 Here is how much of TeX's memory you used:
- 6782 strings out of 493673
- 103318 string characters out of 3143954
- 195447 words of memory out of 3000000
- 9989 multiletter control sequences out of 15000+200000
+ 6788 strings out of 493673
+ 103411 string characters out of 3143954
+ 195465 words of memory out of 3000000
+ 9995 multiletter control sequences out of 15000+200000
  16341 words of font info for 42 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 42i,19n,40p,4277b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,19n,40p,4295b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfo
 ur\jknappen\ec\dpi600\ectt1200.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\f
 onts\pk\ljfour\jknappen\ec\dpi600\ecrm2488.pk> <C:\Users\Árpád\AppData\Local\
@@ -935,9 +935,9 @@ ts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
 Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program 
 Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiK
 TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (48 pages, 11615772 bytes).
+Output written on diplomamunka.pdf (49 pages, 11621535 bytes).
 PDF statistics:
- 717 PDF objects out of 1000 (max. 8388607)
+ 727 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  161 words of extra memory for PDF output out of 10000 (max. 10000000)
 

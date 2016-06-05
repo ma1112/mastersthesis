@@ -151,7 +151,9 @@ void MainWindow::on_pushButton_8_clicked()
 {
     resetGui();
     DirectoryStructureConverter dSC;
-    dSC.copyDirAsImage();
+    //dSC.copyDirAsImage();
+    dSC.copyAll();
+
 }
 
 void MainWindow::on_pushButton_9_clicked()
