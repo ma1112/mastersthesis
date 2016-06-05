@@ -54,6 +54,8 @@ void Image::drawimage (QLabel* label)
 void Image::writedetailstoscreen(QTextEdit* textEdit)
 {
     textEdit->clear();
+    textEdit->append("Id: " + QString::fromStdString(id) );
+    textEdit->append("Filename: " + QString::fromStdString(filename) );
     textEdit->append("Voltage: " + QString::number(voltage) );
     textEdit->append("Amperage: " + QString::number(amperage) );
     textEdit->append("Exposition time: " + QString::number(exptime) );

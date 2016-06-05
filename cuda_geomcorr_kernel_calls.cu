@@ -776,13 +776,13 @@ void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
 {
 
     int rows = (n * (n-1) ) * 0.5;
-    std::cout << " welcome todAndVWithWu. n = " << n << " and rows = " << rows <<std::endl;
+    //std::cout << " welcome todAndVWithWu. n = " << n << " and rows = " << rows <<std::endl;
 
 
     *D= 0.0f;
     *v0 = 0.0f;
 
-    std::cout << " initialvalue of D and v0 set. " << std::endl;
+    //std::cout << " initialvalue of D and v0 set. " << std::endl;
 
 
 
@@ -795,7 +795,7 @@ void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         return;
     }
-    std::cout << " handle created" << std::endl;
+   // std::cout << " handle created" << std::endl;
     cusparseMatDescr_t descr = NULL;
     cusparseStatus_t csp;
     csp = cusparseCreateMatDescr(&descr);
@@ -804,7 +804,7 @@ void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         return;
     }
-    std::cout << " descr created" << std::endl;
+    //std::cout << " descr created" << std::endl;
 
     csp = cusparseSetMatType(descr,CUSPARSE_MATRIX_TYPE_GENERAL);
     if(csp != CUSPARSE_STATUS_SUCCESS)
@@ -812,7 +812,7 @@ void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         return;
     }
-    std::cout << " csp created" << std::endl;
+   // std::cout << " csp created" << std::endl;
 
     csp = cusparseSetMatIndexBase(descr,CUSPARSE_INDEX_BASE_ZERO);
     if(csp != CUSPARSE_STATUS_SUCCESS)
@@ -820,7 +820,7 @@ void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
         std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
         return;
     }
-    std::cout << " cps modified." << std::endl;
+    //std::cout << " cps modified." << std::endl;
 
     if(n==0)
     {

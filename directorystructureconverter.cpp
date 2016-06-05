@@ -110,6 +110,8 @@ void DirectoryStructureConverter::copyAll()
             std::stringstream ss(line);
             std::string temp;
             int currentId =-1;
+            std::string infoline = line.substr(line.find_first_of(" ")+1);
+
             ss >> currentId; // id
             // check if file exists:
             QString thisFilename =  path + "/" +subdirs.at(i) + "/" +  QString("%1").arg(currentId,4,10,QChar('0')) + ".bin";
@@ -126,7 +128,7 @@ void DirectoryStructureConverter::copyAll()
                 {
                     QFile::copy(thisFilename, outputDir + "/" +  QString("%1").arg(id,4,10,QChar('0')) + ".bin");
                     QTextStream fileStream( &outputInfoFile );
-                    fileStream << id << " " << QString::fromStdString(ss.str()) << "\n";
+                    fileStream << id << " " << QString::fromStdString(infoline) << "\n";
                     outputInfoFile.close();
                     id++;
                 }

@@ -46,12 +46,16 @@ private slots:
 
     void on_pushButton_export_clicked();
 
+    void on_horizontalSlider_sliderMoved(int position);
+
 private:
     Ui::MainWindow *ui;
     Image image;
     std::vector<Image> images_temp, images;
     Gaincorr gc;
     void resetGui();
+    QStringList fileList;
+    QString directory;
 
 
 };

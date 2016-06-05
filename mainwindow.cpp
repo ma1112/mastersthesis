@@ -18,6 +18,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButton_export->setVisible(false);
+    ui->horizontalSlider->setValue(false);
+    ui->AdvancedButtons->setEnabled(false);
+    ui->verticalLayout->setEnabled(false);
+    ui->verticalLayout_2->setEnabled(false);
+    ui->pushButton_2->setVisible(false);
+    ui->pushButton_3->setVisible(false);
+    ui->pushButton_5->setVisible(false);
+    ui->pushButton_6->setVisible(false);
+    ui->pushButton_8->setVisible(false);
+
+
+
 
 
 
@@ -31,11 +43,43 @@ MainWindow::~MainWindow()
 void MainWindow::resetGui()
 {
     ui->pushButton_export->setVisible(false);
+    ui->horizontalSlider->setValue(false);
+
 }
 
 
 void MainWindow::on_button_choosefile_clicked()
 {
+    //Asking for input and output  directories.
+       directory = QFileDialog::getExistingDirectory(0, QString::fromStdString("Folder, to view"),
+                                                       "C:\\",
+                                                        QFileDialog::DontResolveSymlinks);
+
+
+    QDir dir(directory);
+    QStringList nameFilter("*.bin"); //name filter.
+    fileList = dir.entryList(nameFilter); //File list of .bin files
+    if( fileList.length()<=1)
+    {
+        ui->textEdit->setText("Invalid or empty directory :  " + directory);
+        return;
+    }
+
+    ui->horizontalSlider->setMinimum(0);
+    ui->horizontalSlider->setMaximum(fileList.length()-1);
+    ui->horizontalSlider->setValue(0);
+
+    image.readfromfile((directory + "/" + fileList.at(0)).toStdString());
+    image.drawimage(ui->label);
+    image.calculate_meanvalue_on_GPU();
+    image.writedetailstoscreen(ui->textEdit);
+
+    ui->horizontalSlider->setVisible(true);
+     ui->pushButton_export->setVisible(true);
+
+
+
+    /* SINGLE IMAGE VERSION
     QString filename = QFileDialog::getOpenFileName(0,"Fájl megnyitása", "C:\\"); //Debug.
     if(filename.endsWith(QChar('f')))
     {
@@ -50,7 +94,7 @@ void MainWindow::on_button_choosefile_clicked()
                  "min on GPU: " << image.getmin() <<std::endl;
 
     std::cout <<"correlating with itsetlf : " << image.correlateWith(image) << std::endl;
-    ui->pushButton_export->setVisible(true);
+   */
 
 }
 
@@ -205,4 +249,12 @@ void MainWindow::on_pushButton_export_clicked()
 {
     QString outputDir = QFileDialog::getSaveFileName(0,"Save image as...", "C:\\",".jpg");
     image.saveAsJPEG(outputDir.toStdString());
+}
+
+void MainWindow::on_horizontalSlider_sliderMoved(int position)
+{
+    image.readfromfile((directory + "/" + fileList.at(position)).toStdString());
+    image.drawimage(ui->label);
+    image.calculate_meanvalue_on_GPU();
+    image.writedetailstoscreen(ui->textEdit);
 }

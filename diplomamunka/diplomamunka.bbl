@@ -99,6 +99,18 @@ Tölgyesi Botond:
 \bibNewBlock {Diplomamunka} (BME NTI).
 \bibNewBlock 2014.
 
+\bibitem{qt}
+The~Qt Company:
+\bibNewBlock Qt documentation.
+\bibNewBlock {https://doc.qt.io/}.
+\bibNewBlock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+
+\bibitem{cuda}
+NVIDIA Corporation:
+\bibNewBlock Cuda toolkit documentation.
+\bibNewBlock {http://docs.nvidia.com/cuda/}.
+\bibNewBlock [Online; utolsó hozzáférés: 2016.05.28. 14:00].
+
 \bibitem{deli}
 Deli Gábor:
 \bibNewBlock Általános tomográfiás rekonstrukciós szoftver fejlesztése

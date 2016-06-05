@@ -1618,19 +1618,19 @@ std::cout << "R : " << R << std::endl;
                         pow (dv0_wu  * ro2 / (v[j]-v0_wu_witherror) ,2)
                         );
 
-            long double zeta1 = (v[i]-v0_wu_witherror) * (1-ro1 * ro1 ) / D_wu_witherror;
-            long double zeta2 = (v[j]-v0_wu_witherror) * (1-ro2 * ro2 ) / D_wu_witherror;
+            long double zeta1 = (v[i]-v0_wu_witherror) * (1.0-ro1 * ro1 ) / D_wu_witherror;
+            long double zeta2 = (v[j]-v0_wu_witherror) * (1.0-ro2 * ro2 ) / D_wu_witherror;
 
             long double dzeta1 = sqrt(
-                        pow(dv1 * (1-ro1 * ro1 ) / D_wu_witherror,2 )+
-                        pow(dv0_wu * (1-ro1 * ro1 ) / D_wu_witherror,2 )+
+                        pow(dv1 * (1.0-ro1 * ro1 ) / D_wu_witherror,2 )+
+                        pow(dv0_wu * (1.0-ro1 * ro1 ) / D_wu_witherror,2 )+
                         pow(dro1 *  (v[i]-v0_wu_witherror) * (- 2.0 * ro1 ) / D_wu_witherror,2)
                         + pow (dD_wu * zeta1 /D_wu_witherror,2  )
                         );
 
             long double dzeta2 = sqrt(
-                        pow(dv2 * (1-ro2 * ro2 ) / D_wu_witherror,2 )+
-                        pow(dv0_wu * (1-ro2 * ro2 ) / D_wu_witherror,2 )+
+                        pow(dv2 * (1.0-ro2 * ro2 ) / D_wu_witherror,2 )+
+                        pow(dv0_wu * (1.0-ro2 * ro2 ) / D_wu_witherror,2 )+
                         pow(dro2 *  (v[j]-v0_wu_witherror) * (- 2.0 * ro2 ) / D_wu_witherror,2)
                         + pow (dD_wu * zeta2 /D_wu_witherror,2  )
                         );
@@ -1639,6 +1639,31 @@ std::cout << "R : " << R << std::endl;
            bool ball1Left =  geomcorr.isBallOnLeftSide(i,u0_wu);
            bool ball2Left =  geomcorr.isBallOnLeftSide(j,u0_wu);
            int cosDelta;
+
+           //Deubug
+           if(ball1Left)
+           {
+               std::cout << "ball " << i << "is on the left." << std::endl;
+           }
+           else
+           {
+               std::cout << "ball " << i << "is on the left." << std::endl;
+
+           }
+
+
+           if(ball2Left)
+           {
+               std::cout << "ball " << j << "is on the left." << std::endl;
+           }
+           else
+           {
+               std::cout << "ball " << j << "is on the left." << std::endl;
+
+           }
+
+
+
            if(ball1Left && ball2Left || !ball1Left && !ball2Left )
                cosDelta = 1;
            else
