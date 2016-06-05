@@ -11,7 +11,7 @@
 \select@language {magyar} \contentsline {subsection}{\numberline {4.2}A gain korrekci\IeC {\'o} algoritmusai}{11}
 \select@language {magyar} \contentsline {subsection}{\numberline {4.3}A gain kalibr\IeC {\'a}ci\IeC {\'o} haszn\IeC {\'a}lata}{15}
 \select@language {magyar} \contentsline {subsection}{\numberline {4.4}A gain kalibr\IeC {\'a}ci\IeC {\'o} implement\IeC {\'a}l\IeC {\'a}sa \IeC {\'e}s a sz\IeC {\"u}ks\IeC {\'e}ges m\IeC {\'e}r\IeC {\'e}sek le\IeC {\'\i }r\IeC {\'a}sa}{16}
-\select@language {magyar} \contentsline {section}{\numberline {5}A geometria kalibr\IeC {\'a}ci\IeC {\'o}}{19}
+\select@language {magyar} \contentsline {section}{\numberline {5}Geometria kalibr\IeC {\'a}ci\IeC {\'o}}{19}
 \select@language {magyar} \contentsline {subsection}{\numberline {5.1}A s\IeC {\'\i }kpaneles CBCT geometri\IeC {\'a}ja}{20}
 \select@language {magyar} \contentsline {subsection}{\numberline {5.2}A geometriai param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}s\IeC {\'a}nak elm\IeC {\'e}lete}{21}
 \select@language {magyar} \contentsline {subsubsection}{\numberline {5.2.1}A param\IeC {\'e}terek meghat\IeC {\'a}roz\IeC {\'a}sa Noo\cite {noo} cikke alapj\IeC {\'a}n}{22}
@@ -24,4 +24,7 @@
 \select@language {magyar} \contentsline {subsubsection}{\numberline {5.4.4}Ellipszis illeszt\IeC {\'e}s}{38}
 \select@language {magyar} \contentsline {subsubsection}{\numberline {5.4.5}A geometriai param\IeC {\'e}terek sz\IeC {\'a}m\IeC {\'\i }t\IeC {\'a}sa}{39}
 \select@language {magyar} \contentsline {section}{\numberline {6}Eredm\IeC {\'e}nyek}{41}
-\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{43}
+\select@language {magyar} \contentsline {subsection}{\numberline {6.1}Gain korrekci\IeC {\'o}}{41}
+\select@language {magyar} \contentsline {subsection}{\numberline {6.2}Geometriai kalibr\IeC {\'a}ci\IeC {\'o}}{42}
+\select@language {magyar} \contentsline {section}{\numberline {7}\IeC {\"O}sszefoglal\IeC {\'a}s \IeC {\'e}s kitekint\IeC {\'e}s}{45}
+\select@language {magyar} \contentsline {section}{Hivatkoz\'asok}{47}

@@ -1175,6 +1175,9 @@ std::cout << "R : " << R << std::endl;
                         );
 
             std::cout << "u0star from ellipse " << i << " and " << j << " is " << u0star << " with an error of " << du0star << ". that is "<< du0star  * 100.0 / u0star << " percent. " <<std::endl;
+            std::cout << "u0star without c " << 0.5* u[i] + 0.5 * u[j] + 0.5  << std::endl;
+            std::cout << " c part one " << 0.5 * c[i] / a[i] * (v[i] - v0star ) << std::endl;
+            std::cout << " c part two " <<  0.5 * c[j] / a[j]  * ( v[j] - v0star) << std::endl;
 
             long double sinfi = -0.5*c[i] / a[i] * xsi[i] - 0.5 * c[j] / a[j]  * xsi[j] ;
             long double fi = asin(sinfi );

@@ -149,7 +149,7 @@ Másrészt a geometriai kalibráció elvégzéséért, valamint a detektorpixele
 Jelen diplomamunkámban a Tölgyesi Botond által vizsgált gain korrekciós és geometria kalibrációs módszereket ültetem át \emph{MATLAB} környezetből grafikus felülettel rendelkező, felhasználóbarát környezetbe. A feladat elvégzése során szem előtt tartva, hogy a megvalósított funkciók minél gyorsabban, alacsony erőforrást igényelve, a felhasználó által a lehető legkevesebb beavatkozást igényelve fussanak le. Ennek érdekében a képek feldolgozását \emph{CUDA} nyelven valósítom meg, az elkészítendő program pedig \emph{Qt} grafikus felületet kap. A geometriai kalibráció esetében új képfeldolgozási algoritmust vezetek be, amelyek pontosabb eredményt szolgáltat, mint az eddigiekben megvalósított. Ezen kívül a geometriai kalibrációs adatok meghatározásánál számolom és számon tartom a kalibrációs mérések hibáit. A hibákat figyelembe veszem a geometriai adatok számolásánál, így a képek feldolgozása során vétett pontatlanságokat a szoftver a felhasználó beavatkozása nélkül kezeli.
 
 
-Az új algoritmusok, illetve megvalósításuk helyességét a CT-vel készült képek alapján tesztelem. Ilyen képekből azonban  viszonylag kevés áll rendelkezésre, mivel jelen diplomamunkát az ajánlott félév utáni félévben kezdtem el. A megfelelő minőségű képek gyártását tovább nehezítette, hogy a reaktor épületét időközben felújítás miatt lezárták, így az ott összeszerelt CT berendezés is hozzáférhetetlenné vált. A felvételek elkészítésére így limitált idő állt rendelkezésemre. Emiatt megfelelő minőségű geometriai kalibrációs felvételekből csak egy széria áll rendelkezésemre, az eredményeimet ennek használatával fogom bemutatni.
+Az új algoritmusok, illetve megvalósításuk helyességét a CT-vel készült képek alapján tesztelem. Ilyen képekből azonban  viszonylag kevés áll rendelkezésre, mivel jelen diplomamunkát az ajánlott félév utáni félévben kezdtem el. A megfelelő minőségű képek gyártását tovább nehezítette, hogy a reaktor épületét időközben felújítás miatt lezárták, így az ott összeszerelt CT berendezés is hozzáférhetetlenné vált. A felvételek elkészítésére így limitált idő állt rendelkezésemre. Emiatt megfelelő minőségű geometriai kalibrációs felvételek csak egyféle geometria mellett készültek, kétféle fantommal.Az eredményeimet ezek használatával fogom bemutatni.
 
 
 
@@ -366,7 +366,7 @@ Az alkalmazásomban is használt reduce műveletet  a CUDA hivatalos dokumentác
 
 %TODO A véletlenszerűen elsötétülő képeket itt is külön korrigálja a program: ha egy kép intenzitása jelentősen eltér a sorrendben mellette lévő képek átlagától, úgy az szoftvera képet a szomszédjainak átlagával helyettesíti a gain korigálás előtt.
 
-\section{A geometria kalibráció}
+\section{Geometria kalibráció}
 \label{sec:geomkalib}
 
 A diplomaunkám során a másik fő feladatom volt a  az úgynevezett \emph{geometria kalibráció} robusztus algoritmusainak megalkotása, amely segítségével a CT-vel elkészített képek alapján állapíthatjuk meg, hogy milyen távol van egymástól a detektor, a forgatható asztal forgástengelye és a röntgencső fókuszpontja. A geometriai adatokra igen pontosan szükség van, amikor az elkészült projekciók alapján meghatározzuk a felvett tárgy 3 dimenziós képét, vagyis a visszavetítéskor. Ugyanakkor a geometriai paramétereket kézzel nem tudjuk a szükséges pontossággal lemérni, már csak azért sem, mert a röntgencső fókuszpontjának a helye nem hozzáférhető és nem ismert, továbbá a mérési pontatlanság is viszonylag nagy lenne. Ezért alkalmazzuk azt a módszert, hogy a berendezéssel készített képek alapján határozzuk meg a szóban forgó paramétereket. 
@@ -677,7 +677,7 @@ A fenti módon számolt korrelációs érték $0$ és $1$ közötti értéket ve
 
 
 
-Amennyiben a felhasználó minden adatot megadott, megkezdődik a képek feldolgozása, amelynek során először meghatározásra kerülnek az egyes projekciókon a golyók koordinátái. Tölgyesi\cite{botond} munkája során erre két algoritmust implementált. Az egyiknél a kép kis részleteinek egy körlap képével való korreláció eredményét számolja, majd a kép azon pozícióban határozza meg a keresett kört, amely pozícióba helyezve a körlap képét, a korrelációs együttható maximális.   Ez a módszer bizonytalannak bizonyult és ezért már a korábbi munka során el lett vetve. A másik módszere szerint a képeket először invertálja ( hogy a nagy elnyelésű golyók helyén a kép intenzitása nagy legyen), majd golyók helyét a kép egy részletén belül az ott látható képpontok intenzitással súlyozott súlypontjába becsüli.  Ennek az algoritmusnak is van hátulütője. Egyrészt megfelelő méretű ablakot kell választani, hogy a golyó épp beleessen a vizsgált tartományba és ennek az ablaknak a helyét minden projekciónál számon kell tartani. Kifejezetten hibás eredményhez vezethet ez az algoritmus akkor, amikor a golyókat épp a fősugárral párhuzamosan álló fantom képén próbáljuk megtalálni. Ekkor a plexi lap okozta gyengülés \aref{fig:geomfantom_plexi}.~ábrán látottak alapján összemérhető, vagy akár nagyobb, mint a golyó által okozott. A plexi képe ilyenkor jelentős mértékben befolyásolni tudja a súlypontkeresést, akár téves útra térítve a golyók keresését. Ez ellen a vizsgált ablak csökkentésével lehet, de teljesen nem kiküszöbölhető.
+Amennyiben a felhasználó minden adatot megadott, megkezdődik a képek feldolgozása, amelynek során először meghatározásra kerülnek az egyes projekciókon a golyók koordinátái. Tölgyesi\cite{botond} munkája során erre két algoritmust implementált. Az egyiknél a kép kis részleteinek egy körlap képével való korreláció eredményét számolja, majd a kép azon pozícióban határozza meg a keresett kört, amely pozícióba helyezve a körlap képét, a korrelációs együttható maximális.   Ez a módszer bizonytalannak bizonyult és ezért már a korábbi munka során el lett vetve. A másik módszere szerint a képeket először invertálja ( hogy a nagy elnyelésű golyók helyén a kép intenzitása nagy legyen), majd golyók helyét a kép egy részletén belül az ott látható képpontok intenzitással súlyozott súlypontjába becsüli.  Ennek az algoritmusnak is van hátulütője. Egyrészt megfelelő méretű ablakot kell választani, hogy a golyó épp beleessen a vizsgált tartományba és ennek az ablaknak a helyét minden projekciónál számon kell tartani. Kifejezetten hibás eredményhez vezethet ez az algoritmus akkor, amikor a golyókat épp a fősugárral párhuzamosan álló fantom képén próbáljuk megtalálni. Ekkor a plexi lap okozta gyengülés \aref{fig:geomfantom_plexi2}.~ábrán látottak alapján összemérhető, vagy akár nagyobb, mint a golyó által okozott. A plexi képe ilyenkor jelentős mértékben befolyásolni tudja a súlypontkeresést, akár téves útra térítve a golyók keresését. Ez ellen a vizsgált ablak csökkentésével lehet, de teljesen nem kiküszöbölhető.
 
 A fenti hibák elkerülése érdekében a körök középpontjainak megkereséséhez egy új fajta  algoritmust használtam fel: a Hough-transzformációt. Ez az igen széles körben használt módszer  körök, egyenesek, illetve akár tetszőleges alakzatok lokalizálására használható. Körök keresése esetében először a képeken található éleket kell megkeresni, vagyis a képen található körök szélén lévő pixeleket. Majd a képre olyan körvonalakat kell rajzolni -- ezeket a továbbiakban másodlagos köröknek nevezem --, amely koröknek középpontjai az eredeti körvonalról kerülnek kiválasztásra. Amennyiben a keresett kör sugara ismert, a másodlagos  köröket is ilyen sugárral kell megrajzolunk. Ekkor a rajzolt körök közös metszete adja meg a keresett, eredeti kör középpontját. Egy ilyen eljárást szemléltet  \aref{fig:houghcircles}.~ábra. Az ábrán lévő piros kör középpontját úgy találjuk meg, hogy a körvonal kijelölt pontjaiból újabb köröket rajzolunk -- az ábrán fekete színnel. A legtöbb másodlagos kör által érintett -- kék -- pont adja meg a keresett kör középpontját. Természetesen érdemes a keresett kör összes pontja -- vagyis a képen az összes él-pont -- köré másodlagos köröket rajzolni, hogy minél pontosabb eredményt kapjunk. A módszer használható akkor is, ha a keresett kör sugara nem ismert. Ekkor ugyan azon pontokból különböző sugárral húzunk másodlagos körvonalakat. Mivel az eredeti körnek csak a középpontja van egyenlő távolságra a körvonal pontjaitól, a különböző sugarú másodlagos körök csak akkor fogják egymást egy pontban metszeni, ha a sugaruk éppen a keresett kör sugarával egyezik meg. Vagyis ismeretlen sugarú kör keresése esetén több féle sugárral kell másodlagos köröket rajzolni, és meg kell keresni, hogy  melyik sugár alkalmazása esetén metszi egymást a legtöbb kör. Ekkor megtaláltuk a keresett kör sugarát, a metszések helye pedig megadja a keresett kör középpontját.
 
@@ -788,7 +788,7 @@ Az egyes ellipszisekhez tartozó adatsorokhoz meg kell határozni a rájuk illes
 p_0 (u^i)^2 - 2p_1u^i - 2p_2v^i + 2p_3u^iv^i + p_4 = -(v^i)^2 \hskip10pt i=1..N
 \end{equation}
 
-A legkisebb négyzetek probléma megoldását a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével állítottam elő. Ezen paraméterekből az  a további feldolgozás szempontjából lényeges, (\ref{eq:ellipse})~egyenletben bevezetett $a,b,c,\overline{u},\overline{v}$ együtthatókat \aref({eq:ellipsefitparameters}) egyenletekkel lehet megkapni. Bár a paraméterek meghatározása a két vizsgált cikkben eltérő módon van megvalósítva, az ellipszis illesztést a fent leírtak szerint, Noo\cite[noo] cikke alapján végeztem el. A Wu\cite{wu} cikkben leírtak alapján csak az ellipszis $c$ paramétere van elhanyagolva, amely igen jó közelítéssel már a fenti illesztésből is következik. 
+A legkisebb négyzetek probléma megoldását a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével állítottam elő. Ezen paraméterekből az  a további feldolgozás szempontjából lényeges, (\ref{eq:ellipse})~egyenletben bevezetett $a,b,c,\overline{u},\overline{v}$ együtthatókat \aref({eq:ellipsefitparameters}) egyenletekkel lehet megkapni. Bár a paraméterek meghatározása a két vizsgált cikkben eltérő módon van megvalósítva, az ellipszis illesztést a fent leírtak szerint, Noo\cite{noo} cikke alapján végeztem el. A Wu\cite{wu} cikkben leírtak alapján csak az ellipszis $c$ paramétere van elhanyagolva, amely igen jó közelítéssel már a fenti illesztésből is következik. 
 
 
 \begin{equation}
@@ -806,7 +806,7 @@ c &=p_3b
 
 
 A paraméterek kiszámolásán túl kiszámoltam azok hibáját is. Ehhez \acite{ellipse} forrást használtam fel, amely alapján a fenti egyenlettel definiált ellipszis adott $p_i$ paraméterének hibáját \aref({eq:ellipsefiterror})~képlettel lehet becsülni, ahol $N$ a teljes körbefordulás során felvett projekciók száma, $z_{ij}$ pedig \aref({eq:ellipsefitparameters})~egyenlet alapján
- a $p_i$.\ paraméterhez tartozó geometriai érték: $p_0$ esetén $\left(u^i\right)^2$, stb. A kifejezés számlálójában így az illesztés során kapott négyzetes eltérés látható, míg a nevezőben az illesztett paraméterhez tartozó geometriai adatok négyzete, szorozva a rendszer szabadsági fokaival, ami $5$ paraméter keresése esetén az összes adatsor számánál $5$-tel kisebb.
+ a $p_i$.\ paraméterhez tartozó geometriai érték: $p_0$ esetén $\left(u^i\right)^2$, stb. A kifejezés számlálójában így az illesztés során kapott négyzetes eltérés látható, míg a nevezőben az illesztett paraméterhez tartozó geometriai adatok négyzetösszege, szorozva a rendszer szabadsági fokaival, ami $5$ paraméter keresése esetén az összes adatsor számánál $5$-tel kisebb.
 
 
 \begin{equation}
@@ -819,7 +819,7 @@ A paraméterek kiszámolásán túl kiszámoltam azok hibáját is. Ehhez \acite
 
 Az illesztett ellipszis  $a,b,c,\overline{u},\overline{v}$ paraméterei alapján a geometriai paramétereket  \aref{sec:noo} és \aref{sec:wu} fejezetben bemutatott képletek segítségével számoltam.
 
-Először kiszámításra kerül a detektor ferdeségét jellemző $\eta$ paraméter. A két cikk hasonló módszerrel számolja ezt, az egyetlen különbség, hogy Wu cikke elve több golyóval számol, így egyenest illeszt a tengely vetített képeire. Épp ezért a számítások során az $\eta$ paramétert egyféleképpen, egyenes illesztéssel határoztam meg. A $k$. golyó forgástengelyének vetített  $\hat{u}_k, \hat{v}_k$ koordinátáit \aref({eq:etameghat1}) képlet szerint lineáris regresszióval határoztam meg, szintén a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével. Mivel az egyes koordináták hibája nem ismert, itt az illesztés négyzetes hibájával tudom jellemezni a kapott  $\hat{u}_k, \hat{v}_k$  paraméterek jóságát, amit a továbbiakban $\hat{\sigma}_k$-val jelölök.  Ezen paraméterek segítségével $\tan \eta$ értékét a hibával terhelt mérésekre vonatkozó egyenes illesztés képleteivel számolom. Általános esetben az egyenletek az $y=a\cdot x + b$ egyenletű egyenes $a,b$ paramétereit határozzák meg az $x_i,y_i$ mért pontokból, ahol $\sigma_i$ az $y_i$ paraméter hibája. A keresett paraméterek és hibáik \aref({eq:illeszteshibaval1})~jelöléseket használva \aref({eq:illeszteshibaval2})~egyenletek alapján történhet. 
+Először kiszámításra kerül a detektor ferdeségét jellemző $\eta$ paraméter. A két cikk hasonló módszerrel számolja ezt, az egyetlen különbség, hogy Wu cikke elve több golyóval számol, így egyenest illeszt a tengely vetített képeire. Épp ezért a számítások során az $\eta$ paramétert egyféleképpen, egyenes illesztéssel határoztam meg. A $k$. golyó forgástengelyének vetített  $\hat{u}_k, \hat{v}_k$ koordinátáit \aref({eq:etameghat1}) képlet szerint lineáris regresszióval határoztam meg, szintén a CUDA \emph{cusolverSpScsrlsqvqrHost} függvényével. Mivel az egyes koordináták hibája nem ismert, itt az illesztés négyzetes hibájával tudom jellemezni a kapott  $\hat{u}_k, \hat{v}_k$  paraméterek hibáját, amit a továbbiakban $\hat{\sigma}_k$-val jelölök.  Ezen paraméterek segítségével $\tan \eta$ értékét a hibával terhelt mérésekre vonatkozó egyenes illesztés képleteivel számolom. Általános esetben a felhasznált egyenletek az $y=a\cdot x + b$ egyenletű egyenes $a,b$ paramétereit határozzák meg az $x_i,y_i$ mért pontokból, ahol $\sigma_i$ az $y_i$ paraméter hibája. A keresett paraméterek és hibáik \aref({eq:illeszteshibaval1})~jelöléseket használva \aref({eq:illeszteshibaval2})~egyenletek alapján kaphatóak meg. 
 
 
 \begin{equation}
@@ -849,30 +849,98 @@ Bár a fenti módszer matematikailag csak abban az esetben korrekt, ha  csak az 
 
 A további paramétereket a program a két cikk alapján külön --külön számolja. 
 
-Noo metódusa szerint a fennmaradó paraméterek egy--egy ellipszis ($v_0^*$), illetve egy--egy ellipszis pár ($D, u_0^*, \phi, R$) alapján határozhatók meg.  Mindegyik paraméter esetében úgy jártam el, hogy kiszámoltam a paraméter értékét az adott ellipszisre vagy ellipszispárra, valamint kiszámoltam a paraméter hibáját is, az ellipszis illesztése során meghatározott hibák alapján kvadratikus hibaterjedéssel. Majd a geometriai paraméter végső értékét úgy számoltam ki, hogy az egyes részeredményeket azok hibájának inverzének négyzetével súlyoztam, és átlagoltam az értékeket. Ellipszispárok esetében a párok alapján számolt részeredmények közötti korrelációt nem vettem figyelembe a számítások során, mindenhol az összes ellipszispárból számolt eredményeket átlagoltam, a hibájuk alapján súlyozva.
+Noo metódusa szerint a fennmaradó paraméterek egy--egy ellipszis ($v_0^*$), illetve egy--egy ellipszis pár ($D, u_0^*, \phi, R$) alapján határozhatók meg.  Mindegyik paraméter esetében úgy jártam el, hogy kiszámoltam a paraméter értékét az adott ellipszisre vagy ellipszispárra, valamint kiszámoltam a paraméter hibáját is, az ellipszis illesztése során meghatározott hibák alapján kvadratikus hibaterjedéssel. Majd a geometriai paraméter végső értékét úgy számoltam ki, hogy az egyes részeredményeket azok hibájának inverzének négyzetével súlyoztam, és átlagoltam az értékeket. Ellipszispárok esetében a párok alapján számolt részeredmények közötti korrelációt nem vettem figyelembe a számítások során, mindenhol az összes ellipszispárból számolt eredményeket átlagoltam, a hibájuk alapján súlyozva. Ahol lehetett, ott az egyenletbe a már kiszámolt paraméterek összes ellipszis adataiból becsült értékét helyettesítettem be.
 
-Wu metódusa eleve több ellipszist feltételez, így például D és $v_0^*$ értékét is egyenes illesztéssel határozza meg, ahogy azt \aref({eq:wu_d})~egyenlet leírja. Itt szintén az $\eta$ meghatározása során használt módszert alkalmaztam, azaz a hibával terhelt mérésekre vonatkozó (\ref{eq:illeszteshibaval1}) és (\ref{eq:illeszteshibaval2}) egyenletek alapján illesztettem egyenest. Az illesztés során figyelembe vett hibát \aref({eq:wu_d})~egyenlet függő változójának (bal oldal) hibájával becssültem.  Mivel $u_0^*$ ennél a módszernél az illesztett $\overline{u}_k$ paraméterek átlagolásával történik, a hibaszámítással figyelembe vett, hiba inverzének négyzetével való súlyozással kapott átlag itt teljesen korrekt módszerként használtam. A Wu módszer egyetlen ellipszispáronként számolt paramétere  \Aref({eq:wu_r}) egyenlet alapján számolt $R$ paraméter, vagyis a forrás és a forgástengely távolsága. Itt szintén ellipszis páronként határoztam meg az $R$ értéket és az adott ellipszispárra kapott hiba négyzetének inverzével súlyozva  kaptam a paraméter becslését az összes ellipszis adatainak felhasználásával. 
+Wu metódusa eleve több ellipszist feltételez, így például D és $v_0^*$ értékét is egyenes illesztéssel határozza meg, ahogy azt \aref({eq:wu_d})~egyenlet leírja. Itt szintén az $\eta$ meghatározása során használt módszert alkalmaztam, azaz a hibával terhelt mérésekre vonatkozó (\ref{eq:illeszteshibaval1}) és (\ref{eq:illeszteshibaval2}) egyenletek alapján illesztettem egyenest. Az illesztés során figyelembe vett hibát \aref({eq:wu_d})~egyenlet függő változójának (bal oldal) hibájával becsültem.  Mivel $u_0^*$ ennél a módszernél az illesztett $\overline{u}_k$ paraméterek átlagolásával történik, a hibaszámítással figyelembe vett, hiba inverzének négyzetével való súlyozással kapott átlag itt teljesen korrekt módszerként használtam. A Wu módszer egyetlen ellipszispáronként számolt paramétere  \Aref({eq:wu_r}) egyenlet alapján számolt $R$ paraméter, vagyis a forrás és a forgástengely távolsága. Itt szintén ellipszis páronként határoztam meg az $R$ értéket és az adott ellipszispárra kapott hiba négyzetének inverzével súlyozva  kaptam a paraméter becslését az összes ellipszis adatainak felhasználásával. 
 
 
-A geometriai paraméterek számolása során tehát mindvégig számoltam a paraméterek hibáját, és a végső paraméterek számolásához az összes ellipszis adatát felhasználva kaptam meg. A kísérleti algoritmusban az átlagolás az ellipszispárokra súlyozás nélkül történt, én azonban a köztes paraméterek hibáját felhasználva, az alapján súlyozva határoztam meg a keresett geometriai paramétereket. Így amennyiben valamely ellipszis pontjai pontatlanul kerülnek meghatározásra, az a végeredményt nem torzítja el, hiszen ez esetben az ellipszis illesztésekor annak paraméterei nagy hibával kerülnek meghatározásra, így az adott ellipszis kis súllyal fogja befolyásolni a kimeneti paramétereket. A szoftver tehát felhasználói beavatkozás nélkül figyelembe veszi az adatsorok jóságát és azok alapján számítja ki a geometriai adatokat.
+A geometriai paraméterek számolása során tehát mindvégig számoltam a paraméterek hibáját, és a végső paraméterek számolásához az összes ellipszis adatát felhasználva kaptam meg. A kísérleti algoritmusban az átlagolás az ellipszispárokra súlyozás nélkül történt, én azonban a köztes paraméterek hibáját felhasználva, az alapján súlyozva határoztam meg a keresett geometriai paramétereket. Így amennyiben valamely ellipszis pontjai pontatlanul kerülnek meghatározásra, az a végeredményt nem torzítja el, hiszen ez esetben az ellipszis illesztésekor annak paraméterei nagy hibával kerülnek meghatározásra, így az adott ellipszis kis súllyal fogja befolyásolni a kimeneti paramétereket. A szoftver tehát felhasználói beavatkozás nélkül figyelembe veszi az adatsorok jóságát és azokat figyelembe véve számítja ki a geometriai adatokat.
 
 
 \section{Eredmények}
 
+Diplomamunkám megírása során elkészítettem egy platformfüggetlen grafikus szoftverkörnyezetet, amely a gain korrekciót és a geometriai kalibrációt hatékonyan és gyorsan képes véghez vinni. Ehhez megterveztem a képek grafikus kártyán való tárolásáért és feldolgozásáért felelős  \emph{C++} osztályokat és függvényeit, a képfeldolgozásért felelős részeket \emph{CUDA}-n megvalósítva. Az egyes funkciók erőforrásigénye is lényegesen alacsonyabb, így a szoftver alkalmassá vált egy átlagos személyi számítógépen való használatra is. 
+
+\subsection{Gain korrekció}
+
+A gain korrekciós faktorok meghatározása során használatos algoritmusok lényegi részén a kísérleti algoritmusokhoz képest nem változtattam, viszont a feldolgozást grafikus kártyát használva párhuzamosítottam.  A kalibrációs képek feldolgozásakor bevezettem azok átlagolását, az esetleges zajok kiszűrése végett. A képek feldolgozásakor azok feszültségértékének meghatározását az eddigi megvalósítással ellentétben nem a felhasználóra bíztam, hanem a projekciós képek adataiból olvasom ki. Vizsgálom továbbá a képek átlagos intenzitásabeli különbségeket és az esetleges hibás felvételeket kiszűröm.  
+
+\subsection{Geometriai kalibráció}
+
+A geometriai kalibráció megvalósítása során szintén párhuzamosítottam a képfeldolgozó eljárásokat. Ezen kívül új módszert vezettem be a körök megkereséséhez a kalibrációs felvételeken és hibaszámítást figyelembe véve valósítottam meg a geometriai adatok számolását.
+
+A kísérleti algoritmussal való összehasonlításhoz lefuttattam a rendelkezésemre álló két mérési adatsoron mindkét algoritmust és vizsgáltam eredményüket. A kísérleti algoritmus esetében a felhasználónak először ki kell jelölnie az összes golyó helyzetét az első két projekción, majd a szoftver megkeresi azokat a további projekciókon. A kereséshez szükséges egy további paramétert, mégpedig az, hogy az adott golyó feltételezett középpontja körül milyen sugarú területen történjen a kép intenzitásértékeinek a súlyozott átlagolása. Ezen paraméter optimális beállítása nem bizonyult könnyű feladatnak. Geometriai kalibrációs mérésből ugyan azon geometria mellett készítettem két sorozatot, kétféle fantommal. A fantomok között a használt golyók mérete adta a különbséget. Egyik esetben 1~mm és $1,\!5$~mm átmérőjű csapágygolyókat rögzítettünk a fantomon, a másik esetben a legnagyobb csapágygolyó átmérője $2,\!5$~mm volt. A kalibrációs képsorozaton a legkisebb golyó képe $20$~pixel átmérőjű volt, míg a legnagyobb, $2,\!5$~mm átmérőjű csapágygolyó $50$~pixel átmérőjű árnyékot adott. Ezek alapján a középpont körüli $25$--$30$ pixel sugarú körben tűnt relevánsnak a golyók súlypontjának a keresése. Ilyen paraméter mellet azonban a kisebb golyókat a kísérleti algoritmus nem tudta megtalálni a képeken, így az illesztett ellipszisei és a számolt geometriai adatok is nagyságrendileg hibások voltak. A súlypontkeresés által vizsgálandó tartomány sugarának $10$~pixelre való csökkentésével sikerült kiértékelhető eredményt kapnom. Ugyan erre a megállapításra jutottam a másik fantom kiértékelésénél is. Ott a csapágygolyók árnyéke $20$ és $30$ pixel között változott, azonban a súlypontkeresés mezőét $16$~pixel sugarúra állítva itt is helytelen eredményeket kaptam. Itt is a $10$~pixeles érték bizonyult hatékonynak. Minthogy az így nyert geometriai adatok, amiket alább ismertetek, nem bizonyultak helyesnek, megállapítható, hogy a kísérleti algoritmus az alkalmazott csapágygolyók közötti kis eltéréseket sem tudja jól kezelni.
+
+A körkeresés minőségét egyrészt a megtalált középpontok ábráját megtekintve ítélhetjük meg. A legkisebb golyó  középpontjának mozgását \aref{fig:ellipseskicsi}.~ábrán láthatjuk. Piros színnel ábrázoltam a kísérleti algoritmus által meghatározott pozíciókat, fekete színnel az általam megvalósított algoritmus által becsült koordinátákat.
 
 
-A teljes körbefordulás alatt összegyűjtött koordináták közül két ellipszishez tartozót ábrázoltam \aref{fig:ellipses}.~ábrán. Az ábrákon fekete színnel láthatóak azok a koordináták, amelyeket az én algoritmusom határozott meg. Piros színnel látható a kísérleti algoritmus által meghatározott koordináták, ugyan azon projekciókból. Bár az én algoritmusom csak egész koordinátákban tudja meghatározni az egyes projekciókon a golyók középpontját, a jóval pontosabb alakzatfelismerés miatt ez nem ront az adatsor minőségén. Az ábrákon látható, hogy az általam használt módszer kevesebb kiszóró pontot eredményez, és a kiszórás mértéke is alacsonyabb, mint a kísérleti algoritmusban megvalósított módszernél. A felső képnél alsó részén például láthatjuk, hogy a pálya középén, épp akkor, amikor a plexi lap jelentős elsötétedést okoz a képen, a kísérleti algoritmus által meghatározott koordináták jelentősen eltérnek a valódi pályától. Az alsó képen, amelyen egy sokkal kisebb kistengelyű ellipszis látható, észrevehetjük, hogy a kísérleti algoritmus által kiolvasott koordináták bár nem egész számok, hibájuk nagyobb, mint $1$ pixel: a adatsort egy periodikus ingadozás terheli, a jobb szélen jelentős mennyiségű kiszóró ponttal. 
 
 
 \begin{figure}[htbp]
 \center
 \includegraphics[width=0.9\textwidth]{abrak/ellipse1}
-\includegraphics[width=0.9\textwidth]{abrak/ellipse2}
-\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, két ellipszis mentén. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
-\label{fig:ellipses}
+\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, a legkisebb golyó pályája  mentén. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
+\label{fig:ellipseskicsi}
 \end{figure}
 
 
+ Az ábrán láthatjuk, hogy a pálya közepén, a kép alsó, középső részén a kísérleti algoritmus által meghatározott koordináták eltérnek a golyó pályájától. Épp eben a pozícióban fordul a fantom olyan állásba, amely állásban a plexi lemez jelentősen befolyásolhatja a súlypontkeresést minőségét. Az általam megvalósított körkereső algoritmus ezen a részen nem téved, ezen a részen is képes a csapágygolyó képét pontosan megtalálni.
+ 
+ 
+ Megvizsgáltam továbbá, hogyan alakulnak a felismert középpontok, a többi, nagyobb méretű golyó esetében. A $1,\!5$~mm átmérőjű csapágygolyó árnyékának detektált középpontjait \aref{fig:ellipses2_10}.~ábrán tüntetem fel. 
+
+
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.9\textwidth]{abrak/ellipse2_10}
+\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, közepes méretű golyónál. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
+\label{fig:ellipses2_10}
+\end{figure}
+
+
+
+
+Az ábrán egy kisebb pályát leíró golyó képe látható, ezért is ennyire észrevehető az általam generált adatsor kvantáltsága. A Hough-transzformáció során ugyanis a körök középpontját egész koordinátákban határozom meg. Bár a kísérleti algoritmus által meghatározott koordinátákban látható némi szórás, annak mértéke $\pm 1$~pixelen belüli. Ugyanakkor a plexi által elsötétített projekciókon itt az átlagosnál nagyobb kiszórás figyelhető meg.
+
+
+Szemügyre vettem továbbá a  még nagyobb, $2,\!5$\~mm átmérőjű golyó két algoritmus által meghatározott pályáját is. Ez látható  \aref{fig:ellipses2}.~ábrán
+
+
+
+
+\begin{figure}[htbp]
+\center
+\includegraphics[width=0.9\textwidth]{abrak/ellipse2}
+\caption{Teljes körbefordulás alatt meghatározott golyó középpontok, nagy méretű golyónál. Fekete színnel ábrázolva az általam implementált algoritmus által meghatározott koordinátákat, piros színnel a kísérleti algoritmus által meghatározott koordinátákat.}
+\label{fig:ellipses2}
+\end{figure}
+
+
+
+Itt már szembetűnő, hogy a kísérleti algoritmus igen nagy szórással követi a  golyót a pályáján. A középpontok egyfajta periodikus ingadozást mutatnak, a pálya szélén pedig jelentős mennyiségű kiszóró pontot láthatunk. Ez tulajdonképpen nem meglepő, hiszen itt a kísérleti algoritmus az adott golyót annak méreténél jelentősen kisebb ablakban kereste. 
+
+
+A fentiek alapján megállapítható, hogy míg a kísérleti algoritmus által megvalósított körkereső algoritmust minőségét valóban befolyásolja a plexi lemez okozta elsötétlés. Az általam megvalósított körkereső algoritmus a golyókat úgy találja meg, hogy ez nincs befolyással a folyamatra. A koordináták ebben az esetben is megfelelő minőségben állnak elő. Megállapítható továbbá, hogy a kísérleti algoritmus hatékonysága nagy mértékben csökken, amennyiben különböző méretű golyókat használunk a kalibrációs fantomon. Ugyanakkor ez az általam megvalósított algoritmusra ez nincs hatással, az a különböző méretű golyók középpontjait is pontosan találja meg.
+
+
+
+Az egyes algoritmusok által megállapított geometriai adatok helyességét is megvizsgáltam. Mivel közvetlenül ezek helyessége nem ellenőrizhető, az adott geometriai mellett elkészített felvételek rekonstrukciója során előálló 3 dimenziós kép minőségét vizsgáltam, a különböző kapott geometriai paraméterek mellett. 
+
+
+{ \Huge Szívesen megmutatnám, de egyrészt csak ma jöttem rá, hogy van egy másik adatsor, amivel Botond algoritmusa valószuínűleg kicsivel jobb eredményt ad, de Awing le van halva, nem tudok rekonolni.}
+
+
+\section{Összefoglalás és kitekintés}
+
+
+Diplomamunkám során a Tölgyesi Botond által \cite{botond} tesztelt gain korrekciós és geometriai kalibrációs algoritmusokat ültettem át grafikus kártyára, valamint a funkciók könnyű használata érdekében grafikus felülettel láttam el a programot. Az elkészült szoftver gyorsabb és kevésbé erőforrás igényes, mint elődje. Ezen kívül továbbfejlesztettem a geometriai kalibrációban használt körkereső algoritmust és a geometriai adatok meghatározása során figyelembe vettem a kiértékelés során felmerülő hibákat. Ezekkel az eljárásokkal a geometria kalibráció a minőséget befolyásoló paraméter megadása nélkül, gyorsan és pontosan végzi. 
+
+
+Az algoritmusok gyorsasága a grafikus kártyára való átültetéssel megérettek arra, hogy ezeket a korrekciókat mérés közben végezzük el. Hasznos lenne ezeket a funkciókat a mérésvezérlő szoftver részévé tenni, hogy ne utólag kelljen a képek korrekcióját elvégezni.
+
+További feladat maradt még a spektrumfelkeményedés korrekció megvalósítása, amire jelen diplomamunka elkészítése során nem valósítottam meg, mivel érdemesebbnek tűnt a megvalósított részekre több időt szentelni. A korrekció megvalósításával az elkészült felvételek minőségét tovább lehetne javítani. 
 
 
 

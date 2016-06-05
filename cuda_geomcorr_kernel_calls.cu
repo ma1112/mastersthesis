@@ -1230,7 +1230,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
         std::cout << "v =" << *v ;
         std::cout << "a ( axis in pixels) =" << sqrt(1/(*a)) ;
         std::cout << "b (axis in pixels) =" << sqrt(1/(*b)) ;
-        std::cout << "c ( axis in pixels) =" << *c ;
+        std::cout << "c  =" << *c ;
 
         std::cout << std::endl << std::endl ;
 
