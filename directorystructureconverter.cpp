@@ -13,6 +13,8 @@
 #include <QTextStream>
 #include "image_cuda_compatible.h"
 
+
+//! This class converts my irectory structure to Toelgyesi's.
 DirectoryStructureConverter::DirectoryStructureConverter()
 {
 

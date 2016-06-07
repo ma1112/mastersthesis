@@ -978,10 +978,116 @@ A fentiek alapján megállapítható, hogy míg a kísérleti algoritmus által 
 
 
 
-Az egyes algoritmusok által megállapított geometriai adatok helyességét is megvizsgáltam. Mivel közvetlenül ezek helyessége nem ellenőrizhető, az adott geometriai mellett elkészített felvételek rekonstrukciója során előálló 3 dimenziós kép minőségét vizsgáltam, a különböző kapott geometriai paraméterek mellett. 
+Az egyes algoritmusok által megállapított geometriai adatok helyességét is megvizsgáltam. Mivel  ezek helyessége numerikusan közvetlenül nem ellenőrizhető, az adott geometriai mellett elkészített felvételek rekonstrukciója során előálló 3 dimenziós kép minőségét vizsgáltam, a különböző kapott geometriai paraméterek mellett. 
+
+Az egyes algoritmusok által meghatározott paraméterek \aref{tabgeom}.~táblázatban láthatóak. A táblázatban látható adatokkal rekonstruáltam egy plexi hasábról készült felvételsorozatot, amely  rekonstrukciók keresztmetszetei képei \aref{fig:backprojs}.~ábrán láthatóak. A képek közepén a plexi fantom közepén lévő vékony furatot látjuk inhomogenitásként.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l||l|l|l|l|l|}
+\hline 
+Algoritmus                                                                              & $\eta$      & $u_0$     & $v_0$      & $D$       & $R$       \\\hline \hline
+\begin{tabular}[c]{@{}l@{}}Kísérleti algoritmus\\ változó golyómérettel\end{tabular}    & 0.117334 & 616.654 & 584.596 & 632.234 & 440.933 \\\hline 
+\begin{tabular}[c]{@{}l@{}}Kísérleti algoritmus\\ hasonló méretű golyókkal\end{tabular} & 0.153843 & 635.381 & 582.007 & 632.416 & 425.902 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Új algoritmus\\ Noo egyenleteivel\end{tabular}               & 1.21522  & 643.451 & 656.5   & 671.671 & 359.402 \\ \hline
+\begin{tabular}[c]{@{}l@{}}Új algoritmus\\ Wu egyenleteivel\end{tabular}                & 1.21522  & 641.646 & 589.027 & 632.072 & 410.122\\\hline
+\end{tabular}
+\caption{\label{tabgeom}
+Az egyes algoritmusok által meghatározott geometriai adatok}
+\end{table}
 
 
-{ \Huge Szívesen megmutatnám, de egyrészt csak ma jöttem rá, hogy van egy másik adatsor, amivel Botond algoritmusa valószuínűleg kicsivel jobb eredményt ad, de Awing le van halva, nem tudok rekonolni.}
+
+
+\begin{figure}[htbp]
+\center
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=1\textwidth]{abrak/blackproj_botondrossz}
+\caption{\label{fig:bp:botondrossz}Kísérleti algoritmus, változó golyómérettel}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=1\textwidth]{abrak/blackproj_botondjo}
+\caption{Kísérleti algoritmus , hasonló  méretű golyókkal}
+\end{subfigure}
+ 
+ 
+  \begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=1\textwidth]{abrak/blackproj_noo}
+        \caption{Új algoritmus, Noo egyenleteivel}
+         \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+\includegraphics[width=1\textwidth]{abrak/blackproj_wu}
+        \caption{Új algoritmus, Wu egyenleteivel}
+         \end{subfigure}
+         \caption{A különböző algoritmusok által számolt geometriai adatokat felhasználva készült rekonstrukciók egy--egy keresztmetszeti képe. }
+\label{fig:backprojs}
+\end{figure}
+
+
+Az ábrákra ránézve szembeötlő, hogy a kísérleti algoritmus által számolt adatokkal a rekonstrukció minősége igen rossz, amennyiben a kalibráló fantomon a golyók változó méretűek (\ref{fig:bp:botondrossz}.~ábra). A többi képen a képek szélén, illetve közepén figyelhetjük meg a változó paraméterek okozta hatást. A középen lévő furat elmosódottsága, valamint a széleken az intenzitásesés meredeksége utal a képek minőségére: minél élesebbek ezek a határok, annál jobb a rekonstrukció minősége, és így a geometriai paraméterek is. A maradék három kép között a különbség már nem olyan nagy, de az általam használt algoritmusok és a Wu féle egyenletekkel való számolás eredményeképp előálló kép minősége még szemmel láthatóan jobb a többinél.
+
+A képminőségek objektív megítélése érdekében a képeket további vizsgálatnak vetettem alá és kiszámoltam a képek élválasz-függvényének félértékszélességét\cite{edge}. Az élválasz-függvény egy képen látható él menti intenzitásátmenet élességét vizsgálja. Valós képeken az ilyen átmenetek nem azonnaliak, hanem az él mentén egy véges tartományban folytonosan változnak az intenzitás értékei. Az élre merőleges egyenest állítva, az a mentén megfigyelt intenzitásértékek deriváltja Gauss-görbével írható le. Ezt a görbét hívjuk élválasz-függvénynek, amely tehát kis félértékszélesség esetén hirtelen változó intenzitásra utal, nagy félértékszélesség esetén pedig elmosódott élt jellemez. 
+
+\Aref{fig:backprojs}.~ábrán látható képeknek meghatároztam az élválasz-függvényeit. Ehhez a kép éleire merőlegesen állított egyenes mentén felvettem az intenzitásértékeket, majd azokat mozgóablakos módszerrel simítottam. Az így kapott adatsort numerikusan deriváltam és Gauss-görbét illesztettem rá. Ezt képenként 5--5 helyen tettem meg. Egy ilyen műveletsor lépései láthatóak \aref{fig:edge}.~ábrán. Az illesztéssel kapott Gauss görbe az élválasz-görbe. Ennek félértékszélességét a fentiek szerint lemérve és átlagolva \aref{tab:felertekszelesseg}.~táblázatban tüntettem fel.
+
+
+\begin{table}[htbp]
+\centering
+
+\begin{tabular}{|c|c|}
+\hline
+Algoritmus                                                                              & \begin{tabular}[c]{@{}c@{}}Élválasz-függvény\\ félértékszélessége (pixel)\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Kísérleti algoritmus\\ hasonló méretű golyókkal\end{tabular} & 12.4                                                                                   \\\hline
+\begin{tabular}[c]{@{}c@{}}Új algoritmus\\ Noo egyenleteivel\end{tabular}               & 12.2                                                                                   \\\hline
+\begin{tabular}[c]{@{}c@{}}Új algoritmus\\ Wu egyenleteivel\end{tabular}                & 10.0 \\\hline                                                                                  
+\end{tabular}
+\caption{\label{tab:felertekszelesseg}
+Élválasz-függvény félértékszélesség értékei a különböző algoritmusok által számolt geometriai paraméterekkel való visszavetítés után.}
+\end{table}
+
+
+A táblázat értékei alapján objektíven is megállapítható, hogy az általam bevezetett új képfelismerő algoritmusok és a számolások során a hibák figyelembevételével kapott eredményekkel jobb minőségű kép rekonstruálható, mint az eddig használt algoritmussal. 
+
+
+Figyelemre méltó változás ezen túl a futási idő csökkenése. A párhuzamos feldolgozás miatt az általam használt, több számolást igénylő algoritmusok is hamarabb futnak le, mint a kísérleti algoritmus kódja. A futási idők \aref{tab:futasiidogeom}.~táblázatban láthatóak.
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+Algoritmus                                    & Futási idő \\\hline
+Kísérleti algoritmus                          & 130 sec    \\\hline
+Általam használt, párhuzamosított feldolgozás & 450 sec   \\\hline
+\end{tabular}
+\caption{ \label{tab:futasiidogeom} Geometriai korrekciók meghatározásának ideje a két algoritmussal, $503$ képet tartalmazó kalibrációs adatsorból.}
+
+\end{table}
+
+
+
+
+
+\begin{figure}[htbp]
+\center
+\begin{subfigure}[b]{0.25\textwidth}
+\includegraphics[width=1\textwidth]{abrak/egyenesillesztes1}
+\caption{A sárga egyenes mentén vizsgálom az intenzitásértékek változását}
+\end{subfigure}
+
+
+\begin{subfigure}[b]{0.8\textwidth}
+\includegraphics[width=1\textwidth]{abrak/egyenessimitas}
+\caption{Intenzitásértékek az egyenes mentén -- feketével --, valamint annak simított görbéje -- pirossal}
+\end{subfigure}
+ 
+ 
+  \begin{subfigure}[b]{0.8\textwidth}
+\includegraphics[width=1\textwidth]{abrak/gaussillesztes}
+        \caption{A simított görbe deriváltja, valamint az arra illesztett Gauss görbe}
+         \end{subfigure}
+\caption{\label{fig:edge} Az élválasz-függvény meghatározásának lépései.}
+\end{figure}
 
 
 \section{Összefoglalás és kitekintés}

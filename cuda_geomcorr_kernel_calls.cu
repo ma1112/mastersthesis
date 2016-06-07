@@ -550,6 +550,126 @@ __global__ void kernel_fill_matrix(double eta, float* d_csrValA, int* csrRowPtrA
 
 
 
+//Double precision version
+
+__global__ void kernel_fill_matrix(double* d_sineta, double* d_coseta, double* d_csrValA, int* csrRowPtrA, int* csrColIndA, double* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
+{
+    int i = threadIdx.x; // i=1....n. i-th thread is filling the data of the i-th point. of the n-th ellipse.
+    if(addedCoordinates > size)
+    {
+        printf("ERROR: Out of boundaryy at kernel_fill_matrix.\n");
+        return;
+    }
+
+    if(i >=addedCoordinates )
+    {
+        return;
+    }
+
+    double u0, v0, u ,v;
+    u0=(double) d_coordinates[2*i +2*eliipseNo*size];
+    v0= (double) d_coordinates[2*i+1 +2*eliipseNo*size];
+
+    //Corrigating with eta:
+
+
+
+    u = u0 * (*d_coseta) - v0 * (*d_sineta);
+    v = u0 * (*d_sineta) + v0 * (*d_coseta);
+
+
+
+
+
+
+    d_csrValA[5*i] = u*u;
+    d_csrValA[5*i+1] = -2.0*u;
+    d_csrValA[5*i+2] = -2.0*v;
+
+    d_csrValA[5*i+3] = 2.0*u*v;
+    d_csrValA[5*i+4] = 1.0;
+    csrRowPtrA[i] = 5*i;
+    csrColIndA[5*i] =0;
+    csrColIndA[5*i +1] =1;
+    csrColIndA[5*i +2] =2;
+    csrColIndA[5*i +3] =3;
+    csrColIndA[5*i +4] =4;
+
+
+    d_vector[i] = -1.0f*v*v;
+
+    if(i==0)
+    {
+        csrRowPtrA[addedCoordinates] = addedCoordinates * 5;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+//! Kernel to fill the gpu matrix and vector before fitting ellipse with WU METHOD least square fitting.
+
+//! Matrix is stored in CSR storage format. Every thread is working on one point of the ellipse.
+//! Matrix rows are: [u^2 v^2 u v ], vector is [1].
+
+
+__global__ void kernel_fill_wu_matrix(double eta, float* d_csrValA, int* csrRowPtrA, int* csrColIndA, float* d_vector,  int* d_coordinates, int addedCoordinates, int eliipseNo, int size)
+{
+    int i = threadIdx.x; // i=1....n. i-th thread is filling the data of the i-th point. of the n-th ellipse.
+    if(addedCoordinates > size)
+    {
+        printf("ERROR: Out of boundaryy at kernel_fill_matrix.\n");
+        return;
+    }
+
+    if(i >=addedCoordinates )
+    {
+        return;
+    }
+
+    float u0, v0, u ,v;
+    u0=(float) d_coordinates[2*i +2*eliipseNo*size];
+    v0= (float) d_coordinates[2*i+1 +2*eliipseNo*size];
+
+    //Corrigating with eta:
+
+    u = u0 * cos(eta) - v0 * sin(eta);
+    v = u0 * sin(eta) + v0 * cos(eta);
+
+
+    d_csrValA[4*i] = u*u;
+    d_csrValA[4*i+1] = v*v;
+    d_csrValA[4*i+2] = u;
+    d_csrValA[4*i+3] = v;
+
+    csrRowPtrA[i] = 4*i;
+    csrColIndA[4*i] =0;
+    csrColIndA[4*i +1] =1;
+    csrColIndA[4*i +2] =2;
+    csrColIndA[4*i +3] =3;
+
+
+    d_vector[i] = 1.0;
+
+    if(i==0)
+    {
+        csrRowPtrA[addedCoordinates] = addedCoordinates * 4;
+    }
+
+}
+
+
+
+
+
 /*   ********************************************
  *   ************* F U N C T I O N S ************
  *   *******************************************/
@@ -770,10 +890,10 @@ bool Geomcorr::exportText(std::string filename)
 }
 
 
-//! Calculates D and V0 with Wu method.
+//! DO NOT USE!!!
 
 void Geomcorr::dAndVWithWu(float* a, float* b, float* v, float* D, float* v0 )
-{
+{/*
 
     int rows = (n * (n-1) ) * 0.5;
     //std::cout << " welcome todAndVWithWu. n = " << n << " and rows = " << rows <<std::endl;
@@ -907,7 +1027,7 @@ std::cout << " cusolverSpScsrlsqvqrHost" << std::endl;
     free(csrColIndA);
     free(vector);
 
-
+*/
 
 }
 
@@ -1163,31 +1283,47 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
 
 
 
-    float* d_csrValA; //[u^2 -2u -2v +2uv 1] in addedCoordinates row.
-    float* d_vector; // -v^2
+    double* d_csrValA; //[u^2 -2u -2v +2uv 1] in addedCoordinates row.
+    double* d_vector; // -v^2
     int* d_csrRowPtrA;
     int* d_csrColIndA;
 
 
 
-    HANDLE_ERROR(cudaMalloc((void**)&d_csrValA,sizeof(float) * 5 *addedCoordinates) );
-    HANDLE_ERROR(cudaMalloc((void**)&d_vector,sizeof(float)  * addedCoordinates ));
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrValA,sizeof(double) * 5 *addedCoordinates) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_vector,sizeof(double)  * addedCoordinates ));
     HANDLE_ERROR(cudaMalloc((void**)&d_csrColIndA,sizeof(int) *5 *addedCoordinates) );
     HANDLE_ERROR(cudaMalloc((void**)&d_csrRowPtrA,sizeof(int) * (addedCoordinates +1) ));
 
+    double coseta  = std::cos(eta);
+    double sineta = std::sin(eta);
+    //std::cout << "sineta : " << sineta << " coseta : " << coseta << std::endl;
+    double* d_coseta;
+    double* d_sineta;
+    HANDLE_ERROR(cudaMalloc((void**)&d_coseta,sizeof(double)) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_sineta,sizeof(double)) );
+    HANDLE_ERROR(cudaMemcpy(d_coseta,&coseta,sizeof(double),cudaMemcpyHostToDevice));
+    HANDLE_ERROR(cudaMemcpy(d_sineta,&sineta,sizeof(double),cudaMemcpyHostToDevice));
 
 
-    kernel_fill_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(eta, d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
 
+
+
+
+    kernel_fill_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(d_sineta, d_coseta, d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
+    cudaError_t cudaerr = cudaDeviceSynchronize();
+       if (cudaerr != CUDA_SUCCESS)
+           printf("kernel launch failed with error \"%s\".\n",
+                  cudaGetErrorString(cudaerr));
 
     int rankA =0;
-    float min_norm =0;
-    float tol = 0;    // Does not have a clue what this value should be...
-    float* x = (float*)malloc(sizeof(float)* 5);
+    double min_norm =0;
+    double tol = 0;    // Does not have a clue what this value should be...
+    double* x = (double*)malloc(sizeof(double)* 5);
     int* p =(int*) malloc(sizeof(int) * 5);
 
-    float* csrValA = (float*) malloc(sizeof(float) * 5 * addedCoordinates);
-    HANDLE_ERROR(cudaMemcpy(csrValA,d_csrValA,sizeof(float) * 5 * addedCoordinates,cudaMemcpyDeviceToHost));
+    double* csrValA = (double*) malloc(sizeof(double) * 5 * addedCoordinates);
+    HANDLE_ERROR(cudaMemcpy(csrValA,d_csrValA,sizeof(double) * 5 * addedCoordinates,cudaMemcpyDeviceToHost));
 
     int* csrRowPtrA = (int*) malloc ( sizeof(int) * (addedCoordinates + 1));
     HANDLE_ERROR(cudaMemcpy(csrRowPtrA,d_csrRowPtrA,sizeof(int) *(addedCoordinates+1),cudaMemcpyDeviceToHost));
@@ -1196,15 +1332,15 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     HANDLE_ERROR(cudaMemcpy(csrColIndA,d_csrColIndA,sizeof(int) *addedCoordinates *5,cudaMemcpyDeviceToHost));
 
 
-    float* vector = (float*) malloc ( sizeof(float) * addedCoordinates);
-    HANDLE_ERROR(cudaMemcpy(vector,d_vector,sizeof(float)  * addedCoordinates,cudaMemcpyDeviceToHost));
+    double* vector = (double*) malloc ( sizeof(double) * addedCoordinates);
+    HANDLE_ERROR(cudaMemcpy(vector,d_vector,sizeof(double)  * addedCoordinates,cudaMemcpyDeviceToHost));
 
 
 
 
 
 
-    status  = cusolverSpScsrlsqvqrHost(handle,addedCoordinates,5,addedCoordinates*5,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol, &rankA, x, p, &min_norm );
+    status  = cusolverSpDcsrlsqvqrHost(handle,addedCoordinates,5,addedCoordinates*5,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol, &rankA, x, p, &min_norm );
 
 
     if(status!=CUSOLVER_STATUS_SUCCESS)
@@ -1220,17 +1356,16 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
         std::cout << "min norm: " << min_norm << std::endl;
 
         std::cout << std::endl << std::endl;
-        *u =  (float) (x[1] - ( x[2] * x[3] ) ) / (float) (x[0] - x[3] * x[3]);
-        *v  = (float) (x[0] * x[2] - x[1] * x[3] ) / (float) (x[0] - x[3] * x[3]);
-        *a = (float) x[0] / (float) (x[0] * (*u) * (*u) + (*v) * (*v) + 2 * x[3] * (*u) * (*v)  - x[4]);
-        *b = (*a) / (float) x[0];
+        *u = (float)( (double) (x[1] - ( x[2] * x[3] ) ) / (double) (x[0] - x[3] * x[3]));
+        *v  = (float) ((double) (x[0] * x[2] - x[1] * x[3] ) / (double) (x[0] - x[3] * x[3]));
+        *a = (float) ((double) x[0] / (double) (x[0] * (*u) * (*u) + (*v) * (*v) + 2 * x[3] * (*u) * (*v)  - x[4]));
+        *b = (float) ((*a) / (double) x[0]);
         *c = x[3] * (*b);
 
         std::cout << "u =" << *u ;
         std::cout << "v =" << *v ;
         std::cout << "a ( axis in pixels) =" << sqrt(1/(*a)) ;
         std::cout << "b (axis in pixels) =" << sqrt(1/(*b)) ;
-        std::cout << "c  =" << *c ;
 
         std::cout << std::endl << std::endl ;
 
@@ -1247,7 +1382,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
             }
             numeratorTemp-=vector[j];
             stdevNumerator+= (numeratorTemp*numeratorTemp);
-            //std::cout << "stdevNumerator at j = "<< j << " is " << stdevNumerator << std::endl;
+           // std::cout << "stdevNumerator at j = "<< j << " is " << stdevNumerator << std::endl;
         }
 
 
@@ -1260,7 +1395,7 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
             for(int j=0;j<addedCoordinates;j++)
             {
                 stdevDenominator+=csrValA[5*j+i] * csrValA[5*j+i];
-                //std::cout << "stdevDenominator at i = "<< i << " and j = " <<j << " is " << stdevDenominator << std::endl;
+               // std::cout << "stdevDenominator at i = "<< i << " and j = " <<j << " is " << stdevDenominator << std::endl;
             }
             stdevDenominator *= (addedCoordinates-5);
             std::cout << "parameter " << i << " : " << x[i];
@@ -1271,21 +1406,35 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
         std::cout << std::endl;
 
         //du =
-        error[0] = sqrt( pow(xError[1] / ( x[0] - x[3] * x[3]),2)
+        error[0] = sqrt(
+                  pow(xError[1] / ( x[0] - x[3] * x[3]),2)
                 + pow((x[3] / (x[0]  -  x[3] * x[3])) * xError[2],2)
                 + pow(( -x[2] * (x[0] - x[3] * x[3]) + (x[1] - x[2] * x[3] )  * 2 * x[3]) / pow((x[0] - x[3] * x[3]),2) * xError[3],2)
-                + pow((((*u)) / (x[0] - x[3] - x[3]) ) * xError[0],2) );
+                + pow((((*u)) / (x[0] - x[3] * x[3]) ) * xError[0],2) );
+
+        std::cout << " du part p1 " << xError[1] / ( x[0] - x[3] * x[3]) << std::endl;
+        std::cout << "du part p2 " <<  (x[3] / (x[0]  -  x[3] * x[3])) * xError[2] << std::endl;
+        std::cout << "du part p3 " <<  ( -x[2] * (x[0] - x[3] * x[3]) + (x[1] - x[2] * x[3] )  * 2 * x[3]) / pow((x[0] - x[3] * x[3]),2) * xError[3] << std::endl;
+        std::cout << " du part p0 " << (((*u)) / (x[0] - x[3] * x[3]) ) * xError[0] << std::endl;
+
+
         // dv =
         error[1] =sqrt( pow(xError[0] * (x[2]*(x[0] - x[3] * x[3]) - ( x[0] * x[2] - x[1] * x[3])) / pow((x[0] - x[3] * x[3]),2),2)
                 + pow(xError[1] * (x[3] / (x[0] - x[3] * x[3])),2)
                 + pow(xError[2] * (x[0] / (x[0] - x[3] * x[3])),2)
                 + pow(xError[3] * (-1.0 * x[1] * (x[0] - x[3]* x[3]) + 2 * x[3] * (x[0] * x[2] - x[1] * x[3])) / pow(x[0] - x[3] * x[3],2) ,2) );
         //da:
-        error[2] = sqrt( pow(xError[0] * ( (1.0 / (*b) - x[0] * ((*u)) * ((*u))) * (*b) * (*b)),2)
+        error[2] = sqrt( pow(xError[0] * (  (*b) - (x[0] * ((*u)) * ((*u))) * (*b) * (*b)),2)
                 + pow(error[0] * (((*a)) * (*b) * (x[0] * 2.0 * ((*u)) + 2.0 * x[3] * ((*v)))),2)
-                + pow(error[1] * ( 2.0 * ((*a)) * (*b) * (((*v)) + x[3] * ((*u)))) ,2)
-                + pow( xError[3] * ((*a)) * (*b) * (2 * ((*u)) * ((*v))) ,2)
+                + pow(error[1] * ( 2.0 * ((*a)) * (*b) * (((*v)) +2.0* x[3] * ((*u)))) ,2)
+                + pow( xError[3] * ((*a)) * (*b) * (2.0 * ((*u)) * ((*v))) ,2)
                 +  pow( xError[4] * ((*a)) * (*b),2));
+
+        std::cout << " da part dp0" << xError[0] * (  (*b) - (x[0] * ((*u)) * ((*u))) * (*b) * (*b))<< std::endl;
+        std::cout << " da part du " << error[0] * (((*a)) * (*b) * (x[0] * 2.0 * ((*u)) + 2.0 * x[3] * ((*v))))<< std::endl;
+        std::cout << " da part dv " << error[1] * ( 2.0 * ((*a)) * (*b) * (((*v)) +2.0* x[3] * ((*u)))) << std::endl;
+        std::cout << " da part p3" <<  xError[3] * ((*a)) * (*b) * (2.0 * ((*u)) * ((*v))) << std::endl;
+        std::cout << " da part p4 " <<  xError[4] * ((*a)) * (*b) << std::endl;
 
         // db
         error[3] = sqrt( pow( error[2] / x[0] ,2)
@@ -1313,6 +1462,9 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     HANDLE_ERROR(cudaFree(d_vector));
     HANDLE_ERROR(cudaFree(d_csrColIndA));
     HANDLE_ERROR(cudaFree(d_csrRowPtrA));
+    HANDLE_ERROR(cudaFree(d_coseta));
+    HANDLE_ERROR(cudaFree(d_sineta));
+
     free( x);
     free(p);
     free(csrValA);
@@ -1320,6 +1472,270 @@ void Geomcorr::fitEllipse(int i, float* a, float* b, float* c, float* u, float* 
     free(csrColIndA);
     free(vector);
 }
+
+
+
+void Geomcorr::fitEllipseWu(int i, float* a, float* b, float* c, float* u, float* v, double* error)
+{
+
+
+
+
+    int addedCoordinates = 0;
+    HANDLE_ERROR(cudaMemcpy(&addedCoordinates,d_addedCoordinates+i,sizeof(int),cudaMemcpyDeviceToHost));
+
+    if(addedCoordinates < 10)
+    {
+        std::cout << "ERROR! There are only " << addedCoordinates <<" number of points at ellipse " << i << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = *(error+1) = *(error+2) = *(error+3) =   50000000000.0f;
+        return;
+    }
+
+    //See Cuda documentation [Cusolver Library]
+    cusolverSpHandle_t handle;
+    cusolverStatus_t  status;
+    status = cusolverSpCreate(&handle);
+    if(status != CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = *(error+1) = *(error+2) = *(error+3)  =  50000000000.0f;
+        return;
+    }
+    cusparseMatDescr_t descr = NULL;
+    cusparseStatus_t csp;
+    csp = cusparseCreateMatDescr(&descr);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = *(error+1) = *(error+2) = *(error+3) =   50000000000.0f;
+        return;
+    }
+    csp = cusparseSetMatType(descr,CUSPARSE_MATRIX_TYPE_GENERAL);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = 50000000000.0f;
+        return;
+    }
+    csp = cusparseSetMatIndexBase(descr,CUSPARSE_INDEX_BASE_ZERO);
+    if(csp != CUSPARSE_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR: Cusolver cannot be initialized." << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = *(error+1) = *(error+2) = *(error+3) =  50000000000.0f;
+        return;
+    }
+
+    std::cout << "Fitting ellipse " << i << " with "<< addedCoordinates << "number of coordinates." << std::endl;
+
+
+
+
+
+    float* d_csrValA;
+    float* d_vector;
+    int* d_csrRowPtrA;
+    int* d_csrColIndA;
+
+
+
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrValA,sizeof(float) * 4 *addedCoordinates) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_vector,sizeof(float)  * addedCoordinates ));
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrColIndA,sizeof(int) *4 *addedCoordinates) );
+    HANDLE_ERROR(cudaMalloc((void**)&d_csrRowPtrA,sizeof(int) * (addedCoordinates +1) ));
+std::cout << "filling matrix" << std::endl;
+
+
+    kernel_fill_wu_matrix<<<((addedCoordinates + 1023) / 1024) ,1024 >>>(eta, d_csrValA,d_csrRowPtrA,d_csrColIndA, d_vector, d_coordinates, addedCoordinates, i, size);
+std::cout << "matrix filled. " << std::endl;
+
+    int rankA =0;
+    float min_norm =0;
+    float tol = 0;    // Does not have a clue what this value should be...
+    float* x = (float*)malloc(sizeof(float)* 4);
+    int* p =(int*) malloc(sizeof(int) * 4);
+
+    float* csrValA = (float*) malloc(sizeof(float) * 4 * addedCoordinates);
+    HANDLE_ERROR(cudaMemcpy(csrValA,d_csrValA,sizeof(float) * 4 * addedCoordinates,cudaMemcpyDeviceToHost));
+
+    int* csrRowPtrA = (int*) malloc ( sizeof(int) * (addedCoordinates + 1));
+    HANDLE_ERROR(cudaMemcpy(csrRowPtrA,d_csrRowPtrA,sizeof(int) *(addedCoordinates+1),cudaMemcpyDeviceToHost));
+
+    int* csrColIndA = (int*) malloc( sizeof(int) * 4 * addedCoordinates);
+    HANDLE_ERROR(cudaMemcpy(csrColIndA,d_csrColIndA,sizeof(int) *addedCoordinates *4,cudaMemcpyDeviceToHost));
+
+
+    float* vector = (float*) malloc ( sizeof(float) * addedCoordinates);
+    HANDLE_ERROR(cudaMemcpy(vector,d_vector,sizeof(float)  * addedCoordinates,cudaMemcpyDeviceToHost));
+
+
+
+
+
+
+    status  = cusolverSpScsrlsqvqrHost(handle,addedCoordinates,4,addedCoordinates*4,descr,csrValA, csrRowPtrA,csrColIndA,vector,tol, &rankA, x, p, &min_norm );
+
+
+    if(status!=CUSOLVER_STATUS_SUCCESS)
+    {
+        std::cout << "ERROR! Ellipse fit failed." << std::endl;
+        *a=*b=*c=*u=*v=0;
+        *error = *(error+1) = *(error+2) = *(error+3) =  50000000000.0f;
+
+    }
+    else
+    {
+        std::cout << " rankA : " << rankA <<std::endl;
+        std::cout << "min norm: " << min_norm << std::endl;
+        std::cout << "l0: " << x[0] << ", l1:" << x[1] << ", l2: " << x[2] << " , l3: " << x[3] << std::endl;
+
+
+        long double p0 = x[1] / x[0];
+        long double p1 = x[2] / x[0];
+        long double p2 = x[3] / x[0];
+        long double p3 = 1.0 / x[0];
+
+
+
+
+        std::cout << std::endl << std::endl;
+        *u = -0.5 * p1;
+        *v = -0.5 * p2 / p0;
+        *a = 1.0 / ( p1 * p1 *0.25 + p2*p2 *0.25 / p0  +p3 );
+        *b = (*a) * p0;
+
+
+
+
+        std::cout << "u =" << *u ;
+        std::cout << "v =" << *v ;
+        std::cout << "a ( axis in pixels) =" << sqrt(1/(*a)) ;
+        std::cout << "b (axis in pixels) =" << sqrt(1/(*b)) ;
+
+        std::cout << std::endl << std::endl ;
+
+        //calculating error:
+
+        long double stdevNumerator = 0.0;
+
+        for(int j=0; j<addedCoordinates;j++)
+        {
+            long double numeratorTemp = 0.0;
+            for(int i=0;i<4;i++)
+            {
+                numeratorTemp += x[i]* csrValA[4*j+i];
+            }
+            numeratorTemp-=vector[j];
+            stdevNumerator+= (numeratorTemp*numeratorTemp);
+           // std::cout << "stdevNumerator at j = "<< j << " is " << stdevNumerator << std::endl;
+        }
+
+
+        double *xError = new double[4]();
+
+        for(int i=0;i<4;i++)
+        {
+            long double stdevDenominator = 0.0;
+
+            for(int j=0;j<addedCoordinates;j++)
+            {
+                stdevDenominator+=csrValA[4*j+i] * csrValA[4*j+i];
+               // std::cout << "stdevDenominator at i = "<< i << " and j = " <<j << " is " << stdevDenominator << std::endl;
+            }
+            stdevDenominator *= (addedCoordinates-4);
+            std::cout << "parameter " << i << " : " << x[i];
+            xError[i] = sqrt(stdevNumerator / stdevDenominator);
+            std::cout << "Error of parameter " << i << ": " << sqrt(stdevNumerator / stdevDenominator) << std::endl;
+            std::cout << "Relative error: " << sqrt(stdevNumerator / stdevDenominator) / x[i] * 100.0 << " per cent." << std::endl;
+        }
+        std::cout << std::endl;
+
+
+        long double dp3 =abs( 1.0 / x[0] / x[0]  * xError[0]);
+        long double dp0  =sqrt( pow( p3  * xError[1] ,2) + pow(x[1] * dp3 ,2));
+        long double dp1  =sqrt( pow( p3  * xError[2] ,2) + pow(x[2] * dp3 ,2));
+        long double dp2  =sqrt( pow( p3  * xError[3] ,2) + pow(x[3] * dp3 ,2));
+
+        std::cout << " dp0 " << dp0 << std::endl;
+        std::cout << " dp1 " << dp1 << std::endl;
+
+        std::cout << " dp2 " << dp2 << std::endl;
+
+        std::cout << " dp3 " << dp3 << std::endl;
+
+
+
+        //du =
+        error[0] = 0.5 * dp1;
+
+        // dv =
+        error[1] = sqrt(
+                    pow(dp2 * 0.5 / p0 ,2)+
+                    pow(dp0 *  (*v) / p0 ,2)
+                    );
+        //da:
+        error[2] = sqrt(
+                    pow(dp1 * (*a) * (*a) * 0.5 *p1 ,2)
+                + pow( dp2 * (*a) * (*a) * 0.5 *p2  / p0,2)
+                + pow( dp0* (*a) * (*a) * p2 * p2 *0.25 / p0 /p0,2)
+                + pow ( dp3 * (*a) * (*a)   ,2)
+                    );
+
+        // db
+        error[3] = sqrt  ( pow(dp0 * (*a) ,2 ) + pow(p0 * error[2] ,2)) ;
+        //dc
+
+
+        printf("\n\nPrinting fitting data with error: \n\n");
+
+        printf(" u = %lf and real. error is %lf percent\n " , (*u) , error[0] / (*u) * 100.0  );
+        printf(" v = %lf and real. error is %lf percent \n" , (*v) , error[1] / (*v) * 100.0  );
+        printf(" a = %lf and real. error is %lf percent \n" , (*a) , error[2] / (*a) * 100.0  );
+        printf(" b = %lf and real. error is %lf percent \n" , (*b) , error[3] / (*b) * 100.0  );
+
+        free(xError);
+    }
+
+
+    cudaDeviceSynchronize();
+
+    cusolverSpDestroy(handle);
+
+   HANDLE_ERROR( cudaFree(d_csrValA));
+    HANDLE_ERROR(cudaFree(d_vector));
+    HANDLE_ERROR(cudaFree(d_csrColIndA));
+    HANDLE_ERROR(cudaFree(d_csrRowPtrA));
+    free( x);
+    free(p);
+    free(csrValA);
+    free(csrRowPtrA);
+    free(csrColIndA);
+    free(vector);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 double Geomcorr::calculatePhase(int i, float u)

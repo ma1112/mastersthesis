@@ -523,177 +523,6 @@ void geomCorrCheckerDialog::calculate()
     //Calculation of scanner parameters
 
 
-    /* TBOTONDS METHOD - INGORED....
-
-    //for every pair of ellipses:
-    int pairs = 0;
-    //Representing TBOTOND's (21) equation as
-    // y = v0 + d^2 * x
-    //than you have to only calculate the slope and intercept of this line.
-
-    double xmean = 0;
-    double ymean = 0;
-    double xymean = 0;
-    double x2mean = 0;
-
-
-
-   for(int i=0; i<n; i++) // parameter 1 as k
-   {
-       for(int j=0; j<n; j++) // parameter 2 as k'
-       {
-           if(j <=i)
-           {
-               continue;
-           }
-           pairs++;
-           double y  = 0.5 * (v[i] + v[j]) - 0.5 / (v[i] - v[j])  * (1/b[i] - 1/b[j]);
-           double x = 0.5 / (v[i] - v[j] ) * (a[i] / b[i] - a[j] / b[j]);
-           xmean +=x;
-           ymean +=y;
-           xymean += x*y;
-           x2mean +=x*x;
-       }
-   }
-
-   xmean /=pairs;
-   ymean /= pairs;
-   xymean /= pairs;
-   x2mean /= pairs;
-
-   double D2 = (xymean - xmean * ymean) / (x2mean - xmean * xmean);
-   double D = sqrt(D2);
-   double v0star = ymean - D2 * xmean;
-
-   std::cout << "D= " << sqrt(D2) <<std::endl;
-   std::cout << "v0*" << v0star << std::endl;
-
-
-
-
-
-   double umean = 0;
-   double* phases = new double[n]();
-   for(int i=0; i<n ; i++)
-   {
-       umean += u[i];
-   }
-   umean/=n;
-
-   double* rho = new double[n];
-   double* xsi = new double[n];
-
-   for(int i=0; i<n; i++)
-   {
-       phases[i] =geomcorr.calculatePhase(i,umean);
-       rho[i] = 1 / sqrt(b[i]  *  ( v[i] - v0star) * ( v[i] - v0star)  );
-       xsi[i] = ( v[i] - v0star) * (1- rho[i]*rho[i]) / D;
-   }
-
-   int* realDistancex = new int[n](); //millimeters
-   int* realDistancey = new int[n]();
-
-   int* orderOfBalls = new int[n](); // balls are not in up to down order. Determining sorted list of indexes.
-   float minV = 50000;
-   int minIndex = 0;
-   for(int i=0; i<n; i++)
-   {
-       if(v[i] < minV)
-       {
-           minIndex = i;
-           minV = v[i];
-       }
-
-   }
-   orderOfBalls[0] = minIndex;
-   float minVLastRound = minV;
-
-   for(int i=1; i<n;i++)
-   {
-       float minVthisRound = 5000;
-       int minIndex = 0;
-
-       for(int j=0;j<n;j++)
-       {
-           if( v[j] < minVthisRound && v[j] > minVLastRound + 1 )
-           {
-               minIndex = j;
-               minVthisRound = v[j];
-           }
-       }
-       orderOfBalls[i] = minIndex;
-       minVLastRound = minVthisRound;
-   }
-
-   std::cout << "Order of balls:" << std::endl;
-   for(int i=0; i<n ; i++)
-   {
-       std::cout << orderOfBalls[i] << " " ;
-   }
-   std::cout << std::endl;
-
-
-
-   for(int i=1; i<n; i++)
-   {
-       QDialog dialog;
-       QFormLayout form(&dialog);
-       form.addRow(new QLabel("Distance of ball " + QString::number(i) + " from ball 0 in the x and y direction in millimeters" ));
-       QSpinBox *xSpinBox = new QSpinBox(&dialog);
-       form.addRow(xSpinBox);
-       QSpinBox *ySpinBox = new QSpinBox(&dialog);
-       form.addRow(ySpinBox);
-       xSpinBox->setMinimum(0);
-       ySpinBox->setMinimum(0);
-       xSpinBox->setValue(realDistancex[orderOfBalls[i-1]]);
-       ySpinBox->setValue(realDistancey[orderOfBalls[i-1]]);
-       ySpinBox->setMinimum(ySpinBox->value());
-
-
-
-       QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-                                  Qt::Horizontal, &dialog);
-       form.addRow(&buttonBox);
-       QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-       QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
-       do
-       {
-           std::cout << "Asking for ball " << i << std::endl;
-
-       } while(dialog.exec() != QDialog::Accepted);
-
-            realDistancex[ orderOfBalls[i]] =  xSpinBox->value();
-            std::cout << "ball " <<i << " : " <<  xSpinBox->value() << "  " << ySpinBox->value() << std::endl;
-            realDistancey[orderOfBalls[i]] = ySpinBox->value();
-   }
-
-
-// for every pair:
-   double R = 0.0;
-   pairs = 0;
-
-   for(int i=0; i<n;i++)
-   {
-       for( int j=0; j<n; j++)
-       {
-           if( j<=i)
-           {
-               continue;
-           }
-           pairs++;
-           double realDistance  =sqrt ( pow( realDistancex[i] - realDistancex[j] ,2) +
-                                    pow(realDistancey[i] - realDistancey[j],2) );
-
-           R+=realDistance / sqrt( pow( xsi[i] - xsi[j],2) + rho[i] * rho[i] + rho[j] * rho[j] - 2.0 * rho[i] * rho[j] * cos (phases[i] - phases[j]) );
-
-
-       }
-   }
-   R /= pairs;
-std::cout << "R : " << R << std::endl;
-
-*/
-
 
     //calculate Z=0 plane
     float minb = 50000;
@@ -1161,23 +990,23 @@ std::cout << "R : " << R << std::endl;
             long double dc1 = error[i*5 + 4];
             long double dc2 = error[j*5 + 4];
 
-            long double u0star = 0.5* u[i] + 0.5 * u[j] + 0.5 * c[i] / a[i] * (v[i] - v0star ) + 0.5 * c[j] / a[j]  * ( v[j] - v0star);
+            long double u0star = 0.5* u[i] + 0.5 * u[j] ;//+ 0.5 * c[i] / a[i] * (v[i] - v0star ) + 0.5 * c[j] / a[j]  * ( v[j] - v0star);
             long double du0star = sqrt(
                         pow(0.5 * du1,2)
                         + pow(0.5 * du2 ,2)
-                        + pow(dc1 * (v[i] - v0star) * 0.5 / a[i] ,2 )
-                        + pow( da1 * c[i] * 0.5 / a[i] / a[i]  * (v[i] - v0star) , 2)
-                        + pow( dv1 * c[i] / a[i] * 0.5 ,2)
-                        + pow(dv0star * (c[i] * 0.5 / a[i] + c[j]  * 0.5 / a[j]),2)
-                        + pow(dc2 * 0.5 * a[j]  * (v[j] - v0star) ,2)
-                        + pow(da2 * c[j] * 0.5 / a[j] / a[j] * (v[j] - v0star) ,2)
-                        + pow(dv2 * c[j] * 0.5 / a[j] ,2)
+                       // + pow(dc1 * (v[i] - v0star) * 0.5 / a[i] ,2 )
+                       // + pow( da1 * c[i] * 0.5 / a[i] / a[i]  * (v[i] - v0star) , 2)
+                        //+ pow( dv1 * c[i] / a[i] * 0.5 ,2)
+                        //+ pow(dv0star * (c[i] * 0.5 / a[i] + c[j]  * 0.5 / a[j]),2)
+                        //+ pow(dc2 * 0.5 * a[j]  * (v[j] - v0star) ,2)
+                        //+ pow(da2 * c[j] * 0.5 / a[j] / a[j] * (v[j] - v0star) ,2)
+                        //+ pow(dv2 * c[j] * 0.5 / a[j] ,2)
                         );
 
             std::cout << "u0star from ellipse " << i << " and " << j << " is " << u0star << " with an error of " << du0star << ". that is "<< du0star  * 100.0 / u0star << " percent. " <<std::endl;
             std::cout << "u0star without c " << 0.5* u[i] + 0.5 * u[j] + 0.5  << std::endl;
-            std::cout << " c part one " << 0.5 * c[i] / a[i] * (v[i] - v0star ) << std::endl;
-            std::cout << " c part two " <<  0.5 * c[j] / a[j]  * ( v[j] - v0star) << std::endl;
+            //std::cout << " c part one " << 0.5 * c[i] / a[i] * (v[i] - v0star ) << std::endl;
+            //std::cout << " c part two " <<  0.5 * c[j] / a[j]  * ( v[j] - v0star) << std::endl;
 
             long double sinfi = -0.5*c[i] / a[i] * xsi[i] - 0.5 * c[j] / a[j]  * xsi[j] ;
             long double fi = asin(sinfi );
@@ -1397,7 +1226,7 @@ std::cout << "R : " << R << std::endl;
 
 
             long double R = sqrt ( 1.0 /doverR2 ) * d;
-            long double dR= pow(sqrt(1.0 /doverR2 ),3) * 0.5  * d * ddoverR2;
+            long double dR= sqrt( pow( pow(sqrt(1.0 /doverR2 ),3) * 0.5  * d * ddoverR2,2) + pow( R / d * 1.0 ,2)); // latter is error of measureing distance.
 
             std::cout << " R ( in mm) is " << R << " with an error of " <<dR << " pixels that is " << 100.0 * dR / R << " percent . "  << " from ellipse " << i << " and "<< j << std::endl;
 
@@ -1426,8 +1255,8 @@ std::cout << "R : " << R << std::endl;
 
 
     long double eta = geomcorr.getEta();
-    long double u0 = u0star * cos(eta) + v0star * sin(eta);
-    long double v0 = u0star * -1.0 * sin(eta) + v0star * cos(eta);
+    long double u0 = u0star * std::cos(eta) + v0star * std::sin(eta);
+    long double v0 = u0star * -1.0 * std::sin(eta) + v0star * std::cos(eta);
 
     std::cout << "u0: " << u0 << std::endl
                <<" v0 : " << v0 << std::endl;
@@ -1451,13 +1280,21 @@ std::cout << "R : " << R << std::endl;
 
     std::cout << std::endl << "Omg here is Wu method" << std::endl;
 
-    float D_wu=0.0f; float v0_wu = 0.0f;
-    geomcorr.dAndVWithWu( a,  b, v, &D_wu, &v0_wu );
+/*
+    for(int i=0; i<n; i++)
+    {
+        geomcorr.fitEllipseWu(i, a+ i,b +i, c +i, u +i, v +i , error +5*i);
+    }
+*/
+
+
+    //float D_wu=0.0f;// float v0_wu = 0.0f;
+   /* geomcorr.dAndVWithWu( a,  b, v, &D_wu, &v0_wu );
 
     std::cout << " Wu method:" << std::endl
               << "D: " << D_wu << " pixel that is " << D_wu * 0.0748 << " mm"<< std::endl
               << " V0: " << v0_wu << std::endl;
-
+*/
 
     //Calculating with error:
 //See http://fizipedia.bme.hu/images/9/92/Hibaszamitas.pdf for details
@@ -1535,7 +1372,7 @@ std::cout << "R : " << R << std::endl;
     std::cout << " Fitting with error:" << std::endl;
     std:: cout << " D = " << D_wu_witherror << " pixel with error of " << dD_wu << " that is " << 100.0 * dD_wu / D_wu_witherror << " percent. " << std::endl;
     std::cout << " D in mm = " <<D_wu_witherror * 0.0748 << " with error of " << dD_wu  * 0.0748 << " mm." << std::endl;
-    std::cout << " v0 = " << v0_wu_witherror << " with error of " << dv0_wu << " that is " << 100.0 * dv0_wu / v0_wu_witherror << " percent. " << std::endl;
+    std::cout << " v0* = " << v0_wu_witherror << " with error of " << dv0_wu << " that is " << 100.0 * dv0_wu / v0_wu_witherror << " percent. " << std::endl;
 
 
     long double u0_wu_mean = 0.0;
@@ -1557,8 +1394,12 @@ std::cout << "R : " << R << std::endl;
     long double du0_wu = sqrt(u0_wu_error) / u0_wu_norm;
 
 
-    std::cout<< " U0: " << u0_wu << " with error of " << du0_wu << " that is " << 100.0 * du0_wu / u0_wu << " percent." << std::endl;
+    std::cout<< " U0:* " << u0_wu << " with error of " << du0_wu << " that is " << 100.0 * du0_wu / u0_wu << " percent." << std::endl;
 
+
+    std::cout << " Corrigated by eta: " <<std::endl;
+    std::cout << "u0*: " << (u0_wu  * std::cos(eta) + v0_wu_witherror * std::sin(eta)) << std::endl;
+    std::cout << "v0*: " << (-1.0 * u0_wu * std::sin(eta)  + v0_wu_witherror * std::cos(eta)) << std::endl;
     //Calculatin R:
 
     long double RWuMean   =0.0;
@@ -1612,11 +1453,21 @@ std::cout << "R : " << R << std::endl;
                         pow(dv0_wu  *ro1 / (v[i]-v0_wu_witherror),2 )
                         )
                     ;
+
+            std::cout << " dro1 part v1" << dv1  * ro1 / (v[i]-v0_wu_witherror)<<std::endl;
+            std::cout << " dro1 part b1" <<db1 * ro1 * 0.5 / b[i] <<std::endl;
+            std::cout << " dro1 part v0" <<dv0_wu  *ro1 / (v[i]-v0_wu_witherror) <<std::endl;
+
             long double dro2  = sqrt (
                         pow (dv2  * ro2 / (v[j]-v0_wu_witherror) ,2) +
                         pow(db2 * ro2 * 0.5 / b[j] ,2)+
                         pow (dv0_wu  * ro2 / (v[j]-v0_wu_witherror) ,2)
                         );
+
+
+            std::cout << " dro2 part v2" << dv2  * ro2 / (v[j]-v0_wu_witherror)<<std::endl;
+            std::cout << " dro2 part b2" <<db2 * ro2 * 0.5 / b[j] <<std::endl;
+            std::cout << " dro2 part v0" <<dv0_wu  *ro2 / (v[j]-v0_wu_witherror) <<std::endl;
 
             long double zeta1 = (v[i]-v0_wu_witherror) * (1.0-ro1 * ro1 ) / D_wu_witherror;
             long double zeta2 = (v[j]-v0_wu_witherror) * (1.0-ro2 * ro2 ) / D_wu_witherror;
@@ -1627,6 +1478,7 @@ std::cout << "R : " << R << std::endl;
                         pow(dro1 *  (v[i]-v0_wu_witherror) * (- 2.0 * ro1 ) / D_wu_witherror,2)
                         + pow (dD_wu * zeta1 /D_wu_witherror,2  )
                         );
+
 
             long double dzeta2 = sqrt(
                         pow(dv2 * (1.0-ro2 * ro2 ) / D_wu_witherror,2 )+
@@ -1720,7 +1572,7 @@ std::cout << "R : " << R << std::endl;
 
             long double R = sqrt( 1.0 / dOverR2 * d2 );
 
-            long double dR = ddOverR2 * d * 0.5 /dOverR2 / sqrt(dOverR2)  ;
+            long double dR = sqrt( pow( ddOverR2 * d * 0.5 /dOverR2 / sqrt(dOverR2),2) + pow(R /  d  * 1.0 ,2)   ); // latter is error in distance observation.
 
             std::cout << " WU: d IS " <<d << "from ellipse " << i << " and " <<  j << " that is ball " <<ball1Index << " , " << ball2Index  << std::endl;
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  5 JUN 2016 20:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.10.5)  7 JUN 2016 22:08
 entering extended mode
 **diplomamunka.tex
 (diplomamunka.tex
@@ -877,75 +877,127 @@ File: abrak/ellipse2.jpeg Graphic file (type jpg)
 Package pdftex.def Info: abrak/ellipse2.jpeg used on input line 967.
 (pdftex.def)             Requested size: 396.91325pt x 185.31038pt.
  [45 <./abrak/ellipse1.jpeg>] [46 <./abrak/ellipse2_10.jpeg> <./abrak/ellipse2.
-jpeg>] [47] [48] (diplomamunka.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 129--134
+jpeg>]
+<abrak/blackproj_botondrossz.jpg, id=223, 351.3125pt x 311.1625pt>
+File: abrak/blackproj_botondrossz.jpg Graphic file (type jpg)
+
+<use abrak/blackproj_botondrossz.jpg>
+Package pdftex.def Info: abrak/blackproj_botondrossz.jpg used on input line 100
+5.
+(pdftex.def)             Requested size: 216.1011pt x 191.4089pt.
+
+<abrak/blackproj_botondjo.jpg, id=224, 351.3125pt x 311.1625pt>
+File: abrak/blackproj_botondjo.jpg Graphic file (type jpg)
+
+<use abrak/blackproj_botondjo.jpg>
+Package pdftex.def Info: abrak/blackproj_botondjo.jpg used on input line 1009.
+(pdftex.def)             Requested size: 216.1011pt x 191.4089pt.
+
+<abrak/blackproj_noo.jpg, id=225, 351.3125pt x 311.1625pt>
+File: abrak/blackproj_noo.jpg Graphic file (type jpg)
+
+<use abrak/blackproj_noo.jpg>
+Package pdftex.def Info: abrak/blackproj_noo.jpg used on input line 1015.
+(pdftex.def)             Requested size: 216.1011pt x 191.4089pt.
+
+<abrak/blackproj_wu.jpg, id=226, 351.3125pt x 311.1625pt>
+File: abrak/blackproj_wu.jpg Graphic file (type jpg)
+
+<use abrak/blackproj_wu.jpg>
+Package pdftex.def Info: abrak/blackproj_wu.jpg used on input line 1019.
+(pdftex.def)             Requested size: 216.1011pt x 191.4089pt.
+ [47] [48 <./abrak/blackproj_botondrossz.jpg> <./abrak/blackproj_botondjo.jpg> 
+<./abrak/blackproj_noo.jpg> <./abrak/blackproj_wu.jpg>] <abrak/egyenesillesztes
+1.jpg, id=235, 381.425pt x 492.84125pt>
+File: abrak/egyenesillesztes1.jpg Graphic file (type jpg)
+
+<use abrak/egyenesillesztes1.jpg>
+Package pdftex.def Info: abrak/egyenesillesztes1.jpg used on input line 1074.
+(pdftex.def)             Requested size: 110.25443pt x 142.45404pt.
+
+<abrak/egyenessimitas.jpeg, id=236, 933.4875pt x 456.95718pt>
+File: abrak/egyenessimitas.jpeg Graphic file (type jpg)
+
+<use abrak/egyenessimitas.jpeg>
+Package pdftex.def Info: abrak/egyenessimitas.jpeg used on input line 1080.
+(pdftex.def)             Requested size: 352.81552pt x 172.7112pt.
+
+<abrak/gaussillesztes.jpeg, id=237, 941.01563pt x 465.99094pt>
+File: abrak/gaussillesztes.jpeg Graphic file (type jpg)
+
+<use abrak/gaussillesztes.jpeg>
+Package pdftex.def Info: abrak/gaussillesztes.jpeg used on input line 1086.
+(pdftex.def)             Requested size: 352.81552pt x 174.71062pt.
+ [49] [50 <./abrak/egyenesillesztes1.jpg> <./abrak/egyenessimitas.jpeg> <./abra
+k/gaussillesztes.jpeg>] [51] (diplomamunka.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 115--119
+[]\T1/cmr/m/n/12 NVIDIA Cor-pora-ti-on: Cu-da to-ol-kit do-cu-men-ta-ti-on.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 135--140
 []\T1/cmr/m/n/12 Mark Har-ris: Op-ti-mi-zing Pa-ral-lel Re-duc-ti-on in CU-DA.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--134
+Overfull \hbox (3.60802pt too wide) in paragraph at lines 135--140
 \T1/cmr/m/n/12 http://docs.nvidia.com/cuda/samples/6_Advanced/reduction/doc/red
 uction.pdf.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--140
+Underfull \hbox (badness 10000) in paragraph at lines 142--146
 []\T1/cmr/m/n/12 Kirk T. Mc-Do-nald: Er-ror est-ima-ti-on in fitt-ing of el-lip
 -ses.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--140
+Underfull \hbox (badness 10000) in paragraph at lines 142--146
 \T1/cmr/m/n/12 http://www.physics.princeton.edu/mumu/target/ellipse.pdf. [On-li
 ne; utol-s�
  []
 
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 149.
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
-File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-Underfull \hbox (badness 10000) in paragraph at lines 142--150
+Underfull \hbox (badness 10000) in paragraph at lines 148--154
 []\T1/cmr/m/n/12 Fr�d�ric Noo[]Rolf Clack-doy-le[]Catherine Menn-es-si-er[]Timo
 thy A
  []
 
-) [49
+) [52
 
 ] (diplomamunka.aux) ) 
 Here is how much of TeX's memory you used:
- 6797 strings out of 493673
- 103570 string characters out of 3143954
- 194483 words of memory out of 3000000
- 10003 multiletter control sequences out of 15000+200000
- 16341 words of font info for 42 fonts, out of 3000000 for 9000
+ 6832 strings out of 493673
+ 104339 string characters out of 3143954
+ 194555 words of memory out of 3000000
+ 10035 multiletter control sequences out of 15000+200000
+ 16019 words of font info for 41 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 42i,19n,40p,4295b,438s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 42i,19n,40p,4295b,539s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfo
-ur\jknappen\ec\dpi600\ectt1200.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\f
-onts\pk\ljfour\jknappen\ec\dpi600\ecrm2488.pk> <C:\Users\Árpád\AppData\Local\
-MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk> <C:\Users\Árpád\Ap
-pData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk> <C:\User
-s\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.
+ur\jknappen\ec\dpi600\ecrm1000.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\f
+onts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk> <C:\Users\Árpád\AppData\Local\
+MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk> <C:\Users\Árpád\Ap
+pData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk> <C:\User
+s\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1728.
 pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi6
-00\ecbx1728.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jkna
-ppen\ec\dpi600\ecrm1200.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk
-\ljfour\jknappen\ec\dpi600\ecrm1440.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\
-2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk> <C:\Users\Árpád\AppData\L
-ocal\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1728.pk><C:/Program File
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><C:/Program Files/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
-6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/
-Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program 
-Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on diplomamunka.pdf (50 pages, 11752469 bytes).
+00\ecrm1200.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jkna
+ppen\ec\dpi600\ecrm1440.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\2.9\fonts\pk
+\ljfour\jknappen\ec\dpi600\ecbx1440.pk> <C:\Users\Árpád\AppData\Local\MiKTeX\
+2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1728.pk><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/cmextra/cmex8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
+cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.
+pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on diplomamunka.pdf (53 pages, 13017609 bytes).
 PDF statistics:
- 732 PDF objects out of 1000 (max. 8388607)
+ 727 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 166 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 201 words of extra memory for PDF output out of 10000 (max. 10000000)
 

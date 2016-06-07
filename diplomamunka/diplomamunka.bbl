@@ -26,7 +26,7 @@
   \bibEarlyBegin
 \else \let\bibEarlyEnd\relax \fi
 
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 \frenchspacing
 \makeatletter
 \global\def\bibIE@lowc{%
@@ -93,6 +93,12 @@
 \def\bibInSelf#1{In u\H{o}: }
 \csname bibOverride\endcsname
 
+\bibitem{edge}
+S.~M. Bentzen:
+\bibNewBlock Evaluation of the spatial resolution of a ct scanner by direct
+  analysis of the edge response function.
+\bibNewBlock {\em Medical Physics}, 10. \'evf. (1983) 5. sz., 579--581.~p.
+
 \bibitem{botond}
 Tölgyesi Botond:
 \bibNewBlock Röntgen ct készülék építése.
@@ -145,8 +151,6 @@ Frédéric Noo\bibAnd 0Rolf Clackdoyle\bibAnd 0Catherine Mennessier\bibAnd
   scanner calibration in cone-beam tomography.
 \bibNewBlock {\em Physics in Medicine and Biology}, 45. \'evf. (2000) 11. sz.,
   3489.~p.
-\bibNewBlock
-\bibUrll{URL} >http://stacks.iop.org/0031-9155/45/i=11/a=327>.
 
 \bibitem{wu}
 D.~Wu\bibAnd 0L.~Li\bibAnd 0L.~Zhang\bibAnd 0Y.~Xing\bibAnd 0Z.~Chen\bibAnd
