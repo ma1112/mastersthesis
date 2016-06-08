@@ -139,14 +139,16 @@ A teljes rendszer összeszerelését és a szükséges szoftverek megalkotását
 A képek feldolgozására két, az előbbitől és egymástól is független szoftver áll rendelkezésre. A vizsgált tárgy 3 dimenziós képének visszaállításáért felelős szoftvert Deli Gábor \cite{deli} írta meg, diplomamunkája során. Ez a program \emph{C++} és \emph{CUDA} nyelven íródott. Utóbbi egy olyan platformot nyújt, amely segítségével a visszavetítésért felelős képműveletek párhuzamosan és igen gyorsan végezhetők el. Erről  \aref{sec:cuda}.~fejezeten írok részletesen. 
 
 
-Másrészt a geometriai kalibráció elvégzéséért, valamint a detektorpixelek eltérő tulajdonságaiból származó képhibák eltüntetéséért felel a Tölgyesi Botond által, diplomamunkája  \cite{botond} keretei közt készített szoftver. A \emph{MATLAB} nyelven íródott program  képes \aref{sec:gainkorr}.~fejezetben bemutatott gain hibák kezelésére, valamint \aref{sec:geomkalib} .~fejezetben részletezett geometriai kalibráció elvégzésére is. Ezeket a funkciókat azonban viszonylag lassan végzi el, erőforrásigénye igen nagy (akár $10$--$20$~GB RAM). Ezen kívül a képfeldolgozás során alkalmazott módszerei nem a leghatásosabbak, eredményességük nagyban függ  a felhasználó által megadott paraméterektől és a kalibrációs adatsor minőségétől. Ugyanakkor Tölgyesi megmutatta, hogy optimális körülmények között a szoftver képes a feladatok jó minőségű elvégzésére. A képek gain korrigálás igen jó minőségben képes kivitelezni, és megfelelő paraméterek megválasztásával a geometriai kalibrációs is helyes eredményt szolgáltat. Az alkalmazott algoritmusai tehát alapvetően helyesek, amelyeket Tölgyesi részletes tesztekkel is alátámasztott. Diplomamunkámban ezeket a  funkciókat fejlesztettem tovább,  hogy azok gyorsan, hatékonyan  és pontosan legyenek képesek feladatuk elvégzésére. A részben instabil működése miatt  a korábban  megvalósított szoftverre, illetve annak algoritmusara a továbbiakban \emph{kísérleti algoritmus}ként hivatkozom.
+Másrészt a geometriai kalibráció elvégzéséért, valamint a detektorpixelek eltérő tulajdonságaiból származó képhibák eltüntetéséért felel a Tölgyesi Botond által, diplomamunkája  \cite{botond} keretei közt készített szoftver. A \emph{MATLAB} nyelven íródott program  képes \aref{sec:gainkorr}.~fejezetben bemutatott gain hibák kezelésére, valamint \aref{sec:geomkalib} .~fejezetben részletezett geometriai kalibráció elvégzésére is. Ezeket a funkciókat azonban viszonylag lassan végzi el, erőforrásigénye igen nagy (akár $10$--$20$~GB RAM). Ezen kívül a képfeldolgozás során alkalmazott módszerei nem a leghatásosabbak, eredményességük nagyban függ  a felhasználó által megadott paraméterektől és a kalibrációs adatsor minőségétől. Ugyanakkor Tölgyesi megmutatta, hogy optimális körülmények között a szoftver képes a feladatok jó minőségű elvégzésére. A képek gain korrigálás igen jó minőségben képes kivitelezni, és megfelelő paraméterek megválasztásával a geometriai kalibrációs is helyes eredményt szolgáltat. Az alkalmazott algoritmusai tehát alapvetően helyesek, amelyeket Tölgyesi részletes tesztekkel is alátámasztott. 
+
+Diplomamunkámban ezeket a  funkciókat fejlesztettem tovább,  hogy azok gyorsan, hatékonyan  és pontosan legyenek képesek feladatuk elvégzésére. A részben instabil működése miatt  ezen korábban  megvalósított szoftverre, illetve annak algoritmusara a továbbiakban \emph{kísérleti algoritmus}ként hivatkozom.
 
 
 
 \section{Célkitűzés}
 
 
-Jelen diplomamunkámban a Tölgyesi Botond által vizsgált gain korrekciós és geometria kalibrációs módszereket ültetem át \emph{MATLAB} környezetből grafikus felülettel rendelkező, felhasználóbarát környezetbe. A feladat elvégzése során szem előtt tartva, hogy a megvalósított funkciók minél gyorsabban, alacsony erőforrást igényelve, a felhasználó által a lehető legkevesebb beavatkozást igényelve fussanak le. Ennek érdekében a képek feldolgozását \emph{CUDA} nyelven valósítom meg, az elkészítendő program pedig \emph{Qt} grafikus felületet kap. A geometriai kalibráció esetében új képfeldolgozási algoritmust vezetek be, amelyek pontosabb eredményt szolgáltat, mint az eddigiekben megvalósított. Ezen kívül a geometriai kalibrációs adatok meghatározásánál számolom és számon tartom a kalibrációs mérések hibáit. A hibákat figyelembe veszem a geometriai adatok számolásánál, így a képek feldolgozása során vétett pontatlanságokat a szoftver a felhasználó beavatkozása nélkül kezeli.
+Jelen diplomamunkámban a Tölgyesi Botond által vizsgált gain korrekciós és geometria kalibrációs módszereket ültetem át \emph{MATLAB} környezetből grafikus felülettel rendelkező, felhasználóbarát környezetbe. A feladat elvégzése során szem előtt tartva, hogy a megvalósított funkciók minél gyorsabban, alacsony erőforrást igényelve, a felhasználó által a lehető legkevesebb beavatkozást igényelve fussanak le. Ennek érdekében a képek feldolgozását \emph{CUDA} nyelven valósítom meg, az elkészítendő program pedig \emph{Qt} grafikus felületet kap. A geometriai kalibráció esetében új képfeldolgozási algoritmust vezetek be, amelyek pontosabb eredményt szolgáltat, mint az eddigiekben megvalósított. Ezen kívül a geometriai kalibrációs adatok meghatározásánál számolom és számon tartom a kalibrációs mérések hibáit. A hibákat figyelembe veszem a geometriai adatok számolásánál, így a képek feldolgozása során vétett pontatlanságokat a szoftver a felhasználó beavatkozása nélkül kezeli. A párhuzamos architektúra használatával az ú szoftver lényegesen gyorsabban lesz képes a feladatok elvégzésére, amely a program rutinszerű használatát nagyban megkönnyíti.
 
 
 Az új algoritmusok, illetve megvalósításuk helyességét a CT-vel készült képek alapján tesztelem. Ilyen képekből azonban  viszonylag kevés áll rendelkezésre, mivel  a reaktor épületét időközben felújítás miatt lezárták, így az ott összeszerelt CT berendezés is hozzáférhetetlenné vált. A felvételek elkészítésére így limitált idő állt rendelkezésemre. Emiatt megfelelő minőségű geometriai kalibrációs felvételek csak egyféle geometria mellett készültek, kétféle fantommal.Az eredményeimet ezek használatával fogom bemutatni.
@@ -644,15 +646,19 @@ Az általam megvalósított kalibrációs szoftver újabb funkciója a geometria
 Az első kép kiválasztására azért van lehetőség, mert a felhasználó hibázhat a mérés elindításakor: nem kapcsolja be a röntgen forrást, nem indíja el a motort, stb. A keresendő golyók száma szintén fontos, a golyók keresésénél felhasznált paraméter. Az általam megvalósított algoritmusnak segítséget ad az is, hogy tudja, hogy bizonyos képeken több golyó lehet a képen, mint az elsőn -- például mert a kép alsó és felső szélén lévő golyók vetülete a detektoron kívülre eset és így a képről eltűnhet a forgatás hatására. Ennek megállapításához a felhasználónak eleve át kell néznie azon képeket, amik egy teljes körbefordulás alatt készültek, így arra is megkéri a program, hogy a csúszkát ez után hagyja egy olyan állapotban, amely nagyjából  $360^\circ$-kal van elforgatva az első képhez képest. Itt nem szükséges pontosan a teljes körbeforduláshoz tartozó projekciót megadni, a felhasználó ettől eltérhet $\pm 45^\circ$-kal. A cél itt az, hogy a felhasználó jelölje ki, körül-belül hol kell keresni a teljes körbefordulást, hogy annak megkeresése rövidebb időt vegyen igénybe, mintha az összes projekciót át kellene nézni. Szükséges továbbá a Noo féle számításhoz megadni a detektor és a forrás távolságát. Erre azért van szükség, mert ahogy \aref{sec:noo} fejezetben említettem, a Noo féle módszernél ezen távolság kiszámítása azon esetekben, amikor a két kiszemelt golyó a forgástengely azonos oldalán vannak, nem egyértelmű. Ennek eldöntését segíti a felhasználó által megadott paraméter, amely szintén nagyságrendi becslést kell, hogy adjon, tehát pár centiméteres hiba még megengedett. Ez után egy újabb grafikus felületen kell megadni a fantomon a golyók helyzetét, amelyből a távolságuk kiszámításra kerülnek.
 
 
+
 Amennyiben ez megtörtént, a felhasználó ellenőrizheti, hogy az algoritmus jó helyen találta e meg a golyókat a kezdeti képen, illetve, hogy a teljes körbefordulás utáni kép egyezik e az elsőnek választottal. Amennyiben bármelyikben hibázott a program, lehetőség van visszalépni, és újabb kezdeti projekciót választani. A grafikus felület egy ilyen állapotát mutatja meg  \aref{fig:geomui}.~ábra. 
 
 
-\begin{figure}[htbp]
+
+\begin{figure}[htb]
 \center
 \includegraphics[width=0.8\textwidth]{abrak/geomui}
 \caption{A geometriai kalibrációs funkció felhasználói felülete. A felhasználó a fenti mappát választotta ki a képek helyéül. A bal oldali képet választotta első képnek, az alsó részen pedig megadta a szükséges paramétereket. A szoftver meghatározta a teljes körbefordulás utáni projekciót és megkereste a két projekción a gömbök középpontját. }
 \label{fig:geomui}
 \end{figure}
+
+
 
 
 
@@ -704,7 +710,7 @@ A fenti hibák elkerülése érdekében a körök középpontjainak megkeresés�
 
 
 
-A Hough-transzformációval tehát kimondottan  kör alakú objektumokat tudunk a képen keresni, és emellett az algoritmus jól párhuzamosítható is, hiszen az élkeresés egy konvolúciós művelettel elvégezhető, amely után a képre az él pixelek közepéből húzott körvonalak szintén párhuzamosan rajzolhatóak. A továbbiakban bemutatom, hogy a körkeresést pontosan hogyan implementáltam az elkészült programban.
+A Hough-transzformációval tehát kimondottan a kör alakú objektumok keresésére alkalmas, és emellett az algoritmus jól párhuzamosítható is, hiszen az élkeresés egy konvolúciós művelettel elvégezhető, amely után a képre az él pixelek közepéből húzott körvonalak szintén párhuzamosan rajzolhatóak. A továbbiakban bemutatom, hogy a körkeresést pontosan hogyan implementáltam az elkészült programban.
 
 
 A körkeresés  első lépés az élek megkeresése. Ez a művelet több féleképp is kivitelezhető, azonban a módszerek közös kiindulási alapja, hogy első lépésben a képet simítani szükséges. Ezzel el tudjuk kerülni, hogy a zajok okozta hirtelen intenzitás változások befolyásolják az élkeresést. Ez után kerülnek kiválasztásra az él-pixelek, amelyek kiválasztására  két gyakori megoldás a következő.
@@ -720,7 +726,7 @@ Előbbi jóval egyszerűbben számolható, hiszen a gradiens képen az adott pix
 
 A helyes algoritmus megválasztása során annak minőségét tartottam szem előtt, a futási sebességgel szemben, így végül a számításigényesebb, Laplace értékekkel való  élkeresést választottam. Ugyanis amikor az elkészült projekción a  legkisebb csapágygolyó épp a plexi takarásában van, a gradiens módszer nem bizonyult hatékonynak. Ekkor ez a módszer nem tudta megkülönböztetni a golyó éleit a plexi élétől. Ezt \aref{fig:kisgolyo1}.~ábrán szemléltetem. A bal oldali ábrán a golyó képét láthatjuk, jobb oldalon pedig a sárga vonallal kijelölt szakasz mentén vett intenzitásértékek grafikonját. A golyó helyén, azaz a szakasz $10$--$20$ pixelei között az intenzitásértékek alig változnak.    \Aref{fig:kisgolyo2}.~ábrán, amelyen ugyanannak a felvételnek a gradiens képe látható, észrevehetjük, hogy a felső golyó körvonala mentén a gradiens érték valóban nem kiemelkedően magas a plexi lemez határán mérhetőhöz képest, míg a nagyobb golyók határainál jóval magasabb gradiens érték figyelhető meg.  
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
 \center
 \includegraphics[width=0.49\textwidth]{abrak/kisgolyo}
 \includegraphics[width=0.49\textwidth]{abrak/kisgolyo_intenzitas}
@@ -729,7 +735,7 @@ A helyes algoritmus megválasztása során annak minőségét tartottam szem el�
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
 \center
 \includegraphics[width=0.49\textwidth]{abrak/gradiens_kisgolyo}
 \caption{A plexi takarásában lévő és más golyók, a kép gradiensén.}
@@ -876,11 +882,11 @@ Diplomamunkám megírása során elkészítettem egy platformfüggetlen grafikus
 
 \subsection{Gain korrekció}
 
-A gain korrekciós faktorok meghatározása során használatos algoritmusok lényegi részén a kísérleti algoritmusokhoz képest nem változtattam, viszont a feldolgozást grafikus kártyát használva párhuzamosítottam.  A kalibrációs képek feldolgozásakor bevezettem azok átlagolását, az esetleges zajok kiszűrése végett. A képek feldolgozásakor azok feszültségértékének meghatározását az eddigi megvalósítással ellentétben nem a felhasználóra bíztam, hanem a projekciós képek adataiból olvasom ki. Vizsgálom továbbá a képek átlagos intenzitásabeli különbségeket és az esetleges hibás felvételeket kiszűröm.   
+A gain korrekciós faktorok meghatározása során használatos algoritmusok lényegi részén a kísérleti algoritmusokhoz képest nem változtattam, viszont a feldolgozást grafikus kártyát használva párhuzamosítottam.  A kalibrációs képek feldolgozásakor bevezettem az azonos expozíciós beállítással készültek átlagolását, az esetleges zajok kiszűrése végett. A képek feldolgozásakor azok feszültségértékének meghatározását az eddigi megvalósítással ellentétben nem a felhasználóra bíztam, hanem a projekciós képek adataiból olvasom ki, amely kényelmesebb használatot biztoít a felhasználó számára. Vizsgálom továbbá a képek átlagos intenzitásabeli különbségeket és az esetleges hibás felvételeket kiszűröm.   
 
 
 
-A futási időben elért növekedést meghatározása érdekében megmértem a két algoritmus számára szükséges időt, egy adott kalibrációs képsorozat feldolgozásakor. A klaibrációs faktorok meghatározásához 15 féle beállítás mellett készült offset korrekciós, használtam. Ezek voltak tehát azok, ahol csupán az expozíciós időt változtatva mértjük a detektált hátteret. A forrás bekapcsolásával készült kalibrációs képek 36 féle expozíciós érték mellett készültek. Beállításonként több képet készítettem,  a fenti $15+31$ féle beállítás mellett $4~742$ kép készült készült, beállításonként tehát átlagosan $103$. 
+A futási időben elért növekedést meghatározása érdekében megmértem a két algoritmus számára szükséges időt, egy adott kalibrációs képsorozat feldolgozásakor. A klaibrációs faktorok meghatározásához 15 féle beállítás mellett készült offset korrekciós, használtam. Ezek voltak tehát azok, ahol csupán az expozíciós időt változtatva mértjük a detektált hátteret. A forrás bekapcsolásával készült kalibrációs képek 36 féle expozíciós érték mellett készültek. Beállításonként több képet készítettem,  a fenti $15+31$ féle beállítás mellett összesen $4~742$ kép készült készült, beállításonként tehát átlagosan $103$. 
 
 
 A gain korrekciós faktorok meghatározását egy nagy teljesítményű számítógépen végeztem, amely egy 4 magos, \emph{Intel i7-3770} típusú, $3,\!40$~GHz sebességű processzorral, egy  \emph{NVIDIA GeForce GTX 690} típusú videókártyával, valamint nagy mennyiségű, $32$~Gb RAM-mal van rendelkezik. A futási időket \aref{gainfutas}.~táblázatban tüntettem fel. 
@@ -897,7 +903,7 @@ Kísérleti algoritmus                                       & {$95,\!6$~perc}  
 A gain korrekciós faktorok meghatározásához szükséges futási idő az egyes algoritmusok esetében, $4~742$ darab kép feldolgozása során.}
 \end{table}
 
-A táblázatból láthatjuk, hogy a párhuzamos feldolgozásnak köszönhetően a programom  lényegesebben gyorsabban végzi el a gain korrekciós faktorok meghatározását. Ilyen nagy képmennyiség feldolgozása a kimenet minőségének szempontjából bár feleslegesnek tűnik, a kísérleti algorimtus futási idejének a tekintetében. Ugyanakkor azért használtam fel mégis mind a $4~742$ képet, hogy még szembeötlőbb legyen a párhuzamos feldolgozás okozta sebességnövekedés. Ezen kívül a futáshoz használt erőforrásigény is csökkent a kísérleti algoritmushoz képest. Utóbbi ugyanis időként $25$--$30$~Gb memóriaterülete is lefoglalt a számítógép virtuális memóriájából. (A képek a merevlemezen kb.~ 12~Gb tárhelyet foglalnak el.) Mivel az én megvalósításom nem a virtuális memóriát használja, hanem a grafikus kártya memóriáját, ezért annak RAM igénye csupán $10$--$20$~MB. A grafikus kártyán szükséges memória nagysága kb.\ 500~Mb, ennyi tárhelyen fér el ugyanis az egy mappából beolvasott kb.~ $100$~darab kép. Ekkora memóriával már az alsó kategóriás videókártyák is rendelkeznek.
+A táblázatból láthatjuk, hogy a párhuzamos feldolgozásnak köszönhetően a programom  lényegesebben gyorsabban végzi el a gain korrekciós faktorok meghatározását. Az párhuzamos megvalósítással a felhasználó igen hamar meg tudja határozni a szükséges faktorokat. Ezen kívül a futáshoz használt erőforrásigény is csökkent a kísérleti algoritmushoz képest. Utóbbi ugyanis időként $25$--$30$~Gb memóriaterülete is lefoglalt a számítógép virtuális memóriájából. (A képek a merevlemezen kb.~ 12~Gb tárhelyet foglalnak el.) Mivel az én megvalósításom nem a virtuális memóriát használja, hanem a grafikus kártya memóriáját, ezért annak RAM igénye csupán $10$--$20$~MB. A grafikus kártyán szükséges memória nagysága kb.\ 500~Mb, ennyi tárhelyen fér el ugyanis az egy mappából beolvasott kb.~ $100$~darab kép. Ekkora memóriával már az alsó kategóriás videókártyák is rendelkeznek.
 
 
 A kalibrációs  faktorok meghatározásához szükséges futási időn kívül mértem a projekciók gain korrigálásához szükséges futási időket is. 1~000 kép gain korrigálását végeztem el mindkét algoritmussal és mértem az eközben eltelt időt. Az eredmények \aref{gainkorrfutas}.~táblázatban láthatóak. 
@@ -957,7 +963,7 @@ A körkeresés minőségét egyrészt a megtalált középpontok ábráját megt
 Az ábrán egy kisebb pályát leíró golyó képe látható, ezért is ennyire észrevehető az általam generált adatsor kvantáltsága. A Hough-transzformáció során ugyanis a körök középpontját egész koordinátákban határozom meg. Bár a kísérleti algoritmus által meghatározott koordinátákban látható némi szórás, annak mértéke $\pm 1$~pixelen belüli. Ugyanakkor a plexi által elsötétített projekciókon itt az átlagosnál nagyobb kiszórás figyelhető meg.
 
 
-Szemügyre vettem továbbá a  még nagyobb, $2,\!5$\~mm átmérőjű golyó két algoritmus által meghatározott pályáját is. Ez látható  \aref{fig:ellipses2}.~ábrán
+Szemügyre vettem továbbá a  még nagyobb, $2,\!5$~mm átmérőjű golyó két algoritmus által meghatározott pályáját is. Ez látható  \aref{fig:ellipses2}.~ábrán
 
 
 
@@ -999,7 +1005,7 @@ Az egyes algoritmusok által meghatározott geometriai adatok}
 
 
 
-\begin{figure}[htbp]
+\begin{figure}[htb]
 \center
 \begin{subfigure}[b]{0.49\textwidth}
 \includegraphics[width=1\textwidth]{abrak/blackproj_botondrossz}
@@ -1026,9 +1032,9 @@ Az egyes algoritmusok által meghatározott geometriai adatok}
 
 Az ábrákra ránézve szembeötlő, hogy a kísérleti algoritmus által számolt adatokkal a rekonstrukció minősége igen rossz, amennyiben a kalibráló fantomon a golyók változó méretűek (\ref{fig:bp:botondrossz}.~ábra). A többi képen a képek szélén, illetve közepén figyelhetjük meg a változó paraméterek okozta hatást. A középen lévő furat elmosódottsága, valamint a széleken az intenzitásesés meredeksége utal a képek minőségére: minél élesebbek ezek a határok, annál jobb a rekonstrukció minősége, és így a geometriai paraméterek is. A maradék három kép között a különbség már nem olyan nagy, de az általam használt algoritmusok és a Wu féle egyenletekkel való számolás eredményeképp előálló kép minősége még szemmel láthatóan jobb a többinél.
 
-A képminőségek objektív megítélése érdekében a képeket további vizsgálatnak vetettem alá és kiszámoltam a képek élválasz-függvényének félértékszélességét\cite{edge}. Az élválasz-függvény egy képen látható él menti intenzitásátmenet élességét vizsgálja. Valós képeken az ilyen átmenetek nem azonnaliak, hanem az él mentén egy véges tartományban folytonosan változnak az intenzitás értékei. Az élre merőleges egyenest állítva, az a mentén megfigyelt intenzitásértékek deriváltja Gauss-görbével írható le. Ezt a görbét hívjuk élválasz-függvénynek, amely tehát kis félértékszélesség esetén hirtelen változó intenzitásra utal, nagy félértékszélesség esetén pedig elmosódott élt jellemez. 
+A képminőségek objektív megítélése érdekében a képeket további vizsgálatnak vetettem alá és kiszámoltam a képek élválasz-függvényének félértékszélességét\cite{edge}. Az élválasz-függvény egy képen látható él menti intenzitásátmenet élességét vizsgálja. Valós képeken az ilyen átmenetek nem azonnaliak, hanem az él mentén egy véges tartományban folytonosan változnak az intenzitás értékei, mint ahogy azt láthatjuk a plexi szélét megvizsgálva. Az élre merőleges egyenest állítva, az a mentén megfigyelt intenzitásértékek deriváltja Gauss-görbével írható le. Ezt a görbét hívjuk élválasz-függvénynek, amely tehát kis félértékszélesség esetén hirtelen változó intenzitásra utal, nagy félértékszélesség esetén pedig elmosódott élt jellemez. 
 
-\Aref{fig:backprojs}.~ábrán látható képeknek meghatároztam az élválasz-függvényeit. Ehhez a kép éleire merőlegesen állított egyenes mentén felvettem az intenzitásértékeket, majd azokat mozgóablakos módszerrel simítottam. Az így kapott adatsort numerikusan deriváltam és Gauss-görbét illesztettem rá. Ezt képenként 5--5 helyen tettem meg. Egy ilyen műveletsor lépései láthatóak \aref{fig:edge}.~ábrán. Az illesztéssel kapott Gauss görbe az élválasz-görbe. Ennek félértékszélességét a fentiek szerint lemérve és átlagolva \aref{tab:felertekszelesseg}.~táblázatban tüntettem fel.
+\Aref{fig:backprojs}.~ábrán látható képeknek meghatároztam az élválasz-függvényeit. Ehhez a kép éleire merőlegesen állított egyenes mentén felvettem az intenzitásértékeket, majd azokat mozgóablakos módszerrel simítottam. Az így kapott adatsort numerikusan deriváltam és Gauss-görbét illesztettem rá. Ezt képenként 5--5 helyen tettem meg. Egy ilyen műveletsor lépései láthatóak \aref{fig:edge}.~ábrán. Az illesztéssel kapott Gauss görbe az élválasz-görbe, amelynek félértékszélességét a fentiek szerint lemérve és átlagolva \aref{tab:felertekszelesseg}.~táblázatban tüntettem fel.
 
 
 \begin{table}[htbp]
@@ -1046,10 +1052,10 @@ Algoritmus                                                                      
 \end{table}
 
 
-A táblázat értékei alapján objektíven is megállapítható, hogy az általam bevezetett új képfelismerő algoritmusok és a számolások során a hibák figyelembevételével kapott eredményekkel jobb minőségű kép rekonstruálható, mint az eddig használt algoritmussal. 
+A táblázat értékei alapján objektíven is megállapítható, hogy az általam bevezetett új képfelismerő algoritmusok és a számolások során a hibák figyelembevételével kapott eredményekkel jobb minőségű kép rekonstruálható, mint az eddig használt algoritmussal. A  kétféle számítási módszer közül a Wu féle bizonyult előnyösebbnek, így a továbbiakban annak használata javasolt. Ez az algoritmus az általam kipróbált másik, Noo féle módszerrel ellentétben nem igényel semmilyen előzetes információt a geometria adatairól, így megbízhatósága is nagyobb. 
 
 
-Figyelemre méltó változás ezen túl a futási idő csökkenése. A párhuzamos feldolgozás miatt az általam használt, több számolást igénylő algoritmusok is hamarabb futnak le, mint a kísérleti algoritmus kódja. A futási idők \aref{tab:futasiidogeom}.~táblázatban láthatóak.
+Figyelemre méltó változás ezeken túl a futási idő csökkenése. A párhuzamos feldolgozás miatt az általam használt, több számolást igénylő algoritmusok is hamarabb futnak le, mint a kísérleti algoritmus kódja. A futási idők \aref{tab:futasiidogeom}.~táblázatban láthatóak. Az általam megalkotott szoftver tehát nem csak pontosabban eredményeket ad, hanem a képeket -- a nagyobb számítási igény ellenére is -- gyorsabban dolgozza fel. Az adatok megítéléséhez még megjegyzendő, hogy a saját algoritmusom futása során a képek gain korrigálása is megtörtént, míg a kísérleti algoritmust előre gain korrigált képeken futtattam. 
 
 
 \begin{table}[htbp]
@@ -1090,10 +1096,13 @@ Kísérleti algoritmus                          & 130 sec    \\\hline
 \end{figure}
 
 
+
+\clearpage
+
 \section{Összefoglalás és kitekintés}
 
 
-Diplomamunkám során a Tölgyesi Botond által \cite{botond} tesztelt gain korrekciós és geometriai kalibrációs algoritmusokat ültettem át grafikus kártyára, valamint a funkciók könnyű használata érdekében grafikus felülettel láttam el az elkészült programot. Az új szoftver lényegesen gyorsabb és kevésbé erőforrás igényes, mint elődje. Továbbfejlesztettem a geometriai kalibrációban használt körkereső algoritmustis, valamint a geometriai adatok meghatározása során figyelembe vettem a kiértékelés során felmerülő hibákat. Ezekkel az eljárásokkal a geometria kalibráció a minőséget nagyban befolyásoló paraméter megadása nélkül, gyorsan és pontosan végzi. Végeredményben pedig jobb eredményt ad, mint az elődje.
+Diplomamunkám során a Tölgyesi Botond által \cite{botond} tesztelt gain korrekciós és geometriai kalibrációs algoritmusokat ültettem át grafikus kártyára, valamint a funkciók könnyű használata érdekében grafikus felülettel láttam el az elkészült programot. Az új szoftver lényegesen gyorsabb és kevésbé erőforrás igényes, mint elődje. Továbbfejlesztettem a geometriai kalibrációban használt körkereső algoritmust is, amely így pontosabb eredményeket ad, mint az eddigiek. Ezen kívül a geometriai adatok meghatározása során figyelembe vettem a kiértékelés során felmerülő hibákat, amely segítségével a rosszul illeszkedő, tehát potenciálisan kevesebb információ hordozó ellipszisek kisebb hatással vannak a meghatározott paraméterekre, így azok pontossága javul. Ezekkel az eljárásokkal a geometria kalibráció a minőséget nagyban befolyásoló paraméter megadása nélkül, gyorsan és pontosan végzi. Végeredményben pedig jobb eredményt ad, mint az elődje.
 
 
 
@@ -1105,8 +1114,11 @@ Az algoritmusok gyorsasága a grafikus kártyára való átültetéssel megéret
 
 További feladat maradt még a spektrumfelkeményedés korrekció megvalósítása, amire jelen diplomamunka elkészítése során nem valósítottam meg, mivel érdemesebbnek tűnt a megvalósított részekre több időt szentelni. A korrekció megvalósításával az elkészült felvételek minőségét tovább lehetne javítani. 
 
-Ugyancsak javíthatna a geometriai kalibráció minőségén egy pontos geometriai fantom, vagy fantom sorozat megtervezése és a kalibrációs mérés általános, robusztus protokolljának megtervezése.
 
+Ugyancsak javíthatna a geometriai kalibráció minőségén egy pontos geometriai fantom, vagy fantom sorozat  és a kalibrációs mérés általános, robusztus protokolljának megtervezése. A kis tengelyekkel rendelkező ellipszisek hibája ugyanis igen nagy, megfelelő fantom tervezéssel jobb geometriai adatokat lehetne becsülni. A fantomtervezést megkönnyítheti az általam megalkotott gyors adatfeldolgozó rendszer, amellyel akár a mérés közben lehetne a felhasználónak ajánlást tenni, hogy egy nagy hibával rendelkező ellipszis csapágygolyóját  a fantom melyik területére helyezze át.
+
+
+További felhasználási módot jelent a megalkotott szoftverkörnyezetnek a tanszéken tervezett optikai CT rendszer, amely beüzemelésében várhatóan szintén nagy szerepet fog játszani a most megalkotott, gyors és megbízható feldolgozórendszer.
 
 
 
