@@ -1,0 +1,107 @@
+\hypertarget{classImage}{}\section{Image Class Reference}
+\label{classImage}\index{Image@{Image}}
+
+
+\+: \hyperlink{classImage}{Image} class that uses QT elements.  
+
+
+
+
+{\ttfamily \#include $<$image.\+h$>$}
+
+
+
+Inheritance diagram for Image\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{classImage__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Image\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{classImage__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classImage_a58edd1c45b4faeb5f789b0d036d02313}{Image} ()\hypertarget{classImage_a58edd1c45b4faeb5f789b0d036d02313}{}\label{classImage_a58edd1c45b4faeb5f789b0d036d02313}
+
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{classImage_ada9ac359edb381345fd859b01ada4614}{Image} (\hyperlink{classImage}{Image} const \&image)
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classImage_a27afd52aa98fe782e4af180dee15d32b}{Qreadfromfile} (Q\+String \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})
+\begin{DoxyCompactList}\small\item\em Reads image data from file. Q\+String version. \end{DoxyCompactList}\item 
+void \hyperlink{classImage_a306e9ddde48e5bc079cf22676f9ff7d4}{drawimage} (Q\+Label $\ast$label)
+\begin{DoxyCompactList}\small\item\em Draws the image to the Q\+Label. \end{DoxyCompactList}\item 
+void \hyperlink{classImage_adfb17986907ce55fba5bbc53fa01d686}{writedetailstoscreen} (Q\+Text\+Edit $\ast$text\+Edit)
+\begin{DoxyCompactList}\small\item\em Writes technical information to the Q\+Text\+Edit. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\+: \hyperlink{classImage}{Image} class that uses QT elements. 
+
+Inherited from image\+\_\+cuda\+\_\+compatible, this class is capable of storing image and it\textquotesingle{}s data as well as it can use QT related functions. It can draw itself and can read itself and it\textquotesingle{}s info from file. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Image@{Image}!Image@{Image}}
+\index{Image@{Image}!Image@{Image}}
+\subsubsection[{\texorpdfstring{Image(\+Image const \&image)}{Image(Image const &image)}}]{\setlength{\rightskip}{0pt plus 5cm}Image\+::\+Image (
+\begin{DoxyParamCaption}
+\item[{{\bf Image} const \&}]{image}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage_ada9ac359edb381345fd859b01ada4614}{}\label{classImage_ada9ac359edb381345fd859b01ada4614}
+
+
+Copy constructor. 
+
+copy constructor 
+
+\subsection{Member Function Documentation}
+\index{Image@{Image}!drawimage@{drawimage}}
+\index{drawimage@{drawimage}!Image@{Image}}
+\subsubsection[{\texorpdfstring{drawimage(\+Q\+Label $\ast$label)}{drawimage(QLabel *label)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+::drawimage (
+\begin{DoxyParamCaption}
+\item[{Q\+Label $\ast$}]{label}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage_a306e9ddde48e5bc079cf22676f9ff7d4}{}\label{classImage_a306e9ddde48e5bc079cf22676f9ff7d4}
+
+
+Draws the image to the Q\+Label. 
+
+Draws image to Q\+Label. \hyperlink{classImage}{Image} must be read before. \index{Image@{Image}!Qreadfromfile@{Qreadfromfile}}
+\index{Qreadfromfile@{Qreadfromfile}!Image@{Image}}
+\subsubsection[{\texorpdfstring{Qreadfromfile(\+Q\+String filename)}{Qreadfromfile(QString filename)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+::\+Qreadfromfile (
+\begin{DoxyParamCaption}
+\item[{Q\+String}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage_a27afd52aa98fe782e4af180dee15d32b}{}\label{classImage_a27afd52aa98fe782e4af180dee15d32b}
+
+
+Reads image data from file. Q\+String version. 
+
+Reads the image from .bin file. \index{Image@{Image}!writedetailstoscreen@{writedetailstoscreen}}
+\index{writedetailstoscreen@{writedetailstoscreen}!Image@{Image}}
+\subsubsection[{\texorpdfstring{writedetailstoscreen(\+Q\+Text\+Edit $\ast$text\+Edit)}{writedetailstoscreen(QTextEdit *textEdit)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+::writedetailstoscreen (
+\begin{DoxyParamCaption}
+\item[{Q\+Text\+Edit $\ast$}]{text\+Edit}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage_adfb17986907ce55fba5bbc53fa01d686}{}\label{classImage_adfb17986907ce55fba5bbc53fa01d686}
+
+
+Writes technical information to the Q\+Text\+Edit. 
+
+Writes the image details to the given Q\+Text\+Edit. Used to debug reasons at the moment. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+image.\+h\item 
+image.\+cpp\end{DoxyCompactItemize}

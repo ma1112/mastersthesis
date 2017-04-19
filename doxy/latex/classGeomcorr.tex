@@ -1,0 +1,62 @@
+\hypertarget{classGeomcorr}{}\section{Geomcorr Class Reference}
+\label{classGeomcorr}\index{Geomcorr@{Geomcorr}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries extract\+Coordinates} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&image, bool draw\+Only=false, bool onlyN=false)\hypertarget{classGeomcorr_a1c77404e2163d3d3f8d03d932b31ad20}{}\label{classGeomcorr_a1c77404e2163d3d3f8d03d932b31ad20}
+
+\item 
+void {\bfseries read\+And\+Calculate\+Geom} ()\hypertarget{classGeomcorr_a083128b51dc70ad6d94536e3f93a459a}{}\label{classGeomcorr_a083128b51dc70ad6d94536e3f93a459a}
+
+\item 
+void {\bfseries initialize\+Device\+Vector} (int n, int size, int u)\hypertarget{classGeomcorr_aaa49852e93cfd941148223eee0ddcee5}{}\label{classGeomcorr_aaa49852e93cfd941148223eee0ddcee5}
+
+\item 
+void {\bfseries add\+Coordinates} ()\hypertarget{classGeomcorr_a8119f3169e1abe814a5f03bf9fa90486}{}\label{classGeomcorr_a8119f3169e1abe814a5f03bf9fa90486}
+
+\item 
+void {\bfseries add\+Coordinates} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&)\hypertarget{classGeomcorr_a95eaae8131a0c9d953b8cf3e331c603c}{}\label{classGeomcorr_a95eaae8131a0c9d953b8cf3e331c603c}
+
+\item 
+bool {\bfseries export\+Text} (std\+::string filename)\hypertarget{classGeomcorr_a29d08ee02403ade8e71be177b2b4dd5e}{}\label{classGeomcorr_a29d08ee02403ade8e71be177b2b4dd5e}
+
+\item 
+void {\bfseries calculate\+Eta} ()\hypertarget{classGeomcorr_a3ffb751ba6ad0308f4fb60ce80ee106e}{}\label{classGeomcorr_a3ffb751ba6ad0308f4fb60ce80ee106e}
+
+\item 
+void {\bfseries fit\+Ellipse} (int i, float $\ast$a, float $\ast$b, float $\ast$c, float $\ast$u, float $\ast$v, double $\ast$error)\hypertarget{classGeomcorr_a2e5a7f6196fa85443c8d61032f610c2f}{}\label{classGeomcorr_a2e5a7f6196fa85443c8d61032f610c2f}
+
+\item 
+void {\bfseries fit\+Ellipse\+Wu} (int i, float $\ast$a, float $\ast$b, float $\ast$c, float $\ast$u, float $\ast$v, double $\ast$error)\hypertarget{classGeomcorr_a2af6517ab0310f41125b319c82cffe2f}{}\label{classGeomcorr_a2af6517ab0310f41125b319c82cffe2f}
+
+\item 
+int {\bfseries getn} ()\hypertarget{classGeomcorr_a28274f589b43b4953ecb26acabb8f01f}{}\label{classGeomcorr_a28274f589b43b4953ecb26acabb8f01f}
+
+\item 
+double {\bfseries calculate\+Phase} (int i, float u)\hypertarget{classGeomcorr_adefc263fdcec001ce78713f041fcb00d}{}\label{classGeomcorr_adefc263fdcec001ce78713f041fcb00d}
+
+\item 
+bool {\bfseries coordinates\+To\+C\+PU} (int $\ast$h\+\_\+x, int $\ast$h\+\_\+y, int n)\hypertarget{classGeomcorr_a2db2d333164befead593c6ba9a125d8e}{}\label{classGeomcorr_a2db2d333164befead593c6ba9a125d8e}
+
+\item 
+double {\bfseries get\+Eta} ()\hypertarget{classGeomcorr_a98c2856046a11d7f131e09dd1fa0d97b}{}\label{classGeomcorr_a98c2856046a11d7f131e09dd1fa0d97b}
+
+\item 
+void {\bfseries d\+And\+V\+With\+Wu} (float $\ast$a, float $\ast$b, float $\ast$v, float $\ast$D, float $\ast$v0)\hypertarget{classGeomcorr_a570f0ec4cd5db6d8d0d97264d2f3afca}{}\label{classGeomcorr_a570f0ec4cd5db6d8d0d97264d2f3afca}
+
+\item 
+bool {\bfseries is\+Ball\+On\+Left\+Side} (int i, float u0)\hypertarget{classGeomcorr_a18255dc56f87a2fea7ed927f923bf3d3}{}\label{classGeomcorr_a18255dc56f87a2fea7ed927f923bf3d3}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Gaincorr}\hypertarget{classGeomcorr_a851375f64345af5451f69b4299b1b6cc}{}\label{classGeomcorr_a851375f64345af5451f69b4299b1b6cc}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+geomcorr.\+h\item 
+geomcorr.\+cpp\end{DoxyCompactItemize}

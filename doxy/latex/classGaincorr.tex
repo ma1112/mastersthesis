@@ -1,0 +1,96 @@
+\hypertarget{classGaincorr}{}\section{Gaincorr Class Reference}
+\label{classGaincorr}\index{Gaincorr@{Gaincorr}}
+
+
+\+: Calculates, contains and reads Gain correction data  
+
+
+
+
+{\ttfamily \#include $<$gaincorr.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classGaincorr_a5751ca7bcc7dca8b298558c65b5fcd50}{read\+And\+Calculate\+Gain} ()
+\begin{DoxyCompactList}\small\item\em Reads images to calculate gain correction data. \end{DoxyCompactList}\item 
+void \hyperlink{classGaincorr_adae369206efa5a41806749162051b7a9}{read\+And\+Calculate\+Offset} ()
+\begin{DoxyCompactList}\small\item\em Reads image files for ofsset calibration, caluclates and saves ofset corrigation data. \end{DoxyCompactList}\item 
+void \hyperlink{classGaincorr_abda7eed0445b5590b0dfafd3ca4f58ec}{readgainfactors} ()
+\begin{DoxyCompactList}\small\item\em Reads factors for gain correction from files. \end{DoxyCompactList}\item 
+void \hyperlink{classGaincorr_af4413aa4ff1c30952e3e3feb30b0beb4}{readoffsetfactors} ()
+\begin{DoxyCompactList}\small\item\em Reads offset correction data. \end{DoxyCompactList}\item 
+void {\bfseries gaincorrigateimage} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&image)\hypertarget{classGaincorr_a792a26c354754272b251f8c70ca27728}{}\label{classGaincorr_a792a26c354754272b251f8c70ca27728}
+
+\item 
+void \hyperlink{classGaincorr_a85f655120337216bb93e18de5807bc11}{offsetcorrigateimage} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&image)
+\begin{DoxyCompactList}\small\item\em Offset corrigates the given image. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\+: Calculates, contains and reads Gain correction data 
+
+$<$$<$insert long=\char`\"{}\char`\"{} description=\char`\"{}\char`\"{} here=\char`\"{}\char`\"{}$>$$>$ 
+
+\subsection{Member Function Documentation}
+\index{Gaincorr@{Gaincorr}!offsetcorrigateimage@{offsetcorrigateimage}}
+\index{offsetcorrigateimage@{offsetcorrigateimage}!Gaincorr@{Gaincorr}}
+\subsubsection[{\texorpdfstring{offsetcorrigateimage(\+Image\+\_\+cuda\+\_\+compatible \&image)}{offsetcorrigateimage(Image_cuda_compatible &image)}}]{\setlength{\rightskip}{0pt plus 5cm}void Gaincorr\+::offsetcorrigateimage (
+\begin{DoxyParamCaption}
+\item[{{\bf Image\+\_\+cuda\+\_\+compatible} \&}]{image}
+\end{DoxyParamCaption}
+)}\hypertarget{classGaincorr_a85f655120337216bb93e18de5807bc11}{}\label{classGaincorr_a85f655120337216bb93e18de5807bc11}
+
+
+Offset corrigates the given image. 
+
+\hyperlink{classImage}{Image} is offset corrigated and owerwritten in the memory. \index{Gaincorr@{Gaincorr}!read\+And\+Calculate\+Gain@{read\+And\+Calculate\+Gain}}
+\index{read\+And\+Calculate\+Gain@{read\+And\+Calculate\+Gain}!Gaincorr@{Gaincorr}}
+\subsubsection[{\texorpdfstring{read\+And\+Calculate\+Gain()}{readAndCalculateGain()}}]{\setlength{\rightskip}{0pt plus 5cm}void Gaincorr\+::read\+And\+Calculate\+Gain (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classGaincorr_a5751ca7bcc7dca8b298558c65b5fcd50}{}\label{classGaincorr_a5751ca7bcc7dca8b298558c65b5fcd50}
+
+
+Reads images to calculate gain correction data. 
+
+The functions asks for an input folder and an output folder. In the input folder, images sould be in subfolders. Every subfolder sould contain one or more image with the same settings (Voltage, Exp time, amperage), with an info file. Images are only loaded from the subfolders of the user given directory. Images are stored in the \hyperlink{classgc__im__container}{gc\+\_\+im\+\_\+container} class, then gain correction data are calculated by linear fitting to offset corrected pixel values in the function of the product of exposition time and amperage. \index{Gaincorr@{Gaincorr}!read\+And\+Calculate\+Offset@{read\+And\+Calculate\+Offset}}
+\index{read\+And\+Calculate\+Offset@{read\+And\+Calculate\+Offset}!Gaincorr@{Gaincorr}}
+\subsubsection[{\texorpdfstring{read\+And\+Calculate\+Offset()}{readAndCalculateOffset()}}]{\setlength{\rightskip}{0pt plus 5cm}void Gaincorr\+::read\+And\+Calculate\+Offset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classGaincorr_adae369206efa5a41806749162051b7a9}{}\label{classGaincorr_adae369206efa5a41806749162051b7a9}
+
+
+Reads image files for ofsset calibration, caluclates and saves ofset corrigation data. 
+
+Asks the user for the folder that contains offset correction image set, and another folder to save the offset correction factors. Images should be in the subfolders of the given input folder. Every subolder should contain images with the same exposition time settings. Images are read and then offset corrections factors are determined by linear fit to everry pixel in the function of the exposition time. They are saved in float type binary image files in the output folder, with names offsetslope.\+binf and offsetintercept.\+binf \index{Gaincorr@{Gaincorr}!readgainfactors@{readgainfactors}}
+\index{readgainfactors@{readgainfactors}!Gaincorr@{Gaincorr}}
+\subsubsection[{\texorpdfstring{readgainfactors()}{readgainfactors()}}]{\setlength{\rightskip}{0pt plus 5cm}void Gaincorr\+::readgainfactors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classGaincorr_abda7eed0445b5590b0dfafd3ca4f58ec}{}\label{classGaincorr_abda7eed0445b5590b0dfafd3ca4f58ec}
+
+
+Reads factors for gain correction from files. 
+
+Reads slope and intercept files for gain correction. Asks the user to choose a folder. In this folder there should be the files containing slope and intercept data for gain correction. Name format\+: intercept$<$voltage$>$.\+binf and slope$<$voltage$>$.\+binf. Reads every file with the given syntax, and stores them, if both an intercept and a slope file is there for a given voltage. \index{Gaincorr@{Gaincorr}!readoffsetfactors@{readoffsetfactors}}
+\index{readoffsetfactors@{readoffsetfactors}!Gaincorr@{Gaincorr}}
+\subsubsection[{\texorpdfstring{readoffsetfactors()}{readoffsetfactors()}}]{\setlength{\rightskip}{0pt plus 5cm}void Gaincorr\+::readoffsetfactors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classGaincorr_af4413aa4ff1c30952e3e3feb30b0beb4}{}\label{classGaincorr_af4413aa4ff1c30952e3e3feb30b0beb4}
+
+
+Reads offset correction data. 
+
+Reads slope and intercept files for offset correction. Asks the user to choose a folder. In this folder there should be the files containing slope and intercept data for offset correction. Name format\+: offsetintercept.\+binf and offsetslope.\+binf. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+gaincorr.\+h\item 
+gaincorr.\+cpp\end{DoxyCompactItemize}
