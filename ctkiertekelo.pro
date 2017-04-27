@@ -150,16 +150,17 @@ unix {
 
 
 # Path to cuda toolkit install
-CUDA_DIR      = /usr/local/cuda-7.5
+CUDA_DIR      = /usr/local/cuda-8.0
 # Path to header and libs files
 INCLUDEPATH  += $$CUDA_DIR/include
 QMAKE_LIBDIR += $$CUDA_DIR/lib     # Note I'm using a 64 bits Operating system
+QMAKE_LIBDIR += $$CUDA_DIR/lib/stubs
 # libs used in your code
-LIBS += -lcudart -lcuda -lcusolver -lcusparse
+LIBS += -lcudart -lcuda -lcusolver -lcusparse -lgomp
 # GPU architecture
 CUDA_ARCH     = sm_30                # Yeah! I've a new device. Adjust with your compute capability
 # Here are some NVCC flags I've always used by default.
-NVCCFLAGS     = --compiler-options -fno-strict-aliasing -use_fast_math --ptxas-options=-v
+NVCCFLAGS     = --compiler-options -fno-strict-aliasing -use_fast_math --ptxas-options=-v -Xcompiler -fopenmp
 
 
 # Prepare the extra compiler configuration (taken from the nvidia forum - i'm not an expert in this part)
