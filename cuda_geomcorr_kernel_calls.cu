@@ -709,7 +709,7 @@ void Geomcorr::extractCoordinates(Image_cuda_compatible &image, bool drawOnly, b
 
 
     const dim3 newblockSize(16,16);
-    const dim3 newgridSize(96,54);
+    const dim3 newgridSize(40,30); // Grid size corresponds to the size of the image: blockSize * GridSize should be equal to image size.
 
    kernel_zero_crossing_extractor<<<newgridSize,newblockSize>>>(convolvedImage.reserve_on_GPU(), zeroCrossImage.reserve_on_GPU(), zeroCrossImage.width, zeroCrossImage.height, convolvedImage.getstdev() * 0.5f);
 

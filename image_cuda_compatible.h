@@ -56,6 +56,7 @@ public:
                         368. sor 2592->600
                         423. sor 2592->600
      cuda_gaincorr_kernel 77. sor 41472->9600
+     cuda_geomcorr_kernel_calls.cu 712. sor (96,54) ->(40,30)
 
      */
      static const int width = 640;  //!<Width of the image. Constant among all images.
