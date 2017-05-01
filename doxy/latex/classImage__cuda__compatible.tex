@@ -1,0 +1,366 @@
+\hypertarget{classImage__cuda__compatible}{}\section{Image\+\_\+cuda\+\_\+compatible Class Reference}
+\label{classImage__cuda__compatible}\index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+
+
+\+: Stores an image and it\textquotesingle{}s info. Does not use QT related elements.  
+
+
+
+
+{\ttfamily \#include $<$image\+\_\+cuda\+\_\+compatible.\+h$>$}
+
+
+
+Inheritance diagram for Image\+\_\+cuda\+\_\+compatible\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{classImage__cuda__compatible__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classImage__cuda__compatible_acd647640958be8fb9d24f579a5f7aba6}{Image\+\_\+cuda\+\_\+compatible} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+virtual \hyperlink{classImage__cuda__compatible_af56f09a54e75a489f59d8575ace49c9e}{$\sim$\+Image\+\_\+cuda\+\_\+compatible} ()\hypertarget{classImage__cuda__compatible_af56f09a54e75a489f59d8575ace49c9e}{}\label{classImage__cuda__compatible_af56f09a54e75a489f59d8575ace49c9e}
+
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \& \hyperlink{classImage__cuda__compatible_a151b964c26eaefbad2a77fd733321ba8}{operator=} (const \hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_a151b964c26eaefbad2a77fd733321ba8}{}\label{classImage__cuda__compatible_a151b964c26eaefbad2a77fd733321ba8}
+
+\begin{DoxyCompactList}\small\item\em Assigment operator. \end{DoxyCompactList}\item 
+\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \& \hyperlink{classImage__cuda__compatible_aaba8e16b5ab9064502f1a18ad36acdbc}{operator+=} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)
+\begin{DoxyCompactList}\small\item\em Adds another image on the G\+PU. \end{DoxyCompactList}\item 
+\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \& \hyperlink{classImage__cuda__compatible_a33ba9942734b6595c75f6e7be54dc975}{operator-\/=} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_a33ba9942734b6595c75f6e7be54dc975}{}\label{classImage__cuda__compatible_a33ba9942734b6595c75f6e7be54dc975}
+
+\begin{DoxyCompactList}\small\item\em Subtracts another image\textquotesingle{}s attributes to this. Also adds pixel values on the G\+PU. \end{DoxyCompactList}\item 
+\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \& \hyperlink{classImage__cuda__compatible_adc2d6a2df6470bf1914a1fd2b0a0e49a}{operator$\ast$=} (float n)
+\begin{DoxyCompactList}\small\item\em Subtracts another image on the G\+PU. \end{DoxyCompactList}\item 
+\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \& \hyperlink{classImage__cuda__compatible_a9ad71725876a14435f64da690950ecd3}{operator/=} (float n)\hypertarget{classImage__cuda__compatible_a9ad71725876a14435f64da690950ecd3}{}\label{classImage__cuda__compatible_a9ad71725876a14435f64da690950ecd3}
+
+\begin{DoxyCompactList}\small\item\em Divides the image with the divisor, on the G\+PU. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_af5e98d953c3591fe504462e1c1494e19}{equalmax} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_af5e98d953c3591fe504462e1c1494e19}{}\label{classImage__cuda__compatible_af5e98d953c3591fe504462e1c1494e19}
+
+\begin{DoxyCompactList}\small\item\em $<$ Divides an image on the G\+PU. \end{DoxyCompactList}\item 
+float {\bfseries correlate\+With} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_a4ddd4869962e4e11eb3937ffb9c5507e}{}\label{classImage__cuda__compatible_a4ddd4869962e4e11eb3937ffb9c5507e}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_a99093177f959aeee51732f403be8819e}{clear} ()
+\begin{DoxyCompactList}\small\item\em Cleans the image. \end{DoxyCompactList}\item 
+void {\bfseries clearwitinradius} (int x, int y, int r)\hypertarget{classImage__cuda__compatible_ab42d33bbe730d570d4db87e911966726}{}\label{classImage__cuda__compatible_ab42d33bbe730d570d4db87e911966726}
+
+\item 
+void {\bfseries remove\+\_\+from\+\_\+\+G\+PU} ()\hypertarget{classImage__cuda__compatible_a23d156919fbb8021001049583a4f05bf}{}\label{classImage__cuda__compatible_a23d156919fbb8021001049583a4f05bf}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_a249c0b2acafcf79d200a751d186c7159}{calculate\+\_\+meanvalue\+\_\+on\+\_\+\+G\+PU} ()\hypertarget{classImage__cuda__compatible_a249c0b2acafcf79d200a751d186c7159}{}\label{classImage__cuda__compatible_a249c0b2acafcf79d200a751d186c7159}
+
+\begin{DoxyCompactList}\small\item\em Calculates the mean, minimum and maximum value of the image on the G\+PU. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_a1bc41929e895753fb94d12f3706ed448}{readfromfile} (std\+::string \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})
+\begin{DoxyCompactList}\small\item\em Reads image data from file. \end{DoxyCompactList}\item 
+void {\bfseries cuda\+Read\+From\+File} (const char $\ast$\hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})\hypertarget{classImage__cuda__compatible_a2a22e3122b2f51934449d7024efaf1f2}{}\label{classImage__cuda__compatible_a2a22e3122b2f51934449d7024efaf1f2}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_a4cab4c65aced6215d8ce7c5abfd39f47}{cuda\+Read\+From\+Float\+File} (const char $\ast$\hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})\hypertarget{classImage__cuda__compatible_a4cab4c65aced6215d8ce7c5abfd39f47}{}\label{classImage__cuda__compatible_a4cab4c65aced6215d8ce7c5abfd39f47}
+
+\begin{DoxyCompactList}\small\item\em Cuda function that copies data from file to G\+PU. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_ac96a12fbf9cf640638e59d370d0ca6d8}{readfromfloatfile} (std\+::string fname)
+\begin{DoxyCompactList}\small\item\em Reads an image from a binary file, containing pixel values as floats. Also reads info file data. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_a92324b2016515f6eb3996a84017eba4a}{readinfo} ()
+\begin{DoxyCompactList}\small\item\em Reads image info from the info file. Info file must be in the same folder as the image. \end{DoxyCompactList}\item 
+void {\bfseries writetofile} (std\+::string \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})\hypertarget{classImage__cuda__compatible_af2d4cbc263cfcb4fc09b5a51b7512c9c}{}\label{classImage__cuda__compatible_af2d4cbc263cfcb4fc09b5a51b7512c9c}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_a0703a45b3aae00a554fe07d76b85620d}{writetofloatfile} (std\+::string \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})\hypertarget{classImage__cuda__compatible_a0703a45b3aae00a554fe07d76b85620d}{}\label{classImage__cuda__compatible_a0703a45b3aae00a554fe07d76b85620d}
+
+\begin{DoxyCompactList}\small\item\em Writes image values to a binary file, with F\+L\+O\+AT values. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_a744b4e852b257cf82ae869871bfc90bd}{save\+As\+J\+P\+EG} (std\+::string \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename})
+\begin{DoxyCompactList}\small\item\em Saves the image as a Jpeg. \end{DoxyCompactList}\item 
+void {\bfseries draw\+Cross} (int x, int y, int \hyperlink{classImage__cuda__compatible_a22cea4d1e5568cbea748f48901d99529}{size}=30)\hypertarget{classImage__cuda__compatible_a2f1d26cc2a5fa5d978aff025568fcea2}{}\label{classImage__cuda__compatible_a2f1d26cc2a5fa5d978aff025568fcea2}
+
+\item 
+\hyperlink{classImage__cuda__compatible_ac77e1c47ce391c2d9a8caff751c2ac76}{Image\+\_\+cuda\+\_\+compatible} (const \hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)
+\begin{DoxyCompactList}\small\item\em Copy constructor. \end{DoxyCompactList}\item 
+void {\bfseries cuda\+Get\+Short\+Array\+To\+Host} (unsigned short $\ast$h\+\_\+s\+Image)\hypertarget{classImage__cuda__compatible_a01d69f35723a3a6100e0d16538c65d8d}{}\label{classImage__cuda__compatible_a01d69f35723a3a6100e0d16538c65d8d}
+
+\item 
+void {\bfseries cuda\+Get\+Array\+To\+Host} (float $\ast$h\+\_\+image)\hypertarget{classImage__cuda__compatible_a693f58d3c9fc76170fe214be6bf21c8f}{}\label{classImage__cuda__compatible_a693f58d3c9fc76170fe214be6bf21c8f}
+
+\item 
+void {\bfseries cuda\+Get\+U\+C\+Array\+To\+Host} (unsigned char $\ast$h\+\_\+image)\hypertarget{classImage__cuda__compatible_a7d89ef361f1aefb343c0a8fcea2e5b7d}{}\label{classImage__cuda__compatible_a7d89ef361f1aefb343c0a8fcea2e5b7d}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_ac089291fbefec49650fc2b4fe1c8f6d9}{setvoltage} (float f)\hypertarget{classImage__cuda__compatible_ac089291fbefec49650fc2b4fe1c8f6d9}{}\label{classImage__cuda__compatible_ac089291fbefec49650fc2b4fe1c8f6d9}
+
+\begin{DoxyCompactList}\small\item\em Sets the voltage value of the image. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_a4c4aee34c9aba24c807669a80b3c1805}{setamperage} (float f)\hypertarget{classImage__cuda__compatible_a4c4aee34c9aba24c807669a80b3c1805}{}\label{classImage__cuda__compatible_a4c4aee34c9aba24c807669a80b3c1805}
+
+\begin{DoxyCompactList}\small\item\em Sets the amperage value of the image. \end{DoxyCompactList}\item 
+void \hyperlink{classImage__cuda__compatible_a8679a17d852d7d6b009142ae2807c536}{setexptime} (float f)\hypertarget{classImage__cuda__compatible_a8679a17d852d7d6b009142ae2807c536}{}\label{classImage__cuda__compatible_a8679a17d852d7d6b009142ae2807c536}
+
+\begin{DoxyCompactList}\small\item\em Sets the exptime value of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_a48452a781d574023b87a804e405bf9d9}{getvoltage} ()\hypertarget{classImage__cuda__compatible_a48452a781d574023b87a804e405bf9d9}{}\label{classImage__cuda__compatible_a48452a781d574023b87a804e405bf9d9}
+
+\begin{DoxyCompactList}\small\item\em Returns the voltage of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_afb0689b067b59712ae4fa4a5713dc80d}{getamperage} ()\hypertarget{classImage__cuda__compatible_afb0689b067b59712ae4fa4a5713dc80d}{}\label{classImage__cuda__compatible_afb0689b067b59712ae4fa4a5713dc80d}
+
+\begin{DoxyCompactList}\small\item\em Returns the amperage of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_a78ef6fd62bf6b476ba56b188a5f9537b}{getexptime} ()\hypertarget{classImage__cuda__compatible_a78ef6fd62bf6b476ba56b188a5f9537b}{}\label{classImage__cuda__compatible_a78ef6fd62bf6b476ba56b188a5f9537b}
+
+\begin{DoxyCompactList}\small\item\em Returns the exptime of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_a63a693a97528f4838e1096974a27fafe}{getmean} ()
+\item 
+float {\bfseries getstdev} ()\hypertarget{classImage__cuda__compatible_ad7cb773d69ee0e8aa102899c68c4f789}{}\label{classImage__cuda__compatible_ad7cb773d69ee0e8aa102899c68c4f789}
+
+\item 
+float \hyperlink{classImage__cuda__compatible_a17f7d423caa9ab765fd29befb8929449}{getmax} ()
+\item 
+float \hyperlink{classImage__cuda__compatible_afcafae2aa9d72108ed15308b52900788}{getmin} ()
+\item 
+std\+::string \hyperlink{classImage__cuda__compatible_a03f18d23b1196908435e0da143e07c1e}{getid} ()\hypertarget{classImage__cuda__compatible_a03f18d23b1196908435e0da143e07c1e}{}\label{classImage__cuda__compatible_a03f18d23b1196908435e0da143e07c1e}
+
+\begin{DoxyCompactList}\small\item\em Returns the ID of the image. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classImage__cuda__compatible_a6588dcbebccad868403cdd7993cc9f76}{getfilename} ()
+\item 
+float $\ast$ {\bfseries reserve\+\_\+on\+\_\+\+G\+PU} ()\hypertarget{classImage__cuda__compatible_a9ecba044299f4ced3d44dd9703b52311}{}\label{classImage__cuda__compatible_a9ecba044299f4ced3d44dd9703b52311}
+
+\item 
+float $\ast$ {\bfseries copy\+\_\+\+G\+P\+U\+\_\+image} (float $\ast$other)\hypertarget{classImage__cuda__compatible_a4f8384e40c0f012cee04da87d2c43c18}{}\label{classImage__cuda__compatible_a4f8384e40c0f012cee04da87d2c43c18}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float $\ast$ \hyperlink{classImage__cuda__compatible_aecdcb6343d0b536bae6da90de8d3bc4f}{gpu\+\_\+im}\hypertarget{classImage__cuda__compatible_aecdcb6343d0b536bae6da90de8d3bc4f}{}\label{classImage__cuda__compatible_aecdcb6343d0b536bae6da90de8d3bc4f}
+
+\begin{DoxyCompactList}\small\item\em Poiter to the image on the G\+PU. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const int \hyperlink{classImage__cuda__compatible_add091d9b4be13ea87572c59541d5fe82}{width} = 1536\hypertarget{classImage__cuda__compatible_add091d9b4be13ea87572c59541d5fe82}{}\label{classImage__cuda__compatible_add091d9b4be13ea87572c59541d5fe82}
+
+\begin{DoxyCompactList}\small\item\em Width of the image. Constant among all images. \end{DoxyCompactList}\item 
+static const int \hyperlink{classImage__cuda__compatible_abf81de1dbe4a40b6388aabe60ddc5a0c}{height} = 864\hypertarget{classImage__cuda__compatible_abf81de1dbe4a40b6388aabe60ddc5a0c}{}\label{classImage__cuda__compatible_abf81de1dbe4a40b6388aabe60ddc5a0c}
+
+\begin{DoxyCompactList}\small\item\em Height of the image. Constant among all images. \end{DoxyCompactList}\item 
+static const long \hyperlink{classImage__cuda__compatible_a22cea4d1e5568cbea748f48901d99529}{size} = 1327104\hypertarget{classImage__cuda__compatible_a22cea4d1e5568cbea748f48901d99529}{}\label{classImage__cuda__compatible_a22cea4d1e5568cbea748f48901d99529}
+
+\begin{DoxyCompactList}\small\item\em Size of the image. Constant among all images. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries divide\+\_\+on\+\_\+\+G\+PU} (float divisor)\hypertarget{classImage__cuda__compatible_a4538c764a8101d4008598f2b4fb69c6c}{}\label{classImage__cuda__compatible_a4538c764a8101d4008598f2b4fb69c6c}
+
+\item 
+void {\bfseries multiply\+\_\+on\+\_\+\+G\+PU} (float multiplier)\hypertarget{classImage__cuda__compatible_af27e57aacd0ef5381b04cd4298f0996e}{}\label{classImage__cuda__compatible_af27e57aacd0ef5381b04cd4298f0996e}
+
+\item 
+void \hyperlink{classImage__cuda__compatible_a5ab957eedf46e3fd9f6deeec0e850e98}{initialize} ()
+\begin{DoxyCompactList}\small\item\em Initializes the image. Sets everything to 0 or N\+U\+LL, creates the im array. Used in constructors. \end{DoxyCompactList}\item 
+void {\bfseries add\+\_\+on\+\_\+\+G\+PU} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_a3d5049463d7ad72ca1ce89d73a4f446f}{}\label{classImage__cuda__compatible_a3d5049463d7ad72ca1ce89d73a4f446f}
+
+\item 
+void {\bfseries subtract\+\_\+on\+\_\+\+G\+PU} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&other)\hypertarget{classImage__cuda__compatible_af766b848ac22ab22717473aaa0f1850c}{}\label{classImage__cuda__compatible_af766b848ac22ab22717473aaa0f1850c}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{classImage__cuda__compatible_ae5bd4f6f3d151170ac091bd102c2a55f}{mean}\hypertarget{classImage__cuda__compatible_ae5bd4f6f3d151170ac091bd102c2a55f}{}\label{classImage__cuda__compatible_ae5bd4f6f3d151170ac091bd102c2a55f}
+
+\begin{DoxyCompactList}\small\item\em Mean value of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_abb1737b80a69a9ff1937f5f9ac86d3b1}{stdev}\hypertarget{classImage__cuda__compatible_abb1737b80a69a9ff1937f5f9ac86d3b1}{}\label{classImage__cuda__compatible_abb1737b80a69a9ff1937f5f9ac86d3b1}
+
+\begin{DoxyCompactList}\small\item\em Standard deviation. \end{DoxyCompactList}\item 
+float {\bfseries max}\hypertarget{classImage__cuda__compatible_a40704256993e1fe59aae1db3c232c213}{}\label{classImage__cuda__compatible_a40704256993e1fe59aae1db3c232c213}
+
+\item 
+float {\bfseries min}\hypertarget{classImage__cuda__compatible_a3acbfd922d0073d97edb9f7d03bfbc06}{}\label{classImage__cuda__compatible_a3acbfd922d0073d97edb9f7d03bfbc06}
+
+\item 
+float \hyperlink{classImage__cuda__compatible_aa21a71b8308ab320c6d0b8d76220bcd0}{deviation}\hypertarget{classImage__cuda__compatible_aa21a71b8308ab320c6d0b8d76220bcd0}{}\label{classImage__cuda__compatible_aa21a71b8308ab320c6d0b8d76220bcd0}
+
+\begin{DoxyCompactList}\small\item\em Standard deviation of the pixel values. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{filename}\hypertarget{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}{}\label{classImage__cuda__compatible_a5dbc3fe00b4ca74f9a3868849cb24406}
+
+\begin{DoxyCompactList}\small\item\em File name that the image was read from. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classImage__cuda__compatible_a61b0501f13fd930381424ef192264d8c}{directory}\hypertarget{classImage__cuda__compatible_a61b0501f13fd930381424ef192264d8c}{}\label{classImage__cuda__compatible_a61b0501f13fd930381424ef192264d8c}
+
+\begin{DoxyCompactList}\small\item\em Directory name that the image was read from. \end{DoxyCompactList}\item 
+std\+::string \hyperlink{classImage__cuda__compatible_ad9b37cc5930be7da0fa1f67944d24c6d}{id}\hypertarget{classImage__cuda__compatible_ad9b37cc5930be7da0fa1f67944d24c6d}{}\label{classImage__cuda__compatible_ad9b37cc5930be7da0fa1f67944d24c6d}
+
+\begin{DoxyCompactList}\small\item\em ID of the image. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_ad5eb722fdfbacb645668ea2132c5af63}{voltage}\hypertarget{classImage__cuda__compatible_ad5eb722fdfbacb645668ea2132c5af63}{}\label{classImage__cuda__compatible_ad5eb722fdfbacb645668ea2132c5af63}
+
+\begin{DoxyCompactList}\small\item\em Voltage of the X-\/ray tube. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_a0d99144c0b338d311b5235385c40b63a}{amperage}\hypertarget{classImage__cuda__compatible_a0d99144c0b338d311b5235385c40b63a}{}\label{classImage__cuda__compatible_a0d99144c0b338d311b5235385c40b63a}
+
+\begin{DoxyCompactList}\small\item\em Amperage of the X-\/ray tube. \end{DoxyCompactList}\item 
+float \hyperlink{classImage__cuda__compatible_ab6d746eb607f4ce623c069458b2962a2}{exptime}\hypertarget{classImage__cuda__compatible_ab6d746eb607f4ce623c069458b2962a2}{}\label{classImage__cuda__compatible_ab6d746eb607f4ce623c069458b2962a2}
+
+\begin{DoxyCompactList}\small\item\em Exposure time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries gc\+\_\+im\+\_\+container}\hypertarget{classImage__cuda__compatible_a648c0d5c58a551f0c60469ff653c4030}{}\label{classImage__cuda__compatible_a648c0d5c58a551f0c60469ff653c4030}
+
+\item 
+class {\bfseries Gaincorr}\hypertarget{classImage__cuda__compatible_a851375f64345af5451f69b4299b1b6cc}{}\label{classImage__cuda__compatible_a851375f64345af5451f69b4299b1b6cc}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\+: Stores an image and it\textquotesingle{}s info. Does not use QT related elements. 
+
+Not using QT related elements makes it able to be used in C\+U\+DA. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{Image\+\_\+cuda\+\_\+compatible()}{Image_cuda_compatible()}}]{\setlength{\rightskip}{0pt plus 5cm}Image\+\_\+cuda\+\_\+compatible\+::\+Image\+\_\+cuda\+\_\+compatible (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_acd647640958be8fb9d24f579a5f7aba6}{}\label{classImage__cuda__compatible_acd647640958be8fb9d24f579a5f7aba6}
+
+
+Default constructor. 
+
+Constructor. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{Image\+\_\+cuda\+\_\+compatible(const Image\+\_\+cuda\+\_\+compatible \&other)}{Image_cuda_compatible(const Image_cuda_compatible &other)}}]{\setlength{\rightskip}{0pt plus 5cm}Image\+\_\+cuda\+\_\+compatible\+::\+Image\+\_\+cuda\+\_\+compatible (
+\begin{DoxyParamCaption}
+\item[{const {\bf Image\+\_\+cuda\+\_\+compatible} \&}]{other}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_ac77e1c47ce391c2d9a8caff751c2ac76}{}\label{classImage__cuda__compatible_ac77e1c47ce391c2d9a8caff751c2ac76}
+
+
+Copy constructor. 
+
+Copy Constructor. 
+
+\subsection{Member Function Documentation}
+\index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!clear@{clear}}
+\index{clear@{clear}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{clear()}{clear()}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a99093177f959aeee51732f403be8819e}{}\label{classImage__cuda__compatible_a99093177f959aeee51732f403be8819e}
+
+
+Cleans the image. 
+
+Sets every variable to default and removes the image from the G\+PU \& the C\+PU. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!getfilename@{getfilename}}
+\index{getfilename@{getfilename}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{getfilename()}{getfilename()}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::string Image\+\_\+cuda\+\_\+compatible\+::getfilename (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a6588dcbebccad868403cdd7993cc9f76}{}\label{classImage__cuda__compatible_a6588dcbebccad868403cdd7993cc9f76}
+Returns with the filanem of the image. If the image was not read from a file, returns \char`\"{}\char`\"{}. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!getmax@{getmax}}
+\index{getmax@{getmax}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{getmax()}{getmax()}}]{\setlength{\rightskip}{0pt plus 5cm}float Image\+\_\+cuda\+\_\+compatible\+::getmax (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a17f7d423caa9ab765fd29befb8929449}{}\label{classImage__cuda__compatible_a17f7d423caa9ab765fd29befb8929449}
+Returns the maximum intensity of the image. If the maximum intensity value is not yet calculated,, calculates it. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!getmean@{getmean}}
+\index{getmean@{getmean}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{getmean()}{getmean()}}]{\setlength{\rightskip}{0pt plus 5cm}float Image\+\_\+cuda\+\_\+compatible\+::getmean (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a63a693a97528f4838e1096974a27fafe}{}\label{classImage__cuda__compatible_a63a693a97528f4838e1096974a27fafe}
+Returns the mean of the image. If the mean value is not yet calculated ( or it is 0), (re)calculates it. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!getmin@{getmin}}
+\index{getmin@{getmin}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{getmin()}{getmin()}}]{\setlength{\rightskip}{0pt plus 5cm}float Image\+\_\+cuda\+\_\+compatible\+::getmin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_afcafae2aa9d72108ed15308b52900788}{}\label{classImage__cuda__compatible_afcafae2aa9d72108ed15308b52900788}
+Returns the minimum intensity of the image. If the minimum intensity value is not yet calculated ( or it is 0), (re)calculates it. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!initialize@{initialize}}
+\index{initialize@{initialize}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{initialize()}{initialize()}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::initialize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classImage__cuda__compatible_a5ab957eedf46e3fd9f6deeec0e850e98}{}\label{classImage__cuda__compatible_a5ab957eedf46e3fd9f6deeec0e850e98}
+
+
+Initializes the image. Sets everything to 0 or N\+U\+LL, creates the im array. Used in constructors. 
+
+Initializes the image. Set\textquotesingle{}s everything to 0. Memory is not assigned. Use only in ctor! \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{operator$\ast$=(float n)}{operator*=(float n)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Image\+\_\+cuda\+\_\+compatible} \& Image\+\_\+cuda\+\_\+compatible\+::operator$\ast$= (
+\begin{DoxyParamCaption}
+\item[{float}]{n}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_adc2d6a2df6470bf1914a1fd2b0a0e49a}{}\label{classImage__cuda__compatible_adc2d6a2df6470bf1914a1fd2b0a0e49a}
+
+
+Subtracts another image on the G\+PU. 
+
+Multiplies with a float, on the G\+PU. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{operator+=(\+Image\+\_\+cuda\+\_\+compatible \&other)}{operator+=(Image_cuda_compatible &other)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Image\+\_\+cuda\+\_\+compatible} \& Image\+\_\+cuda\+\_\+compatible\+::operator+= (
+\begin{DoxyParamCaption}
+\item[{{\bf Image\+\_\+cuda\+\_\+compatible} \&}]{other}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_aaba8e16b5ab9064502f1a18ad36acdbc}{}\label{classImage__cuda__compatible_aaba8e16b5ab9064502f1a18ad36acdbc}
+
+
+Adds another image on the G\+PU. 
+
+Operator for addition. Adds another image\textquotesingle{}s attributes to this. Also adds pixel values on the G\+PU. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!readfromfile@{readfromfile}}
+\index{readfromfile@{readfromfile}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{readfromfile(std\+::string filename)}{readfromfile(std::string filename)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::readfromfile (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a1bc41929e895753fb94d12f3706ed448}{}\label{classImage__cuda__compatible_a1bc41929e895753fb94d12f3706ed448}
+
+
+Reads image data from file. 
+
+Reads an image from a binary file, containing pixel values as unsigned integers. Also reads info file data. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!readfromfloatfile@{readfromfloatfile}}
+\index{readfromfloatfile@{readfromfloatfile}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{readfromfloatfile(std\+::string fname)}{readfromfloatfile(std::string fname)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::readfromfloatfile (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{fname}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_ac96a12fbf9cf640638e59d370d0ca6d8}{}\label{classImage__cuda__compatible_ac96a12fbf9cf640638e59d370d0ca6d8}
+
+
+Reads an image from a binary file, containing pixel values as floats. Also reads info file data. 
+
+\hyperlink{classImage}{Image} is put to the C\+PU memory. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!readinfo@{readinfo}}
+\index{readinfo@{readinfo}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{readinfo()}{readinfo()}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::readinfo (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a92324b2016515f6eb3996a84017eba4a}{}\label{classImage__cuda__compatible_a92324b2016515f6eb3996a84017eba4a}
+
+
+Reads image info from the info file. Info file must be in the same folder as the image. 
+
+Reads data from the info file for the specified image. \index{Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}!save\+As\+J\+P\+EG@{save\+As\+J\+P\+EG}}
+\index{save\+As\+J\+P\+EG@{save\+As\+J\+P\+EG}!Image\+\_\+cuda\+\_\+compatible@{Image\+\_\+cuda\+\_\+compatible}}
+\subsubsection[{\texorpdfstring{save\+As\+J\+P\+E\+G(std\+::string filename)}{saveAsJPEG(std::string filename)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+\_\+cuda\+\_\+compatible\+::save\+As\+J\+P\+EG (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{filename}
+\end{DoxyParamCaption}
+)}\hypertarget{classImage__cuda__compatible_a744b4e852b257cf82ae869871bfc90bd}{}\label{classImage__cuda__compatible_a744b4e852b257cf82ae869871bfc90bd}
+
+
+Saves the image as a Jpeg. 
+
+It can actually save any Qt supported format, filename extension determines the image type. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+image\+\_\+cuda\+\_\+compatible.\+h\item 
+image\+\_\+cuda\+\_\+compatible.\+cpp\end{DoxyCompactItemize}

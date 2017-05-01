@@ -5,7 +5,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFormLayout>
-#include <math.h>       /* round, floor, ceil, trunc */
+#include <cmath>       /* round, floor, ceil, trunc */
 #include "coordinatedialog.h"
 
 geomCorrCheckerDialog::geomCorrCheckerDialog(QWidget *parent) :

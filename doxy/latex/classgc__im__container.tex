@@ -1,0 +1,48 @@
+\hypertarget{classgc__im__container}{}\section{gc\+\_\+im\+\_\+container Class Reference}
+\label{classgc__im__container}\index{gc\+\_\+im\+\_\+container@{gc\+\_\+im\+\_\+container}}
+
+
+Class to store images before linear fit.  
+
+
+
+
+{\ttfamily \#include $<$gc\+\_\+im\+\_\+container.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classgc__im__container_af5a0249e639585c347c80b82615d7e6f}{gc\+\_\+im\+\_\+container} ()\hypertarget{classgc__im__container_af5a0249e639585c347c80b82615d7e6f}{}\label{classgc__im__container_af5a0249e639585c347c80b82615d7e6f}
+
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classgc__im__container_a90e9cc6f3b17ee36228c9807675bc5ef}{add} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&im)\hypertarget{classgc__im__container_a90e9cc6f3b17ee36228c9807675bc5ef}{}\label{classgc__im__container_a90e9cc6f3b17ee36228c9807675bc5ef}
+
+\begin{DoxyCompactList}\small\item\em Adds in image to the containter. \end{DoxyCompactList}\item 
+void \hyperlink{classgc__im__container_a2a58af5fd3ea64a9efe1c632e6e7a111}{clear} ()\hypertarget{classgc__im__container_a2a58af5fd3ea64a9efe1c632e6e7a111}{}\label{classgc__im__container_a2a58af5fd3ea64a9efe1c632e6e7a111}
+
+\begin{DoxyCompactList}\small\item\em Deassings memory. \end{DoxyCompactList}\item 
+int \hyperlink{classgc__im__container_af1f0bd117c4691d73178142a156dabec}{getimageno} ()\hypertarget{classgc__im__container_af1f0bd117c4691d73178142a156dabec}{}\label{classgc__im__container_af1f0bd117c4691d73178142a156dabec}
+
+\begin{DoxyCompactList}\small\item\em Returns the number of images in the container. \end{DoxyCompactList}\item 
+void \hyperlink{classgc__im__container_a72fe57a7d152a1a8152f9a76062bd9b3}{calculate} (\hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&slope, \hyperlink{classImage__cuda__compatible}{Image\+\_\+cuda\+\_\+compatible} \&intercept)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to store images before linear fit. 
+
+\subsection{Member Function Documentation}
+\index{gc\+\_\+im\+\_\+container@{gc\+\_\+im\+\_\+container}!calculate@{calculate}}
+\index{calculate@{calculate}!gc\+\_\+im\+\_\+container@{gc\+\_\+im\+\_\+container}}
+\subsubsection[{\texorpdfstring{calculate(\+Image\+\_\+cuda\+\_\+compatible \&slope, Image\+\_\+cuda\+\_\+compatible \&intercept)}{calculate(Image_cuda_compatible &slope, Image_cuda_compatible &intercept)}}]{\setlength{\rightskip}{0pt plus 5cm}void gc\+\_\+im\+\_\+container\+::calculate (
+\begin{DoxyParamCaption}
+\item[{{\bf Image\+\_\+cuda\+\_\+compatible} \&}]{slope, }
+\item[{{\bf Image\+\_\+cuda\+\_\+compatible} \&}]{intercept}
+\end{DoxyParamCaption}
+)}\hypertarget{classgc__im__container_a72fe57a7d152a1a8152f9a76062bd9b3}{}\label{classgc__im__container_a72fe57a7d152a1a8152f9a76062bd9b3}
+Fits a line on the image pixel data in the function of exptime$\ast$amperage of the image. Line slope and intercept are stored in the given images. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+gc\+\_\+im\+\_\+container.\+h\item 
+gc\+\_\+im\+\_\+container.\+cpp\end{DoxyCompactItemize}
