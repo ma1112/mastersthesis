@@ -374,7 +374,7 @@ float Image_cuda_compatible::getmean()
 //! If the minimum intensity value is not yet calculated ( or it is 0), (re)calculates it.
 float Image_cuda_compatible::getmin()
 {
-    if(min ==0.0f)
+    if(min ==0.0f && max == 1e30f)
     {
         calculate_meanvalue_on_GPU();
     }
@@ -385,7 +385,7 @@ float Image_cuda_compatible::getmin()
 //! If the maximum intensity value is not yet calculated,, calculates it.
 float Image_cuda_compatible::getmax()
 {
-    if(max == 1e30f)
+    if(min ==0.0f && max == 1e30f)
     {
         calculate_meanvalue_on_GPU();
     }
