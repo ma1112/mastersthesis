@@ -58,7 +58,7 @@ void gc_im_container::calculate(Image_cuda_compatible &slope, Image_cuda_compati
     HANDLE_ERROR( cudaMalloc((void**) &d_denominator , sizeof(float) ) );
     HANDLE_ERROR (cudaMemcpy(d_denominator,&denominator, sizeof(float),cudaMemcpyHostToDevice));
 
-kernel_gaincorr_calculator<<<2592,512>>>(d_x, d_denominator, xy.reserve_on_GPU(), y.reserve_on_GPU(), slope.reserve_on_GPU(), intercept.reserve_on_GPU());
+kernel_gaincorr_calculator<<<600,512>>>(d_x, d_denominator, xy.reserve_on_GPU(), y.reserve_on_GPU(), slope.reserve_on_GPU(), intercept.reserve_on_GPU());
 
             slope.calculate_meanvalue_on_GPU();
             std::cout << "slope mean: " << slope.getmean()<<std::endl; // DEBUG
@@ -77,7 +77,7 @@ void gc_im_container::add(Image_cuda_compatible &im)
     }
     y +=im;
     float x_now = im.getexptime() * im.getamperage();
-    kernel_add_xy<<<2592,512>>>(x_now,  xy.gpu_im, im.gpu_im);
+    kernel_add_xy<<<600,512>>>(x_now,  xy.gpu_im, im.gpu_im);
     images++;
     x += x_now,
     x2 += x_now*x_now;

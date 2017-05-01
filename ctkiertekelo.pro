@@ -73,7 +73,8 @@ CUDA_SOURCES +=    initcuda.cu
 
 win32{
 
-CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"
+#CUDA_DIR =  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5"  #v7.5 volt eredetileg
+CUDA_DIR = "D:\Program Files\CUDA"
 SYSTEM_NAME = x64         # Depending on your system either 'Win32', 'x64', or 'Win64'
 SYSTEM_TYPE = 64            # '32' or '64', depending on your system
 CUDA_ARCH = sm_20           # Type of CUDA architecture, for example 'compute_10', 'compute_11', 'sm_10'

@@ -39,11 +39,28 @@ public:
      void  calculate_meanvalue_on_GPU(); //!<Calculates the mean, minimum and maximum value of the image on the GPU.
 
 
-
+/*
      static const int width = 1536;  //!<Width of the image. Constant among all images.
      static const int height = 864; //!< Height of the image. Constant among all images.
      static const long size = 1327104; //!< Size of the image. Constant among all images.
 
+     cude_gc_im.cpp 61. sor 2592->600
+                    80. sor 2592->600
+     cuda_image_kernel 115. sor 2592->600
+                        248.sor 2592->600
+                        260. sor 2592->600
+                        265. sor 2592->600
+                        273. sor 2592->600
+                        283. sor 2592->600
+                        334. sor 2592->600
+                        368. sor 2592->600
+                        423. sor 2592->600
+     cuda_gaincorr_kernel 77. sor 41472->9600
+
+     */
+     static const int width = 640;  //!<Width of the image. Constant among all images.
+     static const int height = 480; //!< Height of the image. Constant among all images.
+     static const long size = 307200; //!< Size of the image. Constant among all images.
 
      void readfromfile(std::string filename ); //!< Reads image data from file.
      void cudaReadFromFile(const char* filename); //! Cuda function that copies data from file to GPU.

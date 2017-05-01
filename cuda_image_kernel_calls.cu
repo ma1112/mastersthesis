@@ -112,7 +112,7 @@ float Image_cuda_compatible::correlateWith(Image_cuda_compatible &other)
     other.calculate_meanvalue_on_GPU();
     Image_cuda_compatible corr2;
 
-    kernel_correlate2d<<<2592,512>>>(gpu_im, other.gpu_im, corr2.reserve_on_GPU(), mean, other.mean);
+    kernel_correlate2d<<<600,512>>>(gpu_im, other.gpu_im, corr2.reserve_on_GPU(), mean, other.mean);
     corr2.calculate_meanvalue_on_GPU();
     return (corr2.getmean() / ( stdev * other.stdev));
 
@@ -245,7 +245,7 @@ void Image_cuda_compatible::equalmax(Image_cuda_compatible &other)
         return;
     }
     reserve_on_GPU();
-    kernel_equalmax<<<2592,512>>>(gpu_im, other.gpu_im);
+    kernel_equalmax<<<600,512>>>(gpu_im, other.gpu_im);
 }
 
 
@@ -257,7 +257,7 @@ void Image_cuda_compatible::add_on_GPU(Image_cuda_compatible &other)
 //    std::cout << "Add_on_GPU()" << std::endl;
 
    //std::cout << "kernel_addimage (@" << gpu_im<< ", @" << other.gpu_im<<std::endl;
-    kernel_addImage<<<2592,512>>>(gpu_im, other.gpu_im);
+    kernel_addImage<<<600,512>>>(gpu_im, other.gpu_im);
    // std::cout <<"done" << std::endl;
 }
 
@@ -265,7 +265,7 @@ void Image_cuda_compatible::add_on_GPU(Image_cuda_compatible &other)
 void Image_cuda_compatible::subtract_on_GPU(Image_cuda_compatible &other)
 {
 
-    kernel_subtractImage<<<2592,512>>>(gpu_im, other.gpu_im);
+    kernel_subtractImage<<<600,512>>>(gpu_im, other.gpu_im);
 
 }
 
@@ -273,14 +273,14 @@ void Image_cuda_compatible::subtract_on_GPU(Image_cuda_compatible &other)
 void Image_cuda_compatible::divide_on_GPU(float divisor)
 {
 
-    kernel_divideImage<<<2592,512>>>(gpu_im, divisor);
+    kernel_divideImage<<<600,512>>>(gpu_im, divisor);
 
 }
 
 //! Multiplies an image's pixel values to this image on the GPU.
 void Image_cuda_compatible::multiply_on_GPU(float multiplier)
 {
-    kernel_multiplyImage<<<2592,512>>>(gpu_im, multiplier);
+    kernel_multiplyImage<<<600,512>>>(gpu_im, multiplier);
 
 }
 
@@ -331,7 +331,7 @@ void Image_cuda_compatible::cudaReadFromFile(const char* filename)
     HANDLE_ERROR(cudaMalloc((void**)&d_temp,size*sizeof(unsigned short)));
     HANDLE_ERROR(cudaMemcpy(d_temp,temp,sizeof(unsigned short) * size, cudaMemcpyHostToDevice));
     HANDLE_ERROR(cudaFreeHost(temp));
-    kernel_loadFromUShortArray<<<2592,512>>>(d_temp, reserve_on_GPU());
+    kernel_loadFromUShortArray<<<600,512>>>(d_temp, reserve_on_GPU());
     HANDLE_ERROR(cudaFree(d_temp));
     fclose(file);
 
@@ -365,7 +365,7 @@ void Image_cuda_compatible::cudaGetShortArrayToHost(unsigned short *h_sImage)
 {
     unsigned short *d_usimage;
     HANDLE_ERROR(cudaMalloc((void**) & d_usimage, size*sizeof(unsigned short)));
-   kernel_exportToUSarray<<<2592,512>>>( gpu_im, d_usimage);
+   kernel_exportToUSarray<<<600,512>>>( gpu_im, d_usimage);
    HANDLE_ERROR(cudaMemcpy(h_sImage, d_usimage, sizeof(unsigned short) * size , cudaMemcpyDeviceToHost));
    HANDLE_ERROR(cudaFree(d_usimage));
    return;
@@ -420,7 +420,7 @@ void Image_cuda_compatible::cudaGetUCArrayToHost(unsigned char *h_image)
         memset(h_image,0,sizeof(unsigned char) * size);
         return;
     }
-    kernel_exportToUCArray<<<2592,512>>>(gpu_im, d_ucimage, getmin(), getmax());
+    kernel_exportToUCArray<<<600,512>>>(gpu_im, d_ucimage, getmin(), getmax());
     HANDLE_ERROR(cudaMemcpy(h_image, d_ucimage, sizeof(unsigned char) * size , cudaMemcpyDeviceToHost));
     HANDLE_ERROR(cudaFree(d_ucimage));
     return;

@@ -74,7 +74,7 @@ void Gaincorr::gaincorrigateimage(Image_cuda_compatible& image)
     HANDLE_ERROR (cudaMalloc( (void**)&d_saturation, sizeof(int) ));
    HANDLE_ERROR (cudaMemcpy(d_saturation, &sat, sizeof(int), cudaMemcpyHostToDevice ));
 
-    kernel_do_gaincorr<<<41472,32>>>( d_slope,  d_intercept, d_saturation,  d_image );
+    kernel_do_gaincorr<<<9600,32>>>( d_slope,  d_intercept, d_saturation,  d_image );
 
 
 
